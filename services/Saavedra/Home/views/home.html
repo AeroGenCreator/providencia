@@ -55,7 +55,10 @@
 </section>
 
 <!-- SECCIÓN DE ITEMS DE MENU -->
+<main>
 <section class="container">
+    <!-- ITEMS DE MENU -->
+    <!-- ANCHO POR DEFECTO DE LA COLUMNA -->
     <div class="columns is-multiline">
         <!-- Sección para mensajes. -->
         <div class="column is-12" x-show="authError">
@@ -69,10 +72,6 @@
                 </p>
             </div>
         </div>
-    </div>
-        <!-- ITEMS DE MENU -->
-        <!-- ANCHO POR DEFECTO DE LA COLUMNA -->
-    <div class="columns">
 
         <div class="column is-3">
             <!-- NOTIFICACION BULMA CSS + CLICKABLE (HOVER) + MENUITEM (ESCONDE TEXTOS LARGOS) -->
@@ -88,17 +87,27 @@
         </div>
 
         <div class="column is-3">
-            <!-- Manejar Acciones Con Alpine -->
             <div class="notification is-info clickable menuitem focus" @click="goEmployees">
                 <span class="icon-text">
                     <span class="icon"><i class="fa-solid fa-user-tie"></i></span>
                     <span><h2 class="subtitle">Empleados</h2></span>
                 <span>
-                <p class="is-size-7">Administración de empleados<p>
-            <div>
-        <div>
+                <p class="is-size-7">Administración de empleados</p>
+            </div>
+        </div>
+
+        <div class="column is-3">
+            <div class="notification is-danger clickable menuitem focus">
+                <span class="icon-text">
+                    <span class="icon"><i class="fa-solid fa-sack-dollar"></i></span>
+                    <span><h2 class="subtitle">Cuotas IMSS</h2></span>
+                </span>
+                <p class="is-size-7">Generar cuotas obrero patronal</p>
+            </div>
+        </div>
 
     </div>
 </section>
+</main>
 
 </body>
