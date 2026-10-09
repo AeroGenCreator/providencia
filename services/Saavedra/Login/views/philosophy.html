@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Bulma maneja los escalados automaticamente -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Importar Bulma -->
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <!-- Hoja de estilos de Saavedra -->
+    <link rel="stylesheet" href="/assets/css/saavedra/saavedra.css">
+    <!-- Resaltado de color CODIGO -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
+    <!-- Importar Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"></script>
+    <!-- Importar Codigo JavaScript Reutilizable -->
+    <script defer src="/assets/src/utils/utils.js"></script>
+    <!-- Importar Codigo JavaScript del servicio en cuestión -->
+    <script defer src="/assets/src/js/Saavedra/saavedra.js"></script>
+    <!-- Importar Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"></script>
+    <!-- Librería Highlight.js y activación -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Opcional: Cargar explícitamente el paquete de lenguaje Go si usas una versión reducida -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+    <!-- Activar script de Resaltado de color -->
+    <script>hljs.highlightAll();</script>
+    <title>{{ .Title }}</title>
+</head>
+<body>
+    <section class="hero">
+        <div class="container py-6 px-6 my-3">
+            <div class="columns is-multiline">
+                <div class="column is-12">
+                    <div class="notification">
+                        <div>
+                            <span class="text-icon">
+                                <span class="icon"><i class="fa-solid fa-building-columns"></i></span>
+                                <span class="title is-size-4">{{ .Title }} Saavedra</span>
+                            </span>
+                        </div>
+                        <hr>
+                        <div class="content">
+                            <p>
+                                Saavedra no pretende ser un framework.
+                                En su lugar, es un conjunto de funciones, fragmentos de código
+                                y flujos organizados por capas que, en conjunto,
+                                permiten construir una aplicación web.
+                            </p>
+                            <p>
+                                La razón es simple: los asistentes de IA son cada
+                                vez más utilizados para la escritura de código.
+                                Por ello, mantener flujos de código explícitos permite que
+                                tanto los desarrolladores como las herramientas de IA puedan
+                                comprender el contexto de la aplicación sin requerir
+                                una cantidad excesiva de tokens.
+                            </p>
+                            <p>
+                                Saavedra aprovecha este código explícito como uno de sus
+                                principios fundamentales de flujo. Mediante el uso del
+                                <strong>Repository Pattern</strong> en el backend,
+                                la arquitectura se divide en capas concretas,
+                                permitiendo separar la lógica de negocio de los mecanismos
+                                de persistencia y acceso a datos.
+                            </p>
+                            <blockquote>
+                                <p>
+                                    En este sentido, Saavedra prioriza la sencillez
+                                    del código y acepta cierto grado de repetición
+                                    cuando esta contribuye a mantener los flujos
+                                    explícitos y fáciles de comprender. Este enfoque
+                                    resulta menos costoso cuando la escritura y mantenimiento
+                                    del código cuentan con el apoyo de herramientas de IA generativa.
+                                </p>
+                            </blockquote>
+                            <p class="has-text-danger"><em>
+                                Esto no significa que Saavedra fomente el
+                                código repetitivo de manera indiscriminada,
+                                sino que lo considera una herramienta válida
+                                dentro de este contexto arquitectónico concreto.
+                            </em></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-12">
+                    <div class="container">
+                        <div class="notification">
+                            <span class="text-icon">
+                                <span class="icon"><i class="fa-solid fa-file-code"></i></span>
+                                <span class="title is-size-4">Ejemplo</span>
+                            </span>
+                            <hr>
+                            <div class="content">
+                                <div>
+                                    <pre><code class="language-go">
+                                        // Codigo explicito
+                                        func (e Endpoint) CallEmployeesList(w http.ResponseWriter, r *http.Request) {
+                                            page := r.URL.Query("page")
+                                            records := e.service.EmployeesList(page)
+                                            ...
+                                        }
+
+                                        type Employee struct {
+                                            Id int `json:"json"`
+                                            ...
+                                        }
+                                    </code></pre>
+                                </div>
+                                <blockquote>
+                                    <p>
+                                        Esto es todo por el momento. Se recomienda continuar con el
+                                        <a href="/tutorial" target="_blank">Tutorial Básico</a>
+                                        (Crea un CRUD). De esta manera entenderas mucho
+                                        mejor la arquitectura, la toma de desición, y los fragmentos
+                                        de saavedra.
+                                    </p>
+                                </blockquote>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="buttons is-right">
+                    <button
+                        class="button is-dark is-fullwidth"
+                        x-data="{ root(){window.location.href='/'} }"
+                        @click="root">
+                        <span class="icon"><i class="fa-solid fa-house"></i></span>
+                        <span>Inicio</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

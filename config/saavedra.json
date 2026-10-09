@@ -1,0 +1,10 @@
+{
+  "brand": {},
+  "parties": ["admin", "manager", "creator", "visitor"],
+  "levels": [
+    {"level": 4, "permissions": ["admin"]},
+    {"level": 3, "permissions": ["admin", "manager"]},
+    {"level": 2, "permissions": ["admin", "manager", "creator"]},
+    {"level": 1, "permissions": ["admin", "manager", "creator", "visitor"]}
+  ]
+}

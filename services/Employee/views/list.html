@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/assets/css/saavedra/saavedra.css">
+    <script src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"></script>
+    <script defer src="/assets/src/utils/utils.js"></script>
+    <!-- Fichero JS para manejar estados de Alpine. Recomiendo un fichero por servicio. -->
+    <script defer src="/assets/src/js/Employee/employee.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"></script>
+    <title>{{ .Service }}</title>
+</head>
+<body x-data="employeesListComponent">
+<section class="block hero has-background-dark">
+    <nav class="navbar">
+        <div class="navbar-start">
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goHome" style="cursor: pointer;">
+                    <span class="icon"><i class="fa-solid fa-house"></i></span><span>Home</span>
+                </span>
+            </div>
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goBack" style="cursor: pointer;">
+                    <span class="icon"><i class="fa-solid fa-rotate-left"></i></span><span>Volver</span>
+                </span>
+            </div>
+            <!-- Redireccionar a algun otro lado -->
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goEmployee">
+                    <span class="icon"><i class="fa-solid fa-briefcase"></i></span><span>Servicio {{ .Service }}</span>
+                </span>
+            </div>
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <button class="button is-danger is-small" @click="logOut">
+                    <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+</section>
+<main class="hero">
+    <section class="container">
+        <div class="columns">
+            <div class="column is-1">
+                <div class="buttons is-left">
+                    <button class="button is-primary is-small is-fullwidth is-rounded" @click="newRecord">
+                        <span class="icon"><i class="fa-solid fa-circle-plus"></i></span>
+                        <span>Nuevo</span>
+                    </button>
+                </div>
+            </div>
+            <div class="column is-3">
+                <div class="field">
+                    <div class="control is-small has-icons-left">
+                        <input class="input is-small is-rounded" type="text" placeholder="Buscador por nombre" x-model="pattern">
+                        <span class="icon is-small is-left"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-4">
+                <div class="buttons is-left">
+                    <button
+                        class="button is-info is-small is-rounded"
+                        @click="search"
+                        :disabled="(pattern === '')"
+                    >
+                        <span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <span>Buscar</span>
+                    </button>
+                    <button class="button is-danger is-small is-rounded" @click="clean" x-show="(pattern !== '')">
+                        <span class="icon"><i class="fa-solid fa-spray-can-sparkles"></i></span>
+                        <span>Limpiar</span>
+                    </button>
+                </div>
+            </div>
+            <div class="column is-4">
+                <div class="buttons is-right">
+                    <button
+                        class="button is-small is-warning"
+                        @click="previousPage"
+                        :disabled="block"
+                    >
+                        <span class="icon"><i class="fa-solid fa-minus"></i></span>
+                    </button>
+                    <span class="button is-static is-small is-text" x-text="`Página ${page}`"></span>
+                    <button class="button is-small is-warning" @click="nextPage" :disabled="(!hasNextPage || loading)">
+                        <span class="icon"><i class="fa-solid fa-plus"></i></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Contratado</th>
+                    <th>Sueldo Diario</th>
+                    <th>Telefono</th>
+                    <th>Correo</th>
+                    <th>NSS</th>
+                    <th>CURP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="r in records" :key="r.id">
+                    <tr @click="openRecord(r.id)" class="focus">
+                        <td x-text="r.id"></td>
+                        <td x-text="r.name"></td>
+                        <td x-text="r.hireDate"></td>
+                        <td x-text="r.dailyPayment"></td>
+                        <td x-text="r.phone"></td>
+                        <td x-text="r.email"></td>
+                        <td x-text="r.nss"></td>
+                        <td x-text="r.curp"></td>
+                    </tr>
+                </template>
+                <tr x-show="(records === [])">
+                    <td colspan="8">...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,55 @@
+.clickable {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.clickable:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(35, 35, 35, 0.15);
+}
+
+.menuitem {
+    height: 120px;
+    overflow: hidden;
+}
+
+.focus {
+    cursor: pointer;
+}
+
+.focus:hover {
+    filter: brightness(1.10);
+}
+
+.glow-text {
+  color: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.glow-text:hover {
+  color: white;
+  text-shadow: 0 0 8px rgba(211, 211, 211, 0.8),
+              0 0 15px rgba(211, 211, 211, 0.5);
+}
+
+pre {
+    background-color: rgb(0, 0, 0) !important;
+    padding: 1rem;
+    border-radius: 10px;
+    overflow-x: scroll;
+    font-family: monospace;
+    font-size: 13px;
+    margin: 1rem;
+}
+
+code {
+    font-family: inherit;
+    background-color: inherit !important;
+    overflow: inherit !important;
+}
+
+.stick {
+    position: sticky;
+    top: 0;
+}

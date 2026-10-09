@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Bulma maneja los escalados automaticamente -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Importar Bulma -->
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <!-- Hoja de estilos de Saavedra -->
+    <link rel="stylesheet" href="/assets/css/saavedra/saavedra.css">
+    <!-- Importar Font Awsome Icons -->
+    <script src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"></script>
+    <!-- Importar Codigo JavaScript Reutilizable -->
+    <script defer src="/assets/src/utils/utils.js"></script>
+    <!-- Importar Codigo JavaScript del servicio en cuestión -->
+    <script defer src="/assets/src/js/Saavedra/saavedra.js"></script>
+    <!-- Importar Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"></script>
+    <title>Servicio</title>
+</head>
+<body x-data="usersNewComponent">
+
+<!-- BARRA DE NAVEGACIÓN REUTILIZABLE -->
+<section class="block hero has-background-dark">
+    <nav class="navbar">
+        <!-- ITEMS ALINEADOS AL COMIENZO -->
+        <div class="navbar-start">
+            <!-- MUESTRA HOMW | GO-BACK | NOMBRE DEL USUARIO (En Alpine.js agregar acciones para @click) -->
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goHome" style="cursor: pointer;">
+                    <span class="icon"><i class="fa-solid fa-house"></i></span><span>Home</span>
+                </span>
+            </div>
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goBack" style="cursor: pointer;">
+                    <span class="icon"><i class="fa-solid fa-rotate-left"></i></span><span>Volver</span>
+                </span>
+            </div>
+            <!-- Se puede usar la navbar como breadcrumb listando la anidación de vistas y dando acción -->
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goUsers">
+                    <span class="icon"><i class="fa-solid fa-briefcase"></i></span><span>Servicio {{ .Service }}</span>
+                </span>
+            </div>
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7" >
+                    <span class="icon"><i class="fa-solid fa-user-plus"></i></span><span>{{ .View1 }}</span>
+                </span>
+            </div>
+        </div>
+        <!-- ITEMS ALINEADOS AL FINAL | Acción Cerrar sesión (En Alpine.js agregar acciones para @click) -->
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <button class="button is-danger is-small" @click="logOut">
+                    <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+</section>
+<!-- VISTA FORMULARIO (BOCETO BASE) -->
+<main class="hero">
+    <section class="container">
+        <div class="box">
+            <!-- Espacio para botones. -->
+            <div class="columns">
+                <div class="column is-12">
+                    <div class="buttons">
+                        <button class="button is-info is-small" @click="createRecord" :disabled="required">
+                            <span class="icon"><i class="fa-solid fa-floppy-disk"></i></span>
+                            <span>Crear Registro</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Mensaje de advertencia. -->
+            <div class="columns">
+                <div class="column is-12" x-show="message">
+                    <div class="notification is-danger is-light">
+                        <button class="delete" @click="close"></button>
+                        <p class="has-text-left is-size-7">
+                            <span class="icon-text">
+                                <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                                <span>
+                                    Falla en la validación de contraseña o de correo electrónico;
+                                    revisar información y reintentar el envío del formulario.
+                                </span>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="columns">
+                <!-- Ejemplo de campos de (no selección) -->
+                <div class="column is-4">
+                    <label class="label is-small">Nombre</label>
+                    <div class="control has-icons-left">
+                        <input class="input is-small" type="text" placeholder="Type here..." x-model="name"/>
+                        <span class="icon is-small is-left">
+                        <i class="fa-solid fa-signature"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="column is-2">
+                    <label class="label is-small">Email</label>
+                    <div class="control has-icons-left">
+                        <input class="input is-small" type="email" placeholder="example@gmail.com" x-model="email"/>
+                        <span class="icon is-small is-left">
+                        <i class="fa-solid fa-envelope"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="column is-2">
+                    <label class="label is-small">Contraseña</label>
+                    <div class="control has-icons-left">
+                        <input class="input is-small" type="password" placeholder="••••••" x-model="password"/>
+                        <span class="icon is-small is-left">
+                        <i class="fa-solid fa-lock"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="column is-2">
+                    <label class="label is-small">Repetir Contraseña</label>
+                    <div class="control has-icons-left">
+                        <input class="input is-small" type="password" placeholder="••••••" x-model="repeatPassword"/>
+                        <span class="icon is-small is-left">
+                        <i class="fa-solid fa-lock"></i>
+                        </span>
+                    </div>
+                </div>
+                <!-- Ejemplo de campo (Selección) tipo (Arreglo) -->
+                <div class="column is-2">
+                    <label class="label is-small">Grupo de Permisos</label>
+                    <div class="control has-icons-left">
+                        <input class="input is-small" list="party-list" id="party-id" placeholder="Selection..." x-model="party">
+                        <span class="icon is-small is-left"><i class="fa-solid fa-user-group"></i></span>
+                        <datalist id="party-list">
+                            <template x-for="r in parties" :key="r">
+                                <option :value="r" x-text="r"></option>
+                            </template>
+                        </datalist>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>

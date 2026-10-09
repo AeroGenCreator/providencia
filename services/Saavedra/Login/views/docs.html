@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Bulma maneja los escalados automaticamente -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Importar Bulma -->
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <!-- Hoja de estilos de Saavedra -->
+    <link rel="stylesheet" href="/assets/css/saavedra/saavedra.css">
+    <!-- Resaltado de color CODIGO -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
+    <!-- Importar Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"></script>
+    <!-- Importar Codigo JavaScript Reutilizable -->
+    <script defer src="/assets/src/utils/utils.js"></script>
+    <!-- Importar Codigo JavaScript del servicio en cuestión -->
+    <script defer src="/assets/src/js/Saavedra/saavedra.js"></script>
+    <!-- Importar Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"></script>
+    <!-- Librería Highlight.js y activación -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Opcional: Cargar explícitamente el paquete de lenguaje Go si usas una versión reducida -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+    <!-- Activar script de Resaltado de color -->
+    <script>hljs.highlightAll();</script>
+    <title>{{ .Title }}</title>
+</head>
+
+<body>
+<!-- Contenido principal -->
+<main>
+<section class="section">
+    <div class="container">
+        <!-- Titulo -->
+        <div class="notification is-dark has-text-left mb-6">
+            <div class="block has-text-white">
+                <div class="title is-1">
+                    <p id="documentation">Documentación</p>
+                </div>
+                <p>
+                    A diferencia de frameworks complejos, Saavedra cuenta con poca documentación,
+                    basta con conocer algunas funciones reutilizables dentro del código base.
+                </p>
+                <p>
+                    Estas se dividen en dos partes principales: Backend ( Go ) y Frontend ( JS | HTML ).
+                    A continuación, se dará una breve explicación de cada componente.
+                </p>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column is-one-fifth">
+                <div class="box stick py-6">
+                    <div class="block">
+                        <div class="title is-3 has-text-centered">
+                            <span class="icon-text">
+                                <span class="icon"><i class="fa-solid fa-tree"></i></span>
+                                <span>Índice</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="content is-size-7">
+                        <ul class="py-6">
+                            <a href="#backend"><li>Backend ( Go )</li></a>
+                            <ul>
+                                <a href="#auth-middle-ware"><li>( AuthMiddleware )</li></a>
+                                <a href="#context-key"><li>( ContextKey )</li></a>
+                                <a href="#low-level-middle-ware"><li>( LowLevelMiddleware )</li></a>
+                                <a href="#add-permissions"><li>( AddPermissions )</li></a>
+                                <a href="#calculate-total-pages"><li>( CalculateTotalPages )</li></a>
+                                <a href="#env"><li>( .env )</li></a>
+                            </ul>
+                            <a href="#frontend-html"><li>Frontend ( HTML )</li></a>
+                            <ul>
+                                <a href="#depends"><li>( Dependencias )</li></a>
+                                <a href="#menu"><li>( Menuitem )</li></a>
+                                <a href="#navbar"><li>( Navbar )</li></a>
+                            </ul>
+                            <a href="#frontend-js"><li>Frontend ( JavaScript )</li></a>
+                            <ul>
+                                <a href="#component"><li>Alpine Componente</li></a>
+                                <a href="#nav-js"><li>Navegación</li></a>
+                                <a href="#crud"><li>CRUD</li></a>
+                                <a href="#numbers"><li>( Int Float ) Currency</li></a>
+                                <a href="#email-validate"><li>Emails</li></a>
+                            </ul>
+                            <a href="#extras"><li>Extras</li></a>
+                            <ul>
+                                <a href="#many2one"><li>Many2One ( Selection )</li></a>
+                            </ul>
+                        </ul>
+                        <div class="buttons">
+                            <button
+                                class="button is-fullwidth is-dark"
+                                x-data="{ up(){window.location.href='#documentation'} }"
+                                @click="up">
+                                <span class="icon"><i class="fa-solid fa-circle-up"></i></span>
+                                <span>Subir</span>
+                            </button>
+                            <button
+                                class="button is-fullwidth is-dark"
+                                x-data="{ root(){window.location.href='/'} }"
+                                @click="root">
+                                <span class="icon"><i class="fa-solid fa-house"></i></span>
+                                <span>Inicio</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-four-fifths">
+                <div class="box">
+
+                    <div class="subtitle is-3">
+                        <span class="icon-text">
+                            <span class="icon"><i class="fa-brands fa-google"></i></span>
+                            <span id="backend">( Go ) Backend</span>
+                        </span>
+                    </div>
+
+                    <div class="block" id="auth-middle-ware">
+                        <p class="subtitle is-5">Función ( AuthMiddleware )</p>
+                        <div class="content is-size-6">
+                            <div class="notification is-danger is-light has-text-black">
+                                Protección de rutas.
+                                Además esta función permite la extracción de información de usuario desde la petición.
+                            </div>
+                            <blockquote>AuthMiddleware( next <em>http.Handler</em> )</blockquote>
+                        <pre><code>
+                            mux.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handler.CallUsers)))
+                        </code></pre>
+                    </div>
+
+                    <div class="block" id="context-key">
+                        <p class="subtitle is-5">ContextKey ( <em>string</em>  )</p>
+                        <div class="content is-size-6">
+                            <p>
+                                Las <em>ContextKey</em> indexan información especifica del usuario que realiza una petición.
+                            </p>
+                            <blockquote>r <em>http.Request</em></blockquote>
+                        </div>
+                        <pre><code>
+                            // Id ( Base de datos ) del usuario
+                            id := r.Context().Value(utils.UserId).(string)
+                            // Name ( Base de datos ) del usuario
+                            name := r.Context().Value(utils.UserName).(string)
+                            // Grupo de permisos del usuario
+                            party := r.Context().Value(utils.UserParty).(string)
+                            // Token JWT de autenticidad
+                            jwt := r.Context().Value(utils.UserToken).(string)
+                        </code></pre>
+                    </div>
+
+                    <div class="block" id="low-level-middle-ware">
+                        <p class="subtitle is-5">Función ( LowLevelMiddleware )</p>
+                        <div class="content is-size-6">
+                            <p>
+                                No proteje rutas pero si extra información del usuario que realiza la petición.
+                            </p>
+                            <blockquote>LowLevelMiddleware( next <em>http.Handler</em> )</blockquote>
+                        </div>
+                        <pre><code>
+                            mux.Handle("/session", utils.LowLevelMiddleware(http.HandlerFunc(handler.CallSession)))
+                        </code></pre>
+                    </div>
+
+                    <div class="block" id="add-permissions">
+                        <p class="subtitle is-5">Función ( AddPermissions )</p>
+                        <div class="content is-size-6">
+                            <div class="notification is-info is-light has-text-black">
+                                Agregar permisos a las peticiones ( GET, POST, PUT, DELETE, etc... )
+                                Basta con agregar la función al inicio del endpoint para validar la petición del usuario.
+                            </div>
+                            <blockquote>AddPermissions( level <em>int</em>, userParty <em>string</em>) (<em>bool, error</em>)</blockquote>
+                            <div class="notification is-warning is-light has-text-black">
+                                Cuando el nivel de protección es 0 se asume nivel mas alto 4 ( solo admin ).
+                                Retornar <strong style="color: tomato;">http.StatusUnauthorized</strong> permite que JS
+                                notifique al usuario.
+                            </div>
+                        </div>
+                        <pre><code>
+                            ...
+                            party := r.Context().Value(utils.UserParty).(string)
+                      		valid, err := utils.AddPermissions(0, party)
+                      		if err != nil {
+                     			log.Printf("Message (%v)", err.Error())
+                     			http.Error(w, err.Error(), http.StatusInternalServerError)
+                     			return
+                      		}
+                      		if !valid {
+                     			w.WriteHeader(http.StatusUnauthorized)
+                     			return
+                      		}
+                        </code></pre>
+                        <p class="subtitle is-6">Niveles de permisos</p>
+                        <pre><code>
+                            "parties": ["admin", "manager", "creator", "visitor"],
+                            "levels": [
+                                {"level": 4, "permissions": ["admin"]},
+                                {"level": 3, "permissions": ["admin", "manager"]},
+                                {"level": 2, "permissions": ["admin", "manager", "creator"]},
+                                {"level": 1, "permissions": ["admin", "manager", "creator", "visitor"]}
+                            ]
+                        </code></pre>
+                    </div>
+
+                    <div class="block" id="calculate-total-pages">
+                        <p class="subtitle is-5">Función ( CalculateTotalPages )</p>
+                        <div class="content is-size-6">
+                            <p>
+                                Basado en la configuración de registros por petición para la vista "tabla/lista"
+                                esta función devuelve el número de pagínas según la cantidad de filas totales
+                                de una tabla.
+                            </p>
+                            <blockquote>CalculateTotalPages( totalCount <em>int</em>, recordsPerSlice <em>int</em> ) <em>int</em></blockquote>
+                        </div>
+                        <pre><code>
+                            totalPages := utils.CalculateTotalPages(totalCount, utils.RecordsPerSlice)
+                        </code></pre>
+                    </div>
+
+                    <div class="block" id="env">
+                        <p class="subtitle is-5">Variables de Entorno ( .env )</p>
+                        <pre><code>
+                            // Protección ( Token )
+                            SESSION_TOKEN=
+                            // Nombre de la base de datos
+                            DATABASE_NAME="database"
+                            // Nombre del administrador
+                            ADMIN_NAME="admin"
+                            // Correo del administrador
+                            ADMIN_EMAIL=
+                            // Contraseña del administrador
+                            ADMIN_PASSWORD=
+                            // Registros enviados al frontend por petición
+                            RECORDS_PER_SLICE=15
+                            // Obtencion de peticiones seguras unicamente
+                            IS_PRODUCTION=true
+                            HOST="localhost"
+                            PORT="8080"
+                            // Tiempos de expiración determinadas en frontend y backend
+                            BACKEND_TOKEN_EXPIRATION_TIME=
+                            FRONTEND_TOKEN_EXPIRATION_TIME=
+                        </code></pre>
+                    </div>
+
+                    <hr>
+
+                    <div class="subtitle is-3">
+                        <span class="icon-text">
+                            <span class="icon"><i class="fa-brands fa-html5"></i></span>
+                            <span id="frontend-html">( HTML ) Frontend</span>
+                        </span>
+                    </div>
+
+                    <div class="block" id="depends">
+                        <p class="subtitle is-5">Frontend Dependencias</p>
+                        <pre><code>
+                            &lt!DOCTYPE html&gt
+                            &lthtml lang="es"&gt
+                            &lthead&gt
+                                &ltmeta charset="UTF-8"&gt
+                                &ltmeta name="viewport" content="width=device-width, initial-scale=1.0"&gt
+                                &ltlink rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css"&gt
+                                &ltlink rel="stylesheet" href="/assets/css/saavedra/saavedra.css"&gt
+                                &ltscript src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"&gt&lt/script&gt
+                                &ltscript defer src="/assets/src/utils/utils.js"&gt&lt/script&gt
+                                &lt!-- Fichero JS para manejar estados de Alpine. Recomiendo un fichero por servicio. --&gt
+                                &ltscript defer src=""&gt&lt/script&gt
+                                &ltscript defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"&gt&lt/script&gt
+                                &lttitle&gt{{ .Titulo }}&lt/title&gt
+                            &lt/head&gt
+                            &lt/html&gt
+                        </code></pre>
+                    </div>
+
+                    <div class="block" id="menu">
+                        <p class="subtitle is-5">Nuevo Menu ( Menuitem )</p>
+                        <pre><code>
+                            &ltdiv class="column is-3"&gt
+                                &lt!-- Manejar Acciones Con Alpine --&gt
+                                &lta @click=""&gt
+                                    &ltdiv class="notification is-primary clickable menuitem focus"&gt
+                                        &ltspan class="icon-text"&gt
+                                            &ltspan class="icon"&gt&lti class="fa-solid fa-users"&gt&lt/i&gt&lt/span&gt
+                                            &ltspan&gt&lth2 class="subtitle"&gt ... &lt/h2&gt&lt/span&gt
+                                        &lt/span&gt
+                                        &ltp class="is-size-7"&gt ... &lt/p&gt
+                                    &lt/div&gt
+                                &lt/a&gt
+                            &lt/div&gt
+                        </code></pre>
+                    </div>
+
+                    <div class="block" id="navbar">
+                        <p class="subtitle is-5">Barra de Navegación ( Navbar )</p>
+                        <pre><code>
+                            &lt!-- Manejar estados goHome, goBack, go..., logOut - Usando Alpine --&gt
+                            &ltsection class="block hero has-background-dark"&gt
+                                &ltnav class="navbar"&gt
+                                    &ltdiv class="navbar-start"&gt
+                                        &ltdiv class="navbar-item"&gt
+                                            &ltspan class="icon-text has-text-white is-size-7 clickable" @click="goHome" style="cursor: pointer;"&gt
+                                                &ltspan class="icon"&gt&lti class="fa-solid fa-house"&gt&lt/i&gt&lt/span&gt&ltspan&gtHome&lt/span&gt
+                                            &lt/span&gt
+                                        &lt/div&gt
+                                        &ltdiv class="navbar-item"&gt
+                                            &ltspan class="icon-text has-text-white is-size-7 clickable" @click="goBack" style="cursor: pointer;"&gt
+                                                &ltspan class="icon"&gt&lti class="fa-solid fa-rotate-left"&gt&lt/i&gt&lt/span&gt&ltspan&gtVolver&lt/span&gt
+                                            &lt/span&gt
+                                        &lt/div&gt
+                                        &lt!-- Redireccionar a algun otro lado --&gt
+                                        &ltdiv class="navbar-item"&gt
+                                            &ltspan class="icon-text has-text-white is-size-7 clickable" @click="go..."&gt
+                                                &ltspan class="icon"&gt&lti class="fa-solid fa-briefcase"&gt&lt/i&gt&lt/span&gt&ltspan&gtServicio {{ .Service }}&lt/span&gt
+                                            &lt/span&gt
+                                        &lt/div&gt
+                                    &lt/div&gt
+                                    &ltdiv class="navbar-end"&gt
+                                        &ltdiv class="navbar-item"&gt
+                                            &ltbutton class="button is-danger is-small" @click="logOut"&gt
+                                                &ltspan class="icon"&gt&lti class="fa-solid fa-arrow-right-from-bracket"&gt&lt/i&gt&lt/span&gt
+                                                &ltspan&gtCerrar Sesión&lt/span&gt
+                                            &lt/button&gt
+                                        &lt/div&gt
+                                    &lt/div&gt
+                                &lt/nav&gt
+                            &lt/section&gt
+                        </code></pre>
+                    </div>
+
+                    <hr>
+
+                    <div class="subtitle is-3">
+                        <span class="icon-text">
+                            <span class="icon"><i class="fa-brands fa-square-js"></i></i></span>
+                            <span id="frontend-js">( JS ) Frontend</span>
+                        </span>
+                    </div>
+
+                    <div class="block" id="component">
+                        <p class="subtitle is-5"> Alpine Componente</p>
+                        <pre><code>
+                            &lt!-- Recomiendo iniciar en el body y que el componente sea global para la plantilla html. --&gt
+                            &ltbody x-data="servicioComponent"&gt
+                        </code></pre>
+                        <pre><code>
+                            // servicioComponente se sustituye por el nombre deseado.
+                            document.addEventListener('alpine:init', () => {
+                                Alpine.data("servicioComponent", () => ({
+
+                                }))
+                            })
+                        </code></pre>
+                    </div>
+
+                    <div class="block" id="nav-js">
+                        <p class="subtitle is-5">Navegación ( GoHome, GoBack, logOut, OnlyRedirect )</p>
+                        <div class="content is-size-6">
+                            <p><strong>Sección de 4 reutilizables JavaScript que permiten redirrección y navegación.</strong></p>
+                            <div class="notification is-info is-light has-text-black">
+                                El uso es extremadamente simple; el componente Alpine lo incias en el HTML,
+                                los mapeas con minuscula, y llamas a la funcion en mayusculas.
+                                Estas funciones ya se encargan de la seguridad y sesión de usuario.
+                            </div>
+                            <blockquote>GoHome( ) | Redirecciona a "/home"</blockquote>
+                            <blockquote>GoBack( path <em>string</em> ) | Redirecciona a "path"</blockquote>
+                            <blockquote>LogOut( ) | Redirecciona a "/"</blockquote>
+                            <blockquote>
+                                OnlyRedirect( path <em>string</em> ) <em>object</em> | Redirecciona a "path".
+                                También devuelve un object con el atributo <strong>authError</strong> <em>bool</em>.
+                                Trabaja en conjunto con <a href="#add-permissions">AddPermissions</a>.
+                            </blockquote>
+                        </div>
+                        <pre><code>
+                            async goHome() { await GoHome() },
+                            async goBack() { await GoBack(path) },
+                            async logOut() { await LogOut() },
+                            async go...() {
+                                const res = await OnlyRedirect(path)
+                                this.authError = res.authError
+                            },
+                        </code></pre>
+                    </div>
+
+                    <div class="block" id="crud">
+                        <p class="subtitle is-5">
+                            CRUD ( ReadRecord, CreateRecord, UpdateRecord, DeleteRecord, FetchDataFromResponse )
+                        </p>
+                        <div class="notification is-info is-light has-text-black">
+                            Todas las funciones <strong>CRUD</strong> devuelven un <strong>object</strong> con el atributo
+                            <strong>authError</strong> <em>bool</em>.
+                            Trabaja en conjunto con <a href="#add-permissions"><strong>AddPermissions</strong></a>.
+                            Si el servicio es asegurado a nivel 4 para todos los endpoints
+                            GET<em>( /home, /list, /new, /record, /cualquier otra... )</em>
+                            ( Solo Admin ). No necesitas esperar respuesta en los controladores Alpine.js.
+                            <strong>Si acaso unicamente en la vista menu de la ruta "/home".</strong>
+                        </div>
+                        <pre><code>
+                            // Cuando todo el servicio es nivel 4.
+                            async createRecord() {
+                            const record = { }
+                            // Notar que no se espera respuesta y se utiliza un "await" directo
+                            await CreateRecord(path, redirect, {method: "POST", body: JSON.stringify(record)})
+                            },
+
+                            async openRecord(id) { await ReadRecord(id, path) },
+
+                            async updateRecord() {
+                                const record = JSON.stringify({ })
+                                await UpdateRecord(path, redirect, {method: "PUT", body: JSON.stringify(record)})
+                            },
+
+                            async deleteRecord() {
+                                const record = JSON.stringify({ })
+                                return this.invalid = await DeleteRecord(
+                                    path, redirect, {method: "DELETE", body: JSON.stringify(record)}
+                                )
+                            },
+
+                            async loadRecords() {
+                                const data = await FetchDataFromResponse(path, options)
+                            },
+                        </code></pre>
+                        <div class="content is-size-6">
+                            <blockquote>CreateRecord( path <em>string</em>, redirect <em>string</em> options <em>object</em> ) <em>object</em> - Crear un registro.</blockquote>
+                            <blockquote>ReadRecord( id <em>int</em> path <em>string</em>) <em>object</em> - Redireccionar a la vista de un registro.</blockquote>
+                            <blockquote>UpdateRecord( path <em>string</em>, redirect <em>string</em> options <em>object</em> ) <em>object</em> - Actualizar un registro.</blockquote>
+                            <blockquote>DeleteRecord( path <em>string</em>, redirect <em>string</em> options <em>object</em> ) <em>object</em> - Eliminar un registro.</blockquote>
+                            <blockquote>FetchDataFromResponse( path <em>string</em> options <em>object</em> ) <em>object</em> - Solicitar data a un endpoint.</blockquote>
+                        </div>
+                        <div class="notification is-warning is-light has-text-black">
+                            Si se desea manejar niveles de acuero al permiso de usuario, debe esperarse el objeto
+                            con la validación de autorización.
+                            Notar que la funcion <strong>FetchDataFromResponse</strong>
+                            NO devuelve el objeto <em>( object.authError )</em>, en su lugar
+                            devuelve un objeto de <strong>data</strong> desde el backend.
+                        </div>
+                        <pre><code>
+                            // Manejando solicitudes segun niveles de permisos.
+                            async createRecord() {
+                                const record = { }
+                                const res = await CreateRecord(path, redirect, {method: "POST", body: JSON.stringify(record)})
+                                this.authError = res.authError
+                            },
+
+                            async loadRecords() {
+                                const data = await FetchDataFromResponse(path, options)
+                                this.records = data.records
+                                this.hasNextPage = data.hasNextPage
+                                ...
+                            },
+                        </code></pre>
+                    </div>
+                    <div class="block" id="numbers">
+                        <p class="subtitle is-5">
+                            Integer - Float - MXN Currency
+                        </p>
+                        <div class="content is-size-6">
+                            <blockquote>
+                                ValidateIntegerStringToInteger( str <em>string</em> ) <em>float</em>
+                                - Mantiene unicamente caracteres númericos, y <strong>cast</strong> a integer.
+                            </blockquote>
+                            <blockquote>
+                                ValidateFloatStringToFloat( str <em>string</em> ) <em>integer</em>
+                                - Mantiene unicamente caracteres númericos, y <strong>cast</strong> a float.
+                            </blockquote>
+                            <blockquote>
+                                FormatterMXN.format( value <em>float</em> ) <em>string</em>
+                                - Da formato de moneda $0.00.
+                            </blockquote>
+                        </div>
+                        <pre><code>
+                            const number = ValidateIntegerStringToInteger(this.quantity)
+
+                            const payment = ValidateFloatStringToFloat(this.dailyPayment)
+
+                            currency(str) {
+                              const float = ValidateFloatStringToFloat(str)
+                              if (isNaN(float)) { return '' }
+                              const money = FormatterMXN.format(float);
+                              if (money === '$0.00') { return ''}
+                              return money
+                            },
+                        </code></pre>
+                    </div>
+                    <div class="block" id="email-validate">
+                        <p class="subtitle is-5">ValidateEmail</p>
+                        <div class="content is-size-6">
+                            <blockquote>ValidateEmail( str <em>string</em> ) <em>bool</em></blockquote>
+                        </div>
+                        <pre><code>
+                            if (!ValidateEmail(this.email)) { this.emailError = true; return }
+                        </code></pre>
+                    </div>
+
+                    <hr>
+
+                    <div class="subtitle is-3" id="extras">
+                        <span class="icon-text">
+                            <span class="icon"><i class="fa-solid fa-fire"></i></span><span id="frontend-js">Extras</span>
+                        </span>
+                    </div>
+                    <div class="block" id="many2one">
+                        <p class="subtitle is-5">Many2One ( Selection )</p>
+                        <div class="notification is-primary is-light hast-text-dark">
+                            ( GO ) procesa la data desde <strong>service</strong> el cual sube
+                            a la capa de <strong>endpoints</strong>. Desde ahi el ( JS ) puede llamar a la data.
+                        </div>
+                        <div class="notification is-warning is-light hast-text-dark">
+                            En ocasiones la data de relación podras obtenerla desde la base de datos,
+                            en otras ocaciones se extra la data desde un JSON o cualquier otro medio.
+                            Para este ejemplo pretendemos que se extra data desde JSON.
+                        </div>
+                        <div class="notification is-dark has-text-white">
+                            Supongamos el siguiente JSON [ { "code": 1 }, { "code": 2 }, ... ]
+                        </div>
+                        <pre><code>
+                            // 1. TIPADO
+                            type Indentifiers struct {
+                                Code int `json:"code"`
+                            }
+                            // Notar que un solo 'Many2One' puedes mandar mas slices de selección.
+                            type Many2One struct {
+                                IdentifiersRecord: []*Identifiers `json:"identifiersRecords"`
+                            }
+                            // 2. LEER Y DECODIFICAR
+                            file, err := os.Open(path)
+                           	if err != nil {
+                          		return nil, err
+                           	}
+                            defer file.Close()
+                           	var many2one Many2One
+                           	if err := json.NewDecoder(file).Decode(&many2one.IdentifiersRecords); err != nil {
+                          		return nil, err
+                           	}
+                            // 3. RETORNAR EN ENDPOINT
+                            w.Header().Set("Content-Type", "application/json")
+                      		w.WriteHeader(http.StatusOK)
+                      		json.NewEncoder(w).Encode(many2one)
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+</body>

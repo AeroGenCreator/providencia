@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/assets/css/saavedra/saavedra.css">
+    <script src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"></script>
+    <script defer src="/assets/src/utils/utils.js"></script>
+    <script defer src="/assets/src/js/Employee/employee.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"></script>
+    <title></title>
+</head>
+<body x-data="employeesNewComponent">
+<section class="block hero has-background-dark">
+<nav class="navbar">
+    <div class="navbar-start">
+        <div class="navbar-item">
+            <span class="icon-text has-text-white is-size-7 clickable" @click="goHome" style="cursor: pointer;">
+                <span class="icon"><i class="fa-solid fa-house"></i></span><span>Home</span>
+            </span>
+        </div>
+        <div class="navbar-item">
+            <span class="icon-text has-text-white is-size-7 clickable" @click="goBack" style="cursor: pointer;">
+                <span class="icon"><i class="fa-solid fa-rotate-left"></i></span><span>Volver</span>
+            </span>
+        </div>
+        <div class="navbar-item">
+            <span class="icon-text has-text-white is-size-7 clickable" @click="goEmployees">
+                <span class="icon"><i class="fa-solid fa-briefcase"></i></span><span>Servicio {{ .Service }}</span>
+            </span>
+        </div>
+        <div class="navbar-item">
+            <span class="icon-text has-text-white is-size-7" >
+                <span class="icon"><i class="fa-solid fa-user-plus"></i></span><span>{{ .View1 }}</span>
+            </span>
+        </div>
+    </div>
+    <div class="navbar-end">
+        <div class="navbar-item">
+            <button class="button is-danger is-small" @click="logOut">
+                <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+    </div>
+</nav>
+</section>
+<main class="hero">
+<section class="container">
+    <div class="box">
+        <div class="columns">
+            <div class="column is-12">
+                <div class="buttons">
+                    <button class="button is-info is-small" @click="createRecord" :disabled="required">
+                        <span class="icon"><i class="fa-solid fa-floppy-disk"></i></span>
+                        <span>Crear Registro</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column is-12" x-show="authError">
+                <div class="notification is-danger is-light">
+                    <button class="delete" @click="close"></button>
+                    <p class="has-text-left is-size-7">
+                        <span class="icon-text">
+                            <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                            <span>Tu usuario no tiene permisos para realizar la acción</span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="column is-12" x-show="emailError">
+                <div class="notification is-danger is-light">
+                    <button class="delete" @click="close"></button>
+                    <p class="has-text-left is-size-7">
+                        <span class="icon-text">
+                            <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                            <span>Falla en la validación de correo electrónico; revisar información y reintentar.</span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-multiline">
+            <div class="column is-4">
+                <label class="label is-small">Nombre</label>
+                <div class="control has-icons-left">
+                    <input class="input is-small" type="text" placeholder="type text" x-model="name"/>
+                    <span class="icon is-small is-left"><i class="fa-solid fa-address-card"></i></span>
+                </div>
+            </div>
+            <div class="column is-4">
+                <label class="label is-small">Contratado</label>
+                <div class="control has-icons-left">
+                    <input class="input is-small" type="date" x-model="hireDate"/>
+                    <span class="icon is-small is-left"><i class="fa-solid fa-calendar-days"></i></span>
+                </div>
+            </div>
+            <div class="column is-4">
+                <label class="label is-small">Sueldo Diario</label>
+                <div class="control has-icons-left">
+                    <input
+                        class="input is-small"
+                        type="text"
+                        placeholder="120.50"
+                        x-model="dailyPayment"
+                        @blur="dailyPayment = currency($event.target.value)"
+                    />
+                    <span class="icon is-small is-left"><i class="fa-solid fa-coins"></i></span>
+                </div>
+            </div>
+            <div class="column is-4">
+                <label class="label is-small">Telefono</label>
+                <div class="control has-icons-left">
+                    <input
+                        class="input is-small"
+                        type="tel"
+                        placeholder="type number"
+                        x-model="phone"
+                        @blur="phone = integers($event.target.value)"
+                    />
+                    <span class="icon is-small is-left"><i class="fa-solid fa-phone"></i></span>
+                </div>
+            </div>
+            <div class="column is-4">
+                <label class="label is-small">Correo</label>
+                <div class="control has-icons-left">
+                    <input class="input is-small" type="email" placeholder="example@gmail.com" x-model="email"/>
+                    <span class="icon is-small is-left"><i class="fa-solid fa-envelope"></i></span>
+                </div>
+            </div>
+            <div class="column is-4">
+                <label class="label is-small">NSS</label>
+                <div class="control has-icons-left">
+                    <input class="input is-small" type="text" placeholder="********" x-model="nss"/>
+                    <span class="icon is-small is-left"><i class="fa-solid fa-hospital"></i></span>
+                </div>
+            </div>
+            <div class="column is-12">
+                <label class="label is-small">CURP</label>
+                <div class="control has-icons-left">
+                    <input class="input is-small" type="text" placeholder="********" x-model="curp"/>
+                    <span class="icon is-small is-left"><i class="fa-solid fa-id-card-clip"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+</body>
+</html>

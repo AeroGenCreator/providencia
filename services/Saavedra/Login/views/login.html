@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Bulma maneja los escalados automaticamente -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Importar Bulma -->
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <!-- Hoja de estilos de Saavedra -->
+    <link rel="stylesheet" href="/assets/css/saavedra/saavedra.css">
+    <!-- Importar Font Awsome Icons -->
+    <script src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"></script>
+    <!-- Importar Codigo JavaScript Reutilizable -->
+    <script defer src="/assets/src/utils/utils.js"></script>
+    <!-- Importar Codigo JavaScript del servicio en cuestión -->
+    <script defer src="/assets/src/js/Saavedra/saavedra.js"></script>
+    <!-- Importar Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"></script>
+    <title>Servicio</title>
+</head>
+<body x-data="loginComponent">
+
+<!-- EL LOGIN SE HACE DESDE UNA BARRA DE NAVEGACIÓN. ESTE ESTILO SE PUEDE MODIFICAR SI SE DESEA -->
+<section class="hero has-background-dark">
+    <nav class="navbar">
+        <div class="navbar-start">
+            <div class="navbar-item">
+                <span class="icon-text has-text-white subtitle">
+                    <span class="icon"><i class="fa-solid fa-tree"></i></span><span class="glow-text">Saavedra</span>
+                </span>
+            </div>
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <p class="control has-icons-left">
+                    <input class="input is-small" type="email" placeholder="example@gmail.com" x-model="email"/>
+                    <span class="icon is-small is-left"><i class="fas fa-envelope"></i></span>
+                </p>
+            </div>
+            <div class="navbar-item">
+                <p class="control has-icons-left">
+                    <input class="input is-small" type="password" placeholder="••••••••••••••" x-model="password">
+                    <span class="icon is-small is-left"><i class="fas fa-lock"></i></span>
+                </p>
+            </div>
+            <div class="navbar-item">
+                <button class="button is-primary is-small" @click="login" :disabled="unlock">
+                    <span class="icon">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                    </span>
+                    <span>Iniciar Sesión</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+</section>
+
+<main>
+    <!-- LOZAS - NAVEGACION WEB: Esto lo ocupa Saavedra base. Pero se puede quitar si se desea o modificar -->
+    <section class="container">
+
+        <div class="notification is-danger is-light my-6" x-show="status">
+            <button class="delete" @click="close"></button>
+            <p class="has-text-left is-size-7">
+                <span class="icon-text">
+                    <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                    <span>
+                        Credenciales no validas. Intentar de nuevo.
+                    </span>
+                </span>
+            </p>
+        </div>
+
+        <div class="notification is-dark my-6 px-6 py-6 has-text-white has-text-left glow-text clickable" @click="goObtain">
+            <div class="column is-four-fiths">
+                <div class="block">
+                    <span class="icon is-size-1"><i class="fa-solid fa-circle-arrow-down"></i></i></span>
+                </div>
+                <div class="block">
+                    <p class="title is-size-1">Obtener</p>
+                    <p>Servicio web</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification is-dark my-6 px-6 py-6 has-text-white has-text-right glow-text clickable" @click="goTutorial">
+            <div class="column is-four-fiths">
+                <div class="block">
+                    <span class="icon is-size-1"><i class="fa-solid fa-book-bookmark"></i></span>
+                </div>
+                <div class="block">
+                    <p class="title is-size-1">Tutorial</p>
+                    <p>Construir CRUD</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification is-dark my-6 px-6 py-6 has-text-white has-text-left glow-text clickable" @click="goDocs">
+            <div class="column is-four-fiths">
+                <div class="block">
+                    <span class="icon is-size-1"><i class="fa-solid fa-laptop-code"></i></span>
+                </div>
+                <div class="block">
+                    <p class="title is-size-1">Documentos</p>
+                    <p>Reutilizables</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification is-dark my-6 px-6 py-6 has-text-white has-text-right glow-text clickable" @click="goPhil">
+            <div class="column is-four-fiths">
+                <div class="block">
+                    <span class="icon is-size-1"><i class="fa-solid fa-building-columns"></i></span>
+                </div>
+                <div class="block">
+                    <p class="title is-size-1">Filosofía</p>
+                    <p>Enfoque</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer has-background-dark">
+    <div class="container">
+        <div class="block has-text-centered has-text-white is-size-7">
+            <p>
+                <span class="icon-text">
+                    <span>Autor Andres Alberto Lopez Mendoza</span>
+                    <span class="icon"><i class="fa-solid fa-circle-user"></i></span>
+                </span>
+            </p>
+            <p>
+                <span class="icon-text">
+                    <span>Correo Profesional <a href="mailto:" class="has-text-info">andres.lopez.full.dev@gmail.com</a></span>
+                    <span class="icon"><i class="fa-solid fa-envelope"></i></span>
+                </span>
+            </p>
+            <p>
+                <span class="icon-text">
+                    <span>Contacto Directo <span class="has-text-info">+522462072985</span></span>
+                    <span class="icon"><i class="fa-solid fa-phone"></i></span>
+                </span>
+            </p>
+            <p>
+                <span class="icon-text">
+                    <span><a href="https://www.linkedin.com/in/andres-lopez-mendoza/" class="has-text-info" target="_blank">LinkedIn</a></span>
+                    <span class="icon"><i class="fa-brands fa-linkedin"></i></span>
+                </span>
+            </p>
+            <p>
+                <span class="icon-text">
+                    <span><a href="https://github.com/AeroGenCreator" class="has-text-info" target="_blank">GitHub</a></span>
+                    <span class="icon"><i class="fa-brands fa-github"></i></span>
+                </span>
+            </p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

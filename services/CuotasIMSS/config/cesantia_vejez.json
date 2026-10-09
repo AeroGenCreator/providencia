@@ -1,0 +1,52 @@
+{
+  "2026": [
+    { "liminferior": 1.00, "limsuperior": 1.00, "factor": 0.03150 },
+    { "liminferior": 1.01, "limsuperior": 1.50, "factor": 0.04026 },
+    { "liminferior": 1.51, "limsuperior": 2.00, "factor": 0.05088 },
+    { "liminferior": 2.01, "limsuperior": 2.50, "factor": 0.05725 },
+    { "liminferior": 2.51, "limsuperior": 3.00, "factor": 0.06149 },
+    { "liminferior": 3.01, "limsuperior": 3.50, "factor": 0.06453 },
+    { "liminferior": 3.51, "limsuperior": 4.00, "factor": 0.06680 },
+    { "liminferior": 4.01, "limsuperior": 25.00, "factor": 0.07513 }
+  ],
+  "2027": [
+    { "liminferior": 1.00, "limsuperior": 1.00, "factor": 0.03150 },
+    { "liminferior": 1.01, "limsuperior": 1.50, "factor": 0.04103 },
+    { "liminferior": 1.51, "limsuperior": 2.00, "factor": 0.05313 },
+    { "liminferior": 2.01, "limsuperior": 2.50, "factor": 0.06038 },
+    { "liminferior": 2.51, "limsuperior": 3.00, "factor": 0.06521 },
+    { "liminferior": 3.01, "limsuperior": 3.50, "factor": 0.06866 },
+    { "liminferior": 3.51, "limsuperior": 4.00, "factor": 0.07125 },
+    { "liminferior": 4.01, "limsuperior": 25.00, "factor": 0.10100 }
+  ],
+  "2028": [
+    { "liminferior": 1.00, "limsuperior": 1.00, "factor": 0.03150 },
+    { "liminferior": 1.01, "limsuperior": 1.50, "factor": 0.04180 },
+    { "liminferior": 1.51, "limsuperior": 2.00, "factor": 0.05538 },
+    { "liminferior": 2.01, "limsuperior": 2.50, "factor": 0.06350 },
+    { "liminferior": 2.51, "limsuperior": 3.00, "factor": 0.06893 },
+    { "liminferior": 3.01, "limsuperior": 3.50, "factor": 0.07280 },
+    { "liminferior": 3.51, "limsuperior": 4.00, "factor": 0.07570 },
+    { "liminferior": 4.01, "limsuperior": 25.00, "factor": 0.10707 }
+  ],
+  "2029": [
+    { "liminferior": 1.00, "limsuperior": 1.00, "factor": 0.03150 },
+    { "liminferior": 1.01, "limsuperior": 1.50, "factor": 0.04257 },
+    { "liminferior": 1.51, "limsuperior": 2.00, "factor": 0.05763 },
+    { "liminferior": 2.01, "limsuperior": 2.50, "factor": 0.06663 },
+    { "liminferior": 2.51, "limsuperior": 3.00, "factor": 0.07265 },
+    { "liminferior": 3.01, "limsuperior": 3.50, "factor": 0.07693 },
+    { "liminferior": 3.51, "limsuperior": 4.00, "factor": 0.08015 },
+    { "liminferior": 4.01, "limsuperior": 25.00, "factor": 0.11313 }
+  ],
+  "2030": [
+    { "liminferior": 1.00, "limsuperior": 1.00, "factor": 0.03150 },
+    { "liminferior": 1.01, "limsuperior": 1.50, "factor": 0.04241 },
+    { "liminferior": 1.51, "limsuperior": 2.00, "factor": 0.05824 },
+    { "liminferior": 2.01, "limsuperior": 2.50, "factor": 0.06820 },
+    { "liminferior": 2.51, "limsuperior": 3.00, "factor": 0.07451 },
+    { "liminferior": 3.01, "limsuperior": 3.50, "factor": 0.07900 },
+    { "liminferior": 3.51, "limsuperior": 4.00, "factor": 0.08238 },
+    { "liminferior": 4.01, "limsuperior": 25.00, "factor": 0.11875 }
+  ]
+}

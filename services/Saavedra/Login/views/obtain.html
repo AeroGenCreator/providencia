@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Bulma maneja los escalados automaticamente -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Importar Bulma -->
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <!-- Hoja de estilos de Saavedra -->
+    <link rel="stylesheet" href="/assets/css/saavedra/saavedra.css">
+    <!-- Resaltado de color CODIGO -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/nord.min.css">
+    <!-- Importar Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"></script>
+    <!-- Importar Codigo JavaScript Reutilizable -->
+    <script defer src="/assets/src/utils/utils.js"></script>
+    <!-- Importar Codigo JavaScript del servicio en cuestión -->
+    <script defer src="/assets/src/js/Saavedra/saavedra.js"></script>
+    <!-- Importar Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"></script>
+    <!-- Librería Highlight.js y activación -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Opcional: Cargar explícitamente el paquete de lenguaje Go si usas una versión reducida -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+    <!-- Activar script de Resaltado de color -->
+    <script>hljs.highlightAll();</script>
+    <title>{{ .Title }}</title>
+</head>
+<body>
+<main class="container">
+<section class="section">
+    <div class="notification is-dark has-text-white">
+        <h1 class="title is-1">Obtención de Saavedra</h1>
+        <p>
+            Basta con redirigirse al repositorio oficial de
+            <a href="https://github.com/AeroGenCreator/saavedra" target="_new" class="has-text-info">
+                <span class="icon-text">
+                    <span class="icon"><i class="fa-brands fa-github-alt"></i></span><span>Saavedra GitHub</span>
+                </span>
+            </a>
+        </p>
+    </div>
+
+    <div class="block">
+        <div class="notification is-info is-light has-text-black">
+            Es importante la descarga del <strong>.zip</strong> y no la clonación
+            del repositorio. Cada nuevo proyecto con Saavedra debe tener su propio
+            repositorio.
+            Solo se debe clonar si se va a colaborar con Saavedra base.
+        </div>
+        <div class="notification is-primary is-light has-text-black">
+            Asi de simple ya puedes comenzar a trabajar.
+            Para aprender a programar con Saavedra no olvides revisar
+            <a href="/tutorial" target="_new"><strong>Tutorial CRUD</strong></a>
+            y los <a href="/docs" target="_new"><strong>Documentos</strong></a>
+            de componentes y funciones.
+        </div>
+        <div class="notification is-warning is-light has-text-black">
+            Saavedra Base unicamente cuenta con los servicios
+            <strong>Usuario</strong> & <strong>Empleados</strong>.
+            Esto permite que desarrolles servicios personalizados a la medida de tu necesidad.
+        </div>
+        <figure class="image"><img src="/assets/img/saavedra/saavedraBase.png"/></figure>
+        <div class="buttons">
+            <button
+                class="button is-fullwidth is-dark"
+                x-data="{ root(){window.location.href='/'} }"
+                @click="root">
+                <span class="icon"><i class="fa-solid fa-house"></i></span>
+                <span>Inicio</span>
+            </button>
+        </div>
+    </div>
+
+</section>
+</main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+	"salarioMinimo": {"year": 2026, "salarioMinimo": 315.04},
+	"actualUMA": {"year": 2026, "actualUMA": 113.14},
+	"diasAguinaldo": 15,
+	"primaVacacional": 0.25000,
+	"cuotaFijaPatron": 0.20400,
+	"enfMatPatron": 0.01100,
+	"enfMatObrero": 0.00400,
+	"enfMatEspPatron": 0.00700,
+	"enfMatEspObrero": 0.00250,
+	"pensiondadosPatron": 0.01050,
+	"pensiondadosObrero": 0.00375,
+	"invalidezVidaPatron": 0.17500,
+	"invalidezVidaObrero": 0.00625,
+	"guarderiasPatron": 0.01000,
+	"retiro": 0.02000,
+	"cesantiaVejezObrero": 0.01250
+}
