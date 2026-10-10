@@ -2,7 +2,7 @@ package service
 
 import "saavedra/services/CuotasIMSS/types"
 
-var Meses = map[string]types.Meses{
+var Meses = map[string]types.MesesMetadata{
 	"Enero":      {Dias: 31, Orden: 1},
 	"Febrero":    {Dias: 28, Orden: 2},
 	"Marzo":      {Dias: 31, Orden: 3},
@@ -15,4 +15,19 @@ var Meses = map[string]types.Meses{
 	"Octubre":    {Dias: 31, Orden: 10},
 	"Noviembre":  {Dias: 30, Orden: 11},
 	"Diciembre":  {Dias: 31, Orden: 12},
+}
+
+var MesesM2O = [12]string{
+	"Enero",
+	"Febrero",
+	"Marzo",
+	"Abril",
+	"Mayo",
+	"Junio",
+	"Julio",
+	"Agosto",
+	"Septiembre",
+	"Octubre",
+	"Noviembre",
+	"Diciembre",
 }
