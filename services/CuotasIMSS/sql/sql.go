@@ -53,7 +53,8 @@ func CreateCuotasImssSchema(db *sql.DB) error {
 			prestaciones_dinero_obrero REAL NOT NULL,
 			gastos_medicos_pensionados_obrero REAL NOT NULL,
 			invalidez_y_vida_obrero REAL NOT NULL,
-			cesantia_y_vejez_obrero REAL NOT NULL
+			cesantia_y_vejez_obrero REAL NOT NULL,
+			UNIQUE(name, year, month)
 		);
 		INSERT INTO cuotas_imss_new (
 			id, name, daily_payment, year, month, factor_integracion, sbc, es_bimestre, incapacidad, faltas,
@@ -103,7 +104,8 @@ func CreateCuotasImssSchema(db *sql.DB) error {
 			prestaciones_dinero_obrero REAL NOT NULL,
 			gastos_medicos_pensionados_obrero REAL NOT NULL,
 			invalidez_y_vida_obrero REAL NOT NULL,
-			cesantia_y_vejez_obrero REAL NOT NULL
+			cesantia_y_vejez_obrero REAL NOT NULL,
+			UNIQUE(name, year, month)
 		);`
 		if _, err := tx.Exec(tableCreate); err != nil {
 			return fmt.Errorf("Creation error: %w", err)
