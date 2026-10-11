@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	cuotas_imssSQL "saavedra/services/CuotasIMSS/sql"
 	employeeRouter "saavedra/services/Employee/router"
 	employeeSQL "saavedra/services/Employee/sql"
 	homeRouter "saavedra/services/Saavedra/Home/router"
@@ -54,6 +55,9 @@ func main() {
 		log.Fatal(err.Error())
 	}
 	if err = employeeSQL.CreateSchema(db); err != nil {
+		log.Fatal(err.Error())
+	}
+	if err = cuotas_imssSQL.CreateCuotasImssSchema(db); err != nil {
 		log.Fatal(err.Error())
 	}
 

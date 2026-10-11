@@ -62,7 +62,7 @@ type Peticion struct {
 	Year string `json:""`
 }
 
-// Respuesta a cálculo de cuotas
+// Respuesta a cálculo de cuotas (Siguientes 3 Bloques)
 type Patron struct {
 	RiesgoTrabajoPrima             float64
 	EnfermedadMaternidadCuotaFija  float64 // 20.40% de la UMA (por asegurado)
@@ -88,4 +88,38 @@ type RespuestaCalculoCuotas struct {
 	Employee *Employee `json:"employee"`
 	Obrero   *Obrero   `json:"obrero"`
 	Patron   *Patron   `json:"patron"`
+}
+
+// Registro CuotasIMSS
+type CuotasIMSS struct {
+	Id                                  int     `json:"id"`
+	Name                                string  `json:"name"`
+	DailyPayment                        float64 `json:"daily_payment"`
+	Year                                int     `json:"year"`
+	Month                               int     `json:"month"`
+	FactorIntegracion                   float64 `json:"factor_integracion"`
+	Sbc                                 float64 `json:"sbc"`
+	EsBimestre                          bool    `json:"es_bimestre"`
+	Incapacidad                         int     `json:"incapacidad"`
+	Faltas                              int     `json:"faltas"`
+	RiesgoTrabajoPrima                  float64 `json:"riesgo_trabajo_prima"`
+	EnfermedadMaternidadCuotaFija       float64 `json:"enfermedad_maternidad_cuota_fija"`
+	EnfermedadMaternidadAdicional       float64 `json:"enfermedad_maternidad_adicional"`
+	PrestacionesDineroPatron            float64 `json:"prestaciones_dinero_patron"`
+	GastosMedicosPensionadosPatron      float64 `json:"gastos_medicos_pensionados_patron"`
+	InvalidezYVida                      float64 `json:"invalidez_y_vida"`
+	Retiro                              float64 `json:"retiro"`
+	CesantiaYVejezPatron                float64 `json:"cesantia_y_vejez_patron"`
+	Guarderias                          float64 `json:"guarderias"`
+	AportacionInfonavit                 float64 `json:"aportacion_infonavit"`
+	EnfermedadMaternidadAdicionalObrero float64 `json:"enfermedad_maternidad_adicional_obrero"`
+	PrestacionesDineroObrero            float64 `json:"prestaciones_dinero_obrero"`
+	GastosMedicosPensionadosObrero      float64 `json:"gastos_medicos_pensionados_obrero"`
+	InvalidezYVidaObrero                float64 `json:"invalidez_y_vida_obrero"`
+	CesantiaYVejezObrero                float64 `json:"cesantia_y_vejez_obrero"`
+}
+
+type SliceCuotasIMSS struct {
+	Records     []*CuotasIMSS `json:"records"`
+	HasNextPage bool          `json:"hasNextPage"`
 }
