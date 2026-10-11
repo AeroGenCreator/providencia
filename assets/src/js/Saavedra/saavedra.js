@@ -34,6 +34,10 @@ document.addEventListener('alpine:init', () => {
       var res = await OnlyRedirect("/users");
       this.authError = res.authError
     },
+    async goCuotasIMSS() {
+      var res = await OnlyRedirect("/cuotas");
+      this.authError = res.authError
+    },
 
     async goHome() { await GoHome() },
     async goBack() { await GoBack() },

@@ -19,5 +19,4 @@ func Assambler(mux *http.ServeMux, db *sql.DB) {
 	mux.Handle("/employee/slice", utils.AuthMiddleware(http.HandlerFunc(handler.CallSliceEmployees)))
 	mux.Handle("/employee/record", utils.AuthMiddleware(http.HandlerFunc(handler.CallEmployeesRecord)))
 	mux.Handle("/employee/search", utils.AuthMiddleware(http.HandlerFunc(handler.CallEmployeesSearch)))
-
 }

@@ -31,20 +31,16 @@ func (s service) SliceEmployee(page string) (*types.EmployeeSlice, error) {
 	}
 	var offset int
 	offset = (intPage - 1) * utils.RecordsPerSlice
-
 	records, count, err := s.store.SliceEmployee(utils.RecordsPerSlice, offset)
 	if err != nil {
 		return nil, err
 	}
-
 	totalPages := utils.CalculateTotalPages(count, utils.RecordsPerSlice)
 	hasNextPage := totalPages > intPage
-
 	employeeSlice := types.EmployeeSlice{
 		Records:     records,
 		HasNextPage: hasNextPage,
 	}
-
 	return &employeeSlice, nil
 }
 
@@ -84,19 +80,15 @@ func (s service) SearchEmployee(pattern, page string) (*types.EmployeeSlice, err
 	}
 	var offset int
 	offset = (intPage - 1) * utils.RecordsPerSlice
-
 	slice, count, err := s.store.SearchEmployee(pattern, utils.RecordsPerSlice, offset)
 	if err != nil {
 		return nil, err
 	}
-
 	totalPages := utils.CalculateTotalPages(count, utils.RecordsPerSlice)
 	hasNextPage := totalPages > intPage
-
 	records := types.EmployeeSlice{
 		Records:     slice,
 		HasNextPage: hasNextPage,
 	}
-
 	return &records, nil
 }

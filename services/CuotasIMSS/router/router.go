@@ -1,1 +1,18 @@
 package router
+
+import (
+	"database/sql"
+	"net/http"
+	"saavedra/services/CuotasIMSS/api"
+	"saavedra/services/CuotasIMSS/service"
+	"saavedra/services/CuotasIMSS/store"
+	"saavedra/utils"
+)
+
+func Assambler(mux *http.ServeMux, db *sql.DB) {
+	storing := store.New(db)
+	servicing := service.New(storing)
+	handler := api.New(servicing)
+
+	mux.Handle("/cuotas", utils.AuthMiddleware(http.HandlerFunc(handler.CallListCuotasIMSS)))
+}

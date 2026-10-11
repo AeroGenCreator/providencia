@@ -32,3 +32,7 @@ func calcularFactorIntegracion(diasVacaciones float64) float64 {
 	factorIntegracion := salarioNeutro + ((diasAguinaldo + (diasVacaciones * primaVacacional)) / diasAnho)
 	return factorIntegracion
 }
+
+func (s service) CalcularCuotas(id int) {
+
+}

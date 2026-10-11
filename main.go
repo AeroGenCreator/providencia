@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	cuotas_imssRouter "saavedra/services/CuotasIMSS/router"
 	cuotas_imssSQL "saavedra/services/CuotasIMSS/sql"
 	employeeRouter "saavedra/services/Employee/router"
 	employeeSQL "saavedra/services/Employee/sql"
@@ -76,6 +77,7 @@ func main() {
 	homeRouter.Assambler(mux)
 	usersRouter.Assambler(mux, db)
 	employeeRouter.Assambler(mux, db)
+	cuotas_imssRouter.Assambler(mux, db)
 
 	// Levantar Servidor
 	fmt.Printf("🚀 Server listening on: http://%v:%v", utils.Host, utils.Port)
