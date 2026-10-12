@@ -77,6 +77,7 @@
             </div>
         </div>
         <div class="columns is-multiline">
+            <!-- PRIMERA LINEA DE INPUTS -->
             <div class="column is-4">
                 <label class="label is-small">Empleado</label>
                 <div class="control has-icons-left">
@@ -92,7 +93,14 @@
             <div class="column is-4">
                 <label class="label is-small">Mes</label>
                 <div class="control has-icons-left">
-                    <input class="input is-small" list="list-month" id="input-month" placeholder="Seleccionar mes..." x-model="selectedMonth">
+                    <input
+                        class="input is-small"
+                        list="list-month"
+                        id="input-month"
+                        placeholder="Seleccionar mes..."
+                        x-model="selectedMonth"
+                        @change="validarBimestre"
+                    >
                     <span class="icon is-small is-left"><i class="fa-regular fa-calendar-days"></i></span>
                     <datalist id="list-month">
                         <template x-for="r in months">
@@ -110,6 +118,47 @@
                         placeholder="Ingresar año..."
                         x-model="selectedYear"
                         @blur="selectedYear = integer($event.target.value)"
+                    >
+                    <span class="icon is-small is-left"><i class="fa-solid fa-calendar"></i></span>
+                </div>
+            </div>
+            <!-- SEGUNDA LINEA DE INPUTS -->
+            <div class="column is-12" x-show="esBimestre">
+                <label class="label is-small">Incapacidades del Mes Anterior</label>
+                <div class="control has-icons-left">
+                    <input
+                        class="input is-small"
+                        type="text"
+                        placeholder="Ingresar incapacidades..."
+                        x-model="mesAnteriorIncapacidades"
+                        @blur="mesAnteriorIncapacidades = integer($event.target.value)"
+                    >
+                    <span class="icon is-small is-left"><i class="fa-solid fa-calendar"></i></span>
+                </div>
+            </div>
+            <!-- TERCERA LINEA DE INPUTS -->
+            <div class="column is-6">
+                <label class="label is-small">Incapacidades Mes Actual</label>
+                <div class="control has-icons-left">
+                    <input
+                        class="input is-small"
+                        type="text"
+                        placeholder="Ingresar incapacidades..."
+                        x-model="incapacidades"
+                        @blur="incapacidades = integer($event.target.value)"
+                    >
+                    <span class="icon is-small is-left"><i class="fa-solid fa-calendar"></i></span>
+                </div>
+            </div>
+            <div class="column is-6">
+                <label class="label is-small">Faltas Mes Actual</label>
+                <div class="control has-icons-left">
+                    <input
+                        class="input is-small"
+                        type="text"
+                        placeholder="Ingresar faltas..."
+                        x-model="faltas"
+                        @blur="faltas = integer($event.target.value)"
                     >
                     <span class="icon is-small is-left"><i class="fa-solid fa-calendar"></i></span>
                 </div>

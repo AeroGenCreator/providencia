@@ -91,6 +91,10 @@ document.addEventListener('alpine:init', () => {
     selectedEmployee: "",
     selectedMonth: "",
     selectedYear: "",
+    mesAnteriorIncapacidades: 0,
+    incapacidades: 0,
+    faltas: 0,
+    esBimestre: false,
 
     async init() { await this.loadMany2One() },
 
@@ -104,6 +108,15 @@ document.addEventListener('alpine:init', () => {
         const data = await FetchDataFromResponse("/cuotas/many2one");
         this.employee = data.employee; this.months = data.months
       } catch (error) { throw error } finally { this.loading = false }
+    },
+
+    validarBimestre() {
+      for (const [key, val] of Object.entries(MonthsObject)) {
+        if (val === this.selectedMonth) {
+          const integer = ValidateIntegerStringToInteger(key);
+          if (integer % 2 === 0) { this.esBimestre = true; return } else { this.esBimestre = false; return }
+        }
+      }
     },
 
     integer(str) {
