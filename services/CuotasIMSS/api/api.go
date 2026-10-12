@@ -89,3 +89,57 @@ func (e EndpointHandler) CallListCuotasIMSS(w http.ResponseWriter, r *http.Reque
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}
 }
+
+// "/cuotas/new"
+func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		party := r.Context().Value(utils.UserParty).(string)
+		valid, err := utils.AddPermissions(2, party)
+		if err != nil {
+			log.Printf("Message (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if !valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		tpl, err := template.ParseFiles("services/CuotasIMSS/views/new.html")
+		if err != nil {
+			log.Printf("Error /cuotas/new - ParsingFile - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if err = tpl.Execute(w, map[string]string{
+			"Service": "Cuotas Obrero Patronal", "Nuevo": "Nuevo Registro",
+		}); err != nil {
+			log.Printf("Error /cuotas/new - RenderingFile - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}
+
+// "/cuotas/many2one"
+func (e EndpointHandler) CallCuotasIMSSMany2One(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		data, err := e.service.Many2OneCuotasIMSS()
+		if err != nil {
+			log.Printf("Error /cuotas/many2one - ServingMany2One - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(data)
+		return
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}

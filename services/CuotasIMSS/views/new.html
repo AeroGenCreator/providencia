@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/assets/css/saavedra/saavedra.css">
+    <script src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"></script>
+    <script defer src="/assets/src/utils/utils.js"></script>
+    <script defer src="/assets/src/js/CuotasIMSS/cuotas_imss.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"></script>
+    <title>{{ .Service }}</title>
+</head>
+<body x-data="CuotasIMSSNewComponent">
+<section class="block hero has-background-dark">
+    <nav class="navbar">
+        <div class="navbar-start">
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goHome" style="cursor: pointer;">
+                    <span class="icon"><i class="fa-solid fa-house"></i></span><span>Home</span>
+                </span>
+            </div>
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goBack" style="cursor: pointer;">
+                    <span class="icon"><i class="fa-solid fa-rotate-left"></i></span><span>Volver</span>
+                </span>
+            </div>
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goBack">
+                    <span class="icon"><i class="fa-solid fa-stethoscope"></i></span><span>Servicio {{ .Service }}</span>
+                </span>
+            </div>
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goCuotasIMSSNuevo">
+                    <span class="icon"><i class="fa-regular fa-square-plus"></i></span><span>{{ .Nuevo }}</span>
+                </span>
+            </div>
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <button class="button is-danger is-small" @click="logOut">
+                    <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+</section>
+<main class="hero">
+<section class="container">
+    <div class="box">
+        <div class="columns">
+            <div class="column is-12">
+                <div class="buttons">
+                    <button class="button is-info is-small" @click="createRecord" :disabled="requiredCreate">
+                        <span class="icon"><i class="fa-solid fa-floppy-disk"></i></span>
+                        <span>Crear Registro</span>
+                    </button>
+                    <button class="button is-primary is-small" @click="calculate" :disabled="requiredCalculate">
+                        <span class="icon"><i class="fa-solid fa-calculator"></i></span>
+                        <span>Calcular Cuota</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column is-12" x-show="authError">
+                <div class="notification is-danger is-light">
+                    <button class="delete" @click="close"></button>
+                    <p class="has-text-left is-size-7">
+                        <span class="icon-text">
+                            <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                            <span>...</span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="columns is-multiline">
+            <div class="column is-4">
+                <label class="label is-small">Empleado</label>
+                <div class="control has-icons-left">
+                    <input class="input is-small" list="list-employee" id="input-employee" placeholder="Buscar empleado..." x-model="selectedEmployee">
+                    <span class="icon is-small is-left"><i class="fa-solid fa-helmet-safety"></i></span>
+                    <datalist id="list-employee">
+                        <template x-for="r in employee" :key="r.id">
+                            <option :value="r.name" x-text="r.name"></option>
+                        </template>
+                    </datalist>
+                </div>
+            </div>
+            <div class="column is-4">
+                <label class="label is-small">Mes</label>
+                <div class="control has-icons-left">
+                    <input class="input is-small" list="list-month" id="input-month" placeholder="Seleccionar mes..." x-model="selectedMonth">
+                    <span class="icon is-small is-left"><i class="fa-regular fa-calendar-days"></i></span>
+                    <datalist id="list-month">
+                        <template x-for="r in months">
+                            <option :value="r" x-text="r"></option>
+                        </template>
+                    </datalist>
+                </div>
+            </div>
+            <div class="column is-4">
+                <label class="label is-small">Año</label>
+                <div class="control has-icons-left">
+                    <input
+                        class="input is-small"
+                        type="text"
+                        placeholder="Ingresar año..."
+                        x-model="selectedYear"
+                        @blur="selectedYear = integer($event.target.value)"
+                    >
+                    <span class="icon is-small is-left"><i class="fa-solid fa-calendar"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+</body>
+</html>

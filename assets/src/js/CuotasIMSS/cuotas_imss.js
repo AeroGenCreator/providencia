@@ -10,12 +10,15 @@ document.addEventListener('alpine:init', () => {
     pattern: '',
     patternLast: '',
     isSearch: false,
+    authError: false,
 
     async init() { await this.loadRecords() },
     async goHome() { await GoHome() },
     async goBack() { await GoBack("/home") },
     async logOut() { await LogOut() },
     async goCuotasIMSS() { const res = await OnlyRedirect("/cuotas"); this.authError = res.authError },
+    async newRecord() { const res = await OnlyRedirect("/cuotas/new"); this.authError = res.authError },
+    close() { this.authError = false; },
     async clean() {
       this.isSearch = false; this.pageSearch = 1; this.pattern = ''; this.page = 1; return await this.loadRecords()
     },
@@ -78,3 +81,39 @@ document.addEventListener('alpine:init', () => {
 })
 
 // COMPONENTE NUEVO "CUOTAS IMSS"
+document.addEventListener('alpine:init', () => {
+  Alpine.data("CuotasIMSSNewComponent", () => ({
+
+    authError: false,
+    loading: false,
+    employee: [],
+    months: [],
+    selectedEmployee: "",
+    selectedMonth: "",
+    selectedYear: "",
+
+    async init() { await this.loadMany2One() },
+
+    async goHome() { await GoHome() },
+    async goBack() { await GoBack("/cuotas") },
+    async logOut() { await LogOut() },
+    async goCuotasIMSSNuevo() { const res = await OnlyRedirect("/cuotas/new"); this.authError = res.authError; },
+
+    async loadMany2One() {
+      try {
+        const data = await FetchDataFromResponse("/cuotas/many2one");
+        this.employee = data.employee; this.months = data.months
+      } catch (error) { throw error } finally { this.loading = false }
+    },
+
+    integer(str) {
+      const integers = ValidateIntegerStringToInteger(str)
+      if (isNaN(integers)) { return '' }
+      return String(integers).substring(0, 4);
+    },
+
+    requiredCreate() { },
+    requiredCalculate() { },
+
+  }))
+})

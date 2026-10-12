@@ -27,7 +27,7 @@ func New(db *sql.DB) Store {
 	return store{db: db}
 }
 
-// Para la vista lista (Se envian pocos campos) (Importantes ID, Name, Year, Month)
+// Para la vista lista (Se envian pocos campos)
 func (s store) SliceCuotasIMSS(limit, offset int) ([]*types.CuotasIMSS, int, error) {
 	q1 := "SELECT COUNT(id) AS count_id FROM cuotas_imss;"
 	q2 := `SELECT id, name, daily_payment, year, month, factor_integracion, sbc FROM cuotas_imss LIMIT ? OFFSET ?;`
@@ -150,6 +150,7 @@ func (s store) DeleteCuotasIMSS(id int) error {
 	return nil
 }
 
+// Para la vista lista (Se envian pocos campos)
 func (s store) SearchCuotasIMSS(pattern string, limit, offset int) ([]*types.CuotasIMSS, int, error) {
 	formatedPattern := "%" + pattern + "%"
 	q1 := `SELECT id, name, daily_payment, year, month, factor_integracion, sbc FROM cuotas_imss WHERE name LIKE ? LIMIT ? OFFSET ?;`

@@ -33,14 +33,14 @@ type MesesMetadata struct {
 
 // Tipo Empleado para Many2One
 type M2OEmployee struct {
-	Id   int    `json:"id"`
+	Id   string `json:"id"`
 	Name string `json:"name"`
 }
 
-// Slcie M2O Empaquetado
-type M2OSlice struct {
-	Records []*M2OEmployee `json:"records"`
-	Meses   []string
+// Slcie Many2One Empaquetado
+type Many2One struct {
+	Employee []*M2OEmployee `json:"employee"`
+	Months   []string       `json:"months"`
 }
 
 // Tipo Empleado Record Completo

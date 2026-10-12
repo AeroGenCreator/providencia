@@ -29,7 +29,7 @@
             <!-- Redireccionar a algun otro lado -->
             <div class="navbar-item">
                 <span class="icon-text has-text-white is-size-7 clickable" @click="goCuotasIMSS">
-                    <span class="icon"><i class="fa-solid fa-notes-medical"></i></span><span>Servicio {{ .Service }}</span>
+                    <span class="icon"><i class="fa-solid fa-stethoscope"></i></span><span>Servicio {{ .Service }}</span>
                 </span>
             </div>
         </div>
@@ -91,6 +91,19 @@
                     <button class="button is-small is-warning" @click="nextPage" :disabled="(!hasNextPage || loading)">
                         <span class="icon"><i class="fa-solid fa-plus"></i></span>
                     </button>
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column is-12" x-show="authError">
+                <div class="notification is-warning is-light">
+                    <button class="delete" @click="close"></button>
+                    <p class="has-text-left is-size-7">
+                        <span class="icon-text">
+                            <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                            <span>Este usuario no tiene permisos para realizar la acción.</span>
+                        </span>
+                    </p>
                 </div>
             </div>
         </div>

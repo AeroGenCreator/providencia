@@ -13,6 +13,7 @@ type Service interface {
 	// Funciones en este fichero
 	SliceCuotasIMSS(page string) (*types.SliceCuotasIMSS, error)
 	SearchCuotasIMSS(pattern, page string) (*types.SliceCuotasIMSS, error)
+	Many2OneCuotasIMSS() (*types.Many2One, error)
 }
 
 type service struct {
@@ -59,6 +60,18 @@ func (s service) SearchCuotasIMSS(pattern, page string) (*types.SliceCuotasIMSS,
 	data := types.SliceCuotasIMSS{
 		Records:     records,
 		HasNextPage: hasNextPage,
+	}
+	return &data, nil
+}
+
+func (s service) Many2OneCuotasIMSS() (*types.Many2One, error) {
+	employees, err := s.store.M2OEmployees()
+	if err != nil {
+		return nil, err
+	}
+	data := types.Many2One{
+		Employee: employees,
+		Months:   MesesM2O[:],
 	}
 	return &data, nil
 }
