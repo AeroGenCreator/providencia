@@ -1,4 +1,4 @@
-// servicioComponente se sustituye por el nombre deseado.
+// COMPONENTE LISTA "CUOTAS IMSS"
 document.addEventListener('alpine:init', () => {
   Alpine.data("CuotasIMSSListaComponent", () => ({
 
@@ -23,6 +23,17 @@ document.addEventListener('alpine:init', () => {
       if (this.isSearch) { return (this.pageSearch === 1 || this.loading); } else { return (this.page === 1 || this.loading); }
     },
 
+    async previousPage() {
+      if (this.isSearch) {
+        if (this.pageSearch > 1) { this.pageSearch -= 1; return await this.search(); }
+      } else { if (this.page > 1) { this.page -= 1; return await this.loadRecords() } }
+    },
+
+    async nextPage() {
+      if (!this.isSearch) { if (this.hasNextPage) { this.page += 1; return await this.loadRecords() } }
+      if (this.isSearch) { if (this.hasNextPage) { this.pageSearch += 1; return await this.search() } }
+    },
+
     currency() {
       if (!this.records) { return }
       for (const item of this.records) {
@@ -33,17 +44,37 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    months() {
+      if (!this.records) { return }
+      this.records.forEach(item => { const monthName = MonthsFromIntegerToString(item.month); item.month = monthName; })
+    },
+
     async loadRecords() {
       try {
         this.loading = true
         const data = await FetchDataFromResponse(`/cuotas/slice?page=${this.page}`, { method: "GET" })
-        this.records = data.records; this.hasNextPage = data.hasNextPage; this.currency();
+        this.records = data.records; this.hasNextPage = data.hasNextPage; this.currency(); this.months();
       } catch (error) {
-      throw error
+        throw error
       } finally {
-      this.loading = false
+        this.loading = false
+      }
+    },
+
+    async search() {
+      try {
+        this.loading = true; this.isSearch = true;
+        if (this.patternLast !== '' && this.patternLast !== this.pattern) { this.pageSearch = 1};
+        const data = await FetchDataFromResponse(`/cuotas/search?pattern=${this.pattern}&page=${this.pageSearch}`);
+        this.patternLast = this.pattern; this.records = data.records; this.hasNextPage = data.hasNextPage; this.currency(); this.months();
+      } catch (error) {
+        throw error
+      } finally {
+        this.loading = false
       }
     },
 
   }))
 })
+
+// COMPONENTE NUEVO "CUOTAS IMSS"

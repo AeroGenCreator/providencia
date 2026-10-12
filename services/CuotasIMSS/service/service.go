@@ -12,6 +12,7 @@ type Service interface {
 	CalcularCuotas(id int)
 	// Funciones en este fichero
 	SliceCuotasIMSS(page string) (*types.SliceCuotasIMSS, error)
+	SearchCuotasIMSS(pattern, page string) (*types.SliceCuotasIMSS, error)
 }
 
 type service struct {
@@ -40,4 +41,24 @@ func (s service) SliceCuotasIMSS(page string) (*types.SliceCuotasIMSS, error) {
 		HasNextPage: hasNextPage,
 	}
 	return &slice, nil
+}
+
+func (s service) SearchCuotasIMSS(pattern, page string) (*types.SliceCuotasIMSS, error) {
+	intPage, err := strconv.Atoi(page)
+	if err != nil {
+		intPage = 1
+	}
+	var offset int
+	offset = (intPage - 1) * utils.RecordsPerSlice
+	records, count, err := s.store.SearchCuotasIMSS(pattern, utils.RecordsPerSlice, offset)
+	if err != nil {
+		return nil, err
+	}
+	totalPages := utils.CalculateTotalPages(count, utils.RecordsPerSlice)
+	hasNextPage := totalPages > intPage
+	data := types.SliceCuotasIMSS{
+		Records:     records,
+		HasNextPage: hasNextPage,
+	}
+	return &data, nil
 }

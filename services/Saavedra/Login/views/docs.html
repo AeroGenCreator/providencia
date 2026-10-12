@@ -83,6 +83,7 @@
                                 <a href="#crud"><li>CRUD</li></a>
                                 <a href="#numbers"><li>( Int Float ) Currency</li></a>
                                 <a href="#email-validate"><li>Emails</li></a>
+                                <a href="#month-transformer"><li>MonthsFromIntegerToString</li></a>
                             </ul>
                             <a href="#extras"><li>Extras</li></a>
                             <ul>
@@ -491,6 +492,18 @@
                         </div>
                         <pre><code>
                             if (!ValidateEmail(this.email)) { this.emailError = true; return }
+                        </code></pre>
+                    </div>
+                    <div class="block" id="month-transformer">
+                        <p class="subtitle is-5">MonthsFromIntegerToString</p>
+                        <p class="notification is-info is-light">Transformar mes( Integer ) a mes( String ); { 1 = Enero, 2 = Febrero, ... }</p>
+                        <div class="content is-size-6"><blockquote>MonthsFromIntegerToString(month <em>integer</em>) <em>string</em></classblockquote></div>
+                        <pre><code>
+                            // Ejemplo de uso aplicado a un array de registros.
+                            months() {
+                              if (!this.records) { return }
+                              this.records.forEach(item => { const monthName = MonthsFromIntegerToString(item.month); item.month = monthName; })
+                            },
                         </code></pre>
                     </div>
 

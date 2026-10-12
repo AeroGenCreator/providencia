@@ -37,6 +37,28 @@ func (e EndpointHandler) CallSliceCuotasIMSS(w http.ResponseWriter, r *http.Requ
 	}
 }
 
+// ROUTE: "/cuotas/search"
+func (e EndpointHandler) CallCuotasSearch(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		pattern := r.URL.Query().Get("pattern")
+		page := r.URL.Query().Get("page")
+		data, err := e.service.SearchCuotasIMSS(pattern, page)
+		if err != nil {
+			log.Printf("Error /cuotas/search (%v)", err.Error())
+			http.Error(w, "Error /cuotas/search ", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(data)
+		return
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+		return
+	}
+}
+
 // ROUTE: "/cuotas"
 func (e EndpointHandler) CallListCuotasIMSS(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {

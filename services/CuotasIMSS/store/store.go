@@ -152,14 +152,7 @@ func (s store) DeleteCuotasIMSS(id int) error {
 
 func (s store) SearchCuotasIMSS(pattern string, limit, offset int) ([]*types.CuotasIMSS, int, error) {
 	formatedPattern := "%" + pattern + "%"
-	q1 := `SELECT
-		id, name, daily_payment, year, month, factor_integracion, sbc, es_bimestre, incapacidad, faltas,
-		riesgo_trabajo_prima, enfermedad_maternidad_cuota_fija, enfermedad_maternidad_adicional,
-		prestaciones_dinero_patron, gastos_medicos_pensionados_patron, invalidez_y_vida,
-		retiro, cesantia_y_vejez_patron, guarderias, aportacion_infonavit,
-		enfermedad_maternidad_adicional_obrero, prestaciones_dinero_obrero,
-		gastos_medicos_pensionados_obrero, invalidez_y_vida_obrero, cesantia_y_vejez_obrero
-		FROM cuotas_imss WHERE name LIKE ? LIMIT ? OFFSET ?;`
+	q1 := `SELECT id, name, daily_payment, year, month, factor_integracion, sbc FROM cuotas_imss WHERE name LIKE ? LIMIT ? OFFSET ?;`
 	q2 := `SELECT COUNT(id) AS count_id FROM cuotas_imss WHERE name LIKE ?;`
 	rows, err := s.db.Query(q1, formatedPattern, limit, offset)
 	if err != nil {
