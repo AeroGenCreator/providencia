@@ -22,7 +22,7 @@ func (e EndpointHandler) CallSliceCuotasIMSS(w http.ResponseWriter, r *http.Requ
 	switch r.Method {
 	case http.MethodGet:
 		page := r.URL.Query().Get("page")
-		records, err := e.service.SliceCuotasIMSS(page)
+		data, err := e.service.SliceCuotasIMSS(page)
 		if err != nil {
 			log.Printf("Error /cuotas/slice (%v)", err.Error())
 			http.Error(w, "Error /cuotas/slice ", http.StatusInternalServerError)
@@ -30,7 +30,7 @@ func (e EndpointHandler) CallSliceCuotasIMSS(w http.ResponseWriter, r *http.Requ
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(records)
+		json.NewEncoder(w).Encode(data)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 		return
@@ -58,7 +58,7 @@ func (e EndpointHandler) CallListCuotasIMSS(w http.ResponseWriter, r *http.Reque
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		if err := tpl.Execute(w, map[string]string{"Service": "Cuotas Obrero Patronal IMSS"}); err != nil {
+		if err := tpl.Execute(w, map[string]string{"Service": "Cuotas Obrero Patronal"}); err != nil {
 			log.Printf("Error /cuotas - RenderingFile - (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

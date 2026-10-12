@@ -224,6 +224,7 @@ async function DeleteRecord(path, redirect, options = {}) {
 
 async function FetchDataFromResponse(path, options = {}) {
   try {
+    // Cuando ( error: <!Doctype html> ) { Es posible que no este registrada la ruta que se envio a la función }
     const res = await SecureFetching(path, options)
     if (!res.ok) throw new Error(`Error ${res.status}`)
     const data = await res.json()

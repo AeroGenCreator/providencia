@@ -15,4 +15,5 @@ func Assambler(mux *http.ServeMux, db *sql.DB) {
 	handler := api.New(servicing)
 
 	mux.Handle("/cuotas", utils.AuthMiddleware(http.HandlerFunc(handler.CallListCuotasIMSS)))
+	mux.Handle("/cuotas/slice", utils.AuthMiddleware(http.HandlerFunc(handler.CallSliceCuotasIMSS)))
 }

@@ -1021,7 +1021,7 @@
                                                     &lt;td x-text=""&gt&lt;/td&gt
                                                 &lt;/tr&gt
                                             &lt;/template&gt
-                                            &lt;tr x-show="(records === [])"&gt
+                                            &lt;tr x-show="(records && records.length === 0)"&gt
                                                 &lt;td colspan="8"&gt...&lt;/td&gt
                                             &lt;/tr&gt
                                         &lt;/tbody&gt
@@ -1243,8 +1243,7 @@
                                 },
 
                                 block() {
-                                    if (!this.isSearch) { return (this.page === 1 || this.loading) };
-                                    if (this.isSearch) { return (this.pageSearch === 1 || this.loading) };
+                                  if (this.isSearch) { return (this.pageSearch === 1 || this.loading); } else { return (this.page === 1 || this.loading); }
                                 },
 
                                 async previousPage() {
