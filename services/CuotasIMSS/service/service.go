@@ -70,8 +70,12 @@ func (s service) Many2OneCuotasIMSS() (*types.Many2One, error) {
 		return nil, err
 	}
 	data := types.Many2One{
-		Employee: employees,
-		Months:   MesesM2O[:],
+		Employee:        employees,
+		Months:          MesesM2O[:],
+		UMA:             editables["actualUMA"].Valor,
+		UMAFecha:        editables["actualUMA"].Fecha,
+		MinPayment:      editables["salarioMinimo"].Valor,
+		MinPaymentFecha: editables["salarioMinimo"].Fecha,
 	}
 	return &data, nil
 }

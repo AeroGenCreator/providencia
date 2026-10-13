@@ -2,6 +2,7 @@ package router
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"saavedra/services/CuotasIMSS/api"
 	"saavedra/services/CuotasIMSS/service"
@@ -10,6 +11,28 @@ import (
 )
 
 func Assambler(mux *http.ServeMux, db *sql.DB) {
+
+	if err := service.CargarEditables(); err != nil {
+		fmt.Printf("Advertencia de carga...")
+		fmt.Println(err.Error())
+	}
+	if err := service.CargarFactores(); err != nil {
+		fmt.Printf("Advertencia de carga...")
+		fmt.Println(err.Error())
+	}
+	if err := service.CargarDiasVacaciones(); err != nil {
+		fmt.Printf("Advertencia de carga...")
+		fmt.Println(err.Error())
+	}
+	if err := service.CargarCesantiaVejez(); err != nil {
+		fmt.Printf("Advertencia de carga...")
+		fmt.Println(err.Error())
+	}
+	if err := service.CargarPrimaRiesgo(); err != nil {
+		fmt.Printf("Advertencia de carga...")
+		fmt.Println(err.Error())
+	}
+
 	storing := store.New(db)
 	servicing := service.New(storing)
 	handler := api.New(servicing)

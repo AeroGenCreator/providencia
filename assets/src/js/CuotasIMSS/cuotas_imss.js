@@ -95,6 +95,10 @@ document.addEventListener('alpine:init', () => {
     incapacidades: 0,
     faltas: 0,
     esBimestre: false,
+    uma: 0,
+    minPayment: 0,
+    umaFecha: "Fecha de UMA",
+    minPaymentFecha: "Fecha de Salario Minimo",
 
     async init() { await this.loadMany2One() },
 
@@ -106,7 +110,9 @@ document.addEventListener('alpine:init', () => {
     async loadMany2One() {
       try {
         const data = await FetchDataFromResponse("/cuotas/many2one");
-        this.employee = data.employee; this.months = data.months
+        this.employee = data.employee; this.months = data.months; this.uma = data.uma; this.minPayment = data.minPayment;
+        this.umaFecha = this.umaFecha + ` ${data.umaFecha}`
+        this.minPaymentFecha = this.minPaymentFecha + ` ${data.minPaymentFecha}`
       } catch (error) { throw error } finally { this.loading = false }
     },
 
@@ -114,7 +120,11 @@ document.addEventListener('alpine:init', () => {
       for (const [key, val] of Object.entries(MonthsObject)) {
         if (val === this.selectedMonth) {
           const integer = ValidateIntegerStringToInteger(key);
-          if (integer % 2 === 0) { this.esBimestre = true; return } else { this.esBimestre = false; return }
+          if (integer % 2 === 0) {
+            this.esBimestre = true; return
+          } else {
+            this.esBimestre = false; this.mesAnteriorIncapacidades = 0; this.incapacidades = 0; return
+          }
         }
       }
     },
@@ -123,6 +133,35 @@ document.addEventListener('alpine:init', () => {
       const integers = ValidateIntegerStringToInteger(str)
       if (isNaN(integers)) { return '' }
       return String(integers).substring(0, 4);
+    },
+
+    validarDiasConMesAnterior(str) {
+      if (this.selectedMonth !== "") {
+        const int = ValidateIntegerStringToInteger(str); if (isNaN(int)) { return 0; }
+        let index = null;
+        MonthsOrder.forEach((item, inx) => { if (item === this.selectedMonth) { index = inx } });
+        if (index === null) { return null; }
+        var prevMonth = "";
+        if (index === 0) { prevMonth = 11; } else { prevMonth = MonthsOrder[index - 1]; }
+        const mesDias = MonthsDays[prevMonth]
+        if (int > mesDias) { return mesDias; } else { return int; }
+      } else { return null; }
+    },
+
+    validarDiasConMes(str) {
+      if (this.selectedMonth !== "") {
+        const int = ValidateIntegerStringToInteger(str); if (isNaN(int)) { return 0; }
+        const mesDias = MonthsDays[this.selectedMonth]
+        if (int > mesDias) { return mesDias; } else { return int}
+      } else { return null; }
+    },
+
+    limitarFaltas(str) {
+      if (this.selectedMonth !== "") {
+        const int = ValidateIntegerStringToInteger(str); if (isNaN(int)) { return 0; }
+        const maximo = 8
+        if (int > maximo) { return maximo; } else { return int}
+      } else { return null; }
     },
 
     requiredCreate() { },

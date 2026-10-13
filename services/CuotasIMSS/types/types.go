@@ -39,8 +39,12 @@ type M2OEmployee struct {
 
 // Slcie Many2One Empaquetado
 type Many2One struct {
-	Employee []*M2OEmployee `json:"employee"`
-	Months   []string       `json:"months"`
+	Employee        []*M2OEmployee `json:"employee"`
+	Months          []string       `json:"months"`
+	UMA             float64        `json:"uma"`
+	UMAFecha        int            `json:"umaFecha"`
+	MinPayment      float64        `json:"minPayment"`
+	MinPaymentFecha int            `json:"minPaymentFecha"`
 }
 
 // Tipo Empleado Record Completo

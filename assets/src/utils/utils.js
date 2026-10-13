@@ -20,9 +20,18 @@ const MonthsObject = {
   "8": "Agosto",
   "9": "Septiembre",
   "10": "Octubre",
-  "11": "Nomviembre",
+  "11": "Noviembre",
   "12": "Diciembre",
 };
+
+const MonthsDays = {
+  "Enero": 31, "Febrero": 28, "Marzo": 31, "Abril": 30, "Mayo": 31,
+  "Junio": 30, "Julio": 31, "Agosto": 31, "Septiembre": 30, "Octubre": 31, "Noviembre": 30, "Diciembre": 31
+};
+
+const MonthsOrder = [
+  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
 
 // === Funciones Simples ===
 
