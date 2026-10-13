@@ -90,7 +90,7 @@ document.addEventListener('alpine:init', () => {
     months: [],
     selectedEmployee: "",
     selectedMonth: "",
-    selectedYear: "",
+    selectedYear: 0,
     mesAnteriorIncapacidades: 0,
     incapacidades: 0,
     faltas: 0,
@@ -122,16 +122,14 @@ document.addEventListener('alpine:init', () => {
           const integer = ValidateIntegerStringToInteger(key);
           if (integer % 2 === 0) {
             this.esBimestre = true; return
-          } else {
-            this.esBimestre = false; this.mesAnteriorIncapacidades = 0; this.incapacidades = 0; return
-          }
+          } else { this.esBimestre = false; this.mesAnteriorIncapacidades = 0; this.incapacidades = 0; return }
         }
       }
     },
 
     integer(str) {
       const integers = ValidateIntegerStringToInteger(str)
-      if (isNaN(integers)) { return '' }
+      if (isNaN(integers)) { return 0 }
       return String(integers).substring(0, 4);
     },
 
@@ -165,7 +163,21 @@ document.addEventListener('alpine:init', () => {
     },
 
     requiredCreate() { },
-    requiredCalculate() { },
+    requiredCalculate() { return (this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0); },
+
+    getEmployeeId() {
+      if (this.employee) {
+        this.employee.forEach(r => { if (r.name === this.selectedEmployee) { return r.id } })
+      }
+    },
+
+    // Agregar el async
+    calcularCuota() {
+      try {
+        debugger;
+        this.loading = true; const vals = JSON.stringify({empId: this.getEmployeeId()})
+      } catch (error) { throw error } finally { this.loading = false; }
+    }
 
   }))
 })
