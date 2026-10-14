@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"saavedra/services/CuotasIMSS/service"
+	"saavedra/services/CuotasIMSS/types"
 	"saavedra/utils"
 )
 
@@ -118,9 +119,35 @@ func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Reques
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+	case http.MethodPut:
+		party := r.Context().Value(utils.UserParty).(string)
+		valid, err := utils.AddPermissions(2, party)
+		if err != nil {
+			log.Printf("Message (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if !valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		var peticion types.Peticion
+		if err := json.NewDecoder(r.Body).Decode(&peticion); err != nil {
+			log.Printf("Error /cuotas/new - DecodingBody - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		respuestaCuotas, err := e.service.CalcularCuotas(&peticion)
+		if err != nil {
+			log.Printf("Error /cuotas/new - Calculating - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(respuestaCuotas)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
-		return
 	}
 }
 
@@ -137,9 +164,7 @@ func (e EndpointHandler) CallCuotasIMSSMany2One(w http.ResponseWriter, r *http.R
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(data)
-		return
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
-		return
 	}
 }

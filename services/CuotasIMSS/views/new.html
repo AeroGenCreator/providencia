@@ -154,8 +154,8 @@
                         class="input is-small is-warning"
                         type="text"
                         placeholder="Ingresar incapacidades..."
-                        x-model="mesAnteriorIncapacidades"
-                        @blur="mesAnteriorIncapacidades = validarDiasConMesAnterior($event.target.value)"
+                        x-model="prevIncapacidad"
+                        @blur="prevIncapacidad = validarDiasConMesAnterior($event.target.value)"
                     >
                     <span class="icon is-small is-left"><i class="fa-solid fa-bed"></i></span>
                 </div>
@@ -168,8 +168,8 @@
                         class="input is-small is-danger"
                         type="text"
                         placeholder="Ingresar incapacidades..."
-                        x-model="incapacidades"
-                        @blur="incapacidades = validarDiasConMes($event.target.value)"
+                        x-model="incapacidad"
+                        @blur="incapacidad = validarDiasConMes($event.target.value)"
                     >
                     <span class="icon is-small is-left"><i class="fa-solid fa-bed"></i></span>
                 </div>

@@ -61,9 +61,16 @@ type Employee struct {
 
 // Petición De Cálculo Metadata
 type Peticion struct {
-	Id   int    `json:""`
-	Mes  string `json:""`
-	Year string `json:""`
+	EmpId           int    `json:"empId"`
+	Month           string `json:"month"`
+	Year            string `json:"year"`
+	PrevIncapacidad int    `json:"prevIncapacidad"`
+	Incapacidad     int    `json:"incapacidad"`
+	Faltas          int    `json:"faltas"`
+}
+
+type ParsedDate struct {
+	Antiguedad int `json:"antiguedad"`
 }
 
 // Respuesta a cálculo de cuotas (Siguientes 3 Bloques)

@@ -91,14 +91,15 @@ document.addEventListener('alpine:init', () => {
     selectedEmployee: "",
     selectedMonth: "",
     selectedYear: 0,
-    mesAnteriorIncapacidades: 0,
-    incapacidades: 0,
+    prevIncapacidad: 0,
+    incapacidad: 0,
     faltas: 0,
     esBimestre: false,
     uma: 0,
     minPayment: 0,
     umaFecha: "Fecha de UMA",
     minPaymentFecha: "Fecha de Salario Minimo",
+    empId: null,
 
     async init() { await this.loadMany2One() },
 
@@ -122,7 +123,7 @@ document.addEventListener('alpine:init', () => {
           const integer = ValidateIntegerStringToInteger(key);
           if (integer % 2 === 0) {
             this.esBimestre = true; return
-          } else { this.esBimestre = false; this.mesAnteriorIncapacidades = 0; this.incapacidades = 0; return }
+          } else { this.esBimestre = false; this.prevIncapacidad = 0; this.incapacidad = 0; return }
         }
       }
     },
@@ -162,22 +163,37 @@ document.addEventListener('alpine:init', () => {
       } else { return null; }
     },
 
-    requiredCreate() { },
+    requiredCreate() { return (this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0); },
     requiredCalculate() { return (this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0); },
 
     getEmployeeId() {
       if (this.employee) {
-        this.employee.forEach(r => { if (r.name === this.selectedEmployee) { return r.id } })
+        this.employee.forEach(r => {
+          if (r.name.toLowerCase() === this.selectedEmployee.toLowerCase()) {
+            const intId = ValidateIntegerStringToInteger(r.id); if (intId.isNaN) {
+              window.alert("No se cargo el id empleado correctamente"); return;
+            } else { this.empId = intId; return }
+          }
+        })
       }
     },
 
-    // Agregar el async
-    calcularCuota() {
+    async calcularCuota() {
       try {
-        debugger;
-        this.loading = true; const vals = JSON.stringify({empId: this.getEmployeeId()})
-      } catch (error) { throw error } finally { this.loading = false; }
-    }
+        this.getEmployeeId(); if (this.empId === null) { window.alert("No se cargo el empleado correctamente"); return; }
+        this.loading = true; const vals = JSON.stringify({
+          empId: this.empId,
+          month: this.selectedMonth,
+          year: this.selectedYear,
+          prevIncapacidad: this.prevIncapacidad,
+          incapacidad: this.incapacidad,
+          faltas: this.faltas,
+        })
+        console.log(vals)
+        const data = await FetchDataFromResponse("/cuotas/new", { method: "PUT", body: vals })
+        console.log(data)
+      } catch (error) { throw error } finally { this.loading = false; this.empId = null }
+    },
 
   }))
 })
