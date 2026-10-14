@@ -8,10 +8,18 @@ import (
 
 // Parse (String Fecha) (Objeto Fecha) retorna: Diferencia entre fecha de contratación y actualidad.
 func obtenerAntiguedad(fechaContratacion string) (*types.ParsedDate, error) {
-	fechaObj, _ := time.Parse("2026-01-30", fechaContratacion)
+	fechaObj, _ := time.Parse("2006-01-02", fechaContratacion)
 	today := time.Now()
-	diferencia := today.Year() - fechaObj.Year()
-	return &types.ParsedDate{Antiguedad: diferencia}, nil
+	diff := today.Year() - fechaObj.Year()
+	// Si mes de contratación menor o dia de contratacion menor a la fecha de hoy restar en 1 a la differencia.
+	if today.Month() < fechaObj.Month() || (today.Month() == fechaObj.Month() && today.Day() < fechaObj.Day()) {
+		diff--
+	}
+	// Si la diferencia es menor a 0, retornar una antiguedad de 0.
+	if diff < 0 {
+		diff = 0
+	}
+	return &types.ParsedDate{Antiguedad: diff}, nil
 }
 
 func esBimestre(mes string) bool {
@@ -53,8 +61,12 @@ func (s service) CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalcu
 		return nil, err
 	}
 	antiguedad, err := obtenerAntiguedad(employee.HireDate)
+	diasVacaciones := calcularDiasVacaciones(antiguedad.Antiguedad)
+	factorIntegracion := calcularFactorIntegracion(float64(diasVacaciones))
 	fmt.Println(employee)
-	fmt.Println(antiguedad.Antiguedad)
+	fmt.Println(antiguedad)
+	fmt.Println(diasVacaciones)
+	fmt.Println(factorIntegracion)
 	respuestaCuotas := types.RespuestaCalculoCuotas{}
 	return &respuestaCuotas, nil
 }
