@@ -10,7 +10,7 @@ var cesantiaVejez map[string][]*types.CesantiaVejez
 var diasVacaciones []*types.DiasVacaciones
 var editables map[string]*types.Editables
 var factores map[string]float64
-var primaRiesgo map[string]float64
+var primaRiesgo []*types.Riesgo
 
 func CargarCesantiaVejez() error {
 	datosBytes, err := os.ReadFile("services/CuotasIMSS/config/cesantia_vejez.json")

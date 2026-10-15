@@ -76,6 +76,7 @@ func (s service) Many2OneCuotasIMSS() (*types.Many2One, error) {
 		UMAFecha:        editables["actualUMA"].Fecha,
 		MinPayment:      editables["salarioMinimo"].Valor,
 		MinPaymentFecha: editables["salarioMinimo"].Fecha,
+		Riesgos:         primaRiesgo,
 	}
 	return &data, nil
 }

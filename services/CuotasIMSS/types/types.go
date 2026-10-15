@@ -25,6 +25,11 @@ type Editables struct {
 	Valor float64 `json:"valor"`
 }
 
+type Riesgo struct {
+	Clase string  `json:"clase"`
+	Value float64 `json:"value"`
+}
+
 // Tipo Meses Metadata
 type MesesMetadata struct {
 	Dias  int `json:"dias"`
@@ -45,6 +50,7 @@ type Many2One struct {
 	UMAFecha        int            `json:"umaFecha"`
 	MinPayment      float64        `json:"minPayment"`
 	MinPaymentFecha int            `json:"minPaymentFecha"`
+	Riesgos         []*Riesgo      `json:"riesgos"`
 }
 
 // Tipo Empleado Record Completo
@@ -61,12 +67,13 @@ type Employee struct {
 
 // Petición De Cálculo Metadata
 type Peticion struct {
-	EmpId           int    `json:"empId"`
-	Month           string `json:"month"`
-	Year            string `json:"year"`
-	PrevIncapacidad int    `json:"prevIncapacidad"`
-	Incapacidad     int    `json:"incapacidad"`
-	Faltas          int    `json:"faltas"`
+	EmpId           int     `json:"empId"`
+	Month           string  `json:"month"`
+	Year            string  `json:"year"`
+	PrevIncapacidad int     `json:"prevIncapacidad"`
+	Incapacidad     int     `json:"incapacidad"`
+	Faltas          int     `json:"faltas"`
+	Riesgo          float64 `json:"riesgo"`
 }
 
 type ParsedDate struct {

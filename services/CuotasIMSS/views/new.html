@@ -78,7 +78,7 @@
         </div>
         <div class="columns is-multiline">
             <!-- PRIMERA LINEA DE INPUTS -->
-            <div class="column is-3">
+            <div class="column is-2">
                 <label class="label is-small">Empleado</label>
                 <div class="control has-icons-left">
                     <input class="input is-small" list="list-employee" id="input-employee" placeholder="Buscar empleado..." x-model="selectedEmployee">
@@ -90,7 +90,7 @@
                     </datalist>
                 </div>
             </div>
-            <div class="column is-3">
+            <div class="column is-2">
                 <label class="label is-small">Mes</label>
                 <div class="control has-icons-left">
                     <input
@@ -120,6 +120,25 @@
                         @blur="selectedYear = integer($event.target.value)"
                     >
                     <span class="icon is-small is-left"><i class="fa-solid fa-2"></i></span>
+                </div>
+            </div>
+            <div class="column is-2">
+                <label class="label is-small">Prima Riesgo</label>
+                <div class="control has-icons-left">
+                    <input
+                        class="input is-small"
+                        list="list-riesgo"
+                        id="input-riesgo"
+                        placeholder="Seleccionar prima de riesgo ..."
+                        x-model="riesgo"
+                        @blur="riesgo = float($event.target.value)"
+                    >
+                    <span class="icon is-small is-left"><i class="fa-solid fa-shield"></i></span>
+                    <datalist id="list-riesgo">
+                        <template x-for="r in riesgos">
+                            <option :value="r.value" x-text="r.value"></option>
+                        </template>
+                    </datalist>
                 </div>
             </div>
             <div class="column is-2">

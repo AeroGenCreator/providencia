@@ -88,6 +88,7 @@ document.addEventListener('alpine:init', () => {
     loading: false,
     employee: [],
     months: [],
+    riesgos: [],
     selectedEmployee: "",
     selectedMonth: "",
     selectedYear: 0,
@@ -97,6 +98,7 @@ document.addEventListener('alpine:init', () => {
     esBimestre: false,
     uma: 0,
     minPayment: 0,
+    riesgo: null,
     umaFecha: "Fecha de UMA",
     minPaymentFecha: "Fecha de Salario Minimo",
     empId: null,
@@ -114,6 +116,7 @@ document.addEventListener('alpine:init', () => {
         this.employee = data.employee; this.months = data.months; this.uma = data.uma; this.minPayment = data.minPayment;
         this.umaFecha = this.umaFecha + ` ${data.umaFecha}`
         this.minPaymentFecha = this.minPaymentFecha + ` ${data.minPaymentFecha}`
+        this.riesgos = data.riesgos
       } catch (error) { throw error } finally { this.loading = false }
     },
 
@@ -132,6 +135,11 @@ document.addEventListener('alpine:init', () => {
       const integers = ValidateIntegerStringToInteger(str)
       if (isNaN(integers)) { return 0 }
       return String(integers).substring(0, 4);
+    },
+
+    float(str) {
+      const float = ValidateFloatStringToFloat(str)
+      if (float.isNaN) { return 0 } else return float
     },
 
     validarDiasConMesAnterior(str) {
@@ -188,6 +196,7 @@ document.addEventListener('alpine:init', () => {
           prevIncapacidad: this.prevIncapacidad,
           incapacidad: this.incapacidad,
           faltas: this.faltas,
+          riesgo: this.riesgo
         })
         console.log(vals)
         const data = await FetchDataFromResponse("/cuotas/new", { method: "PUT", body: vals })

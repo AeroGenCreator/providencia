@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"saavedra/services/CuotasIMSS/types"
 	"time"
 )
@@ -55,6 +54,22 @@ func calcularFactorIntegracion(diasVacaciones float64) float64 {
 	return factorIntegracion
 }
 
+func calcularSBC(payment, factorIntegracion float64) float64 {
+	return payment * factorIntegracion
+}
+
+func motorCuotasIMSS(sbc, riesgo float64, bimestre bool) (*types.Obrero, *types.Patron, error) {
+	// Calculos Obrero
+	obrero := types.Obrero{}
+
+	// Calculos Patron
+	patron := types.Patron{}
+
+	// Calculos Bimestre
+
+	return &obrero, &patron, nil
+}
+
 func (s service) CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalculoCuotas, error) {
 	employee, err := s.store.ReadEmployee(peticion.EmpId)
 	if err != nil {
@@ -63,10 +78,16 @@ func (s service) CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalcu
 	antiguedad, err := obtenerAntiguedad(employee.HireDate)
 	diasVacaciones := calcularDiasVacaciones(antiguedad.Antiguedad)
 	factorIntegracion := calcularFactorIntegracion(float64(diasVacaciones))
-	fmt.Println(employee)
-	fmt.Println(antiguedad)
-	fmt.Println(diasVacaciones)
-	fmt.Println(factorIntegracion)
-	respuestaCuotas := types.RespuestaCalculoCuotas{}
-	return &respuestaCuotas, nil
+	sbc := calcularSBC(employee.DailyPayment, factorIntegracion)
+	bimestre := esBimestre(peticion.Month)
+	obrero, patron, err := motorCuotasIMSS(sbc, peticion.Riesgo, bimestre)
+	if err != nil {
+		return nil, err
+	}
+	cuotas := types.RespuestaCalculoCuotas{
+		Employee: employee,
+		Obrero:   obrero,
+		Patron:   patron,
+	}
+	return &cuotas, nil
 }
