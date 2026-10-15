@@ -103,9 +103,11 @@ type Obrero struct {
 }
 
 type RespuestaCalculoCuotas struct {
-	Employee *Employee `json:"employee"`
-	Obrero   *Obrero   `json:"obrero"`
-	Patron   *Patron   `json:"patron"`
+	Employee        *Employee      `json:"employee"`
+	Obrero          *Obrero        `json:"obrero"`
+	Patron          *Patron        `json:"patron"`
+	PrevIncapacidad map[string]int `json:"prevIncapacidad"`
+	Incapacidad     map[string]int `json:"incapacidad"`
 }
 
 // Registro CuotasIMSS

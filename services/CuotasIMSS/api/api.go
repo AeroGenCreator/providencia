@@ -137,7 +137,7 @@ func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Reques
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		respuestaCuotas, err := e.service.CalcularCuotas(&peticion)
+		cuotas, err := e.service.CalcularCuotas(&peticion)
 		if err != nil {
 			log.Printf("Error /cuotas/new - Calculating - (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -145,7 +145,7 @@ func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Reques
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(respuestaCuotas)
+		json.NewEncoder(w).Encode(cuotas)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}

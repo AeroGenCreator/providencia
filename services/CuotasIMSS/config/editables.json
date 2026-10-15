@@ -2,5 +2,7 @@
   "diasAguinaldo": {"fecha": 0,"valor":15.00},
 	"actualUMA": {"fecha": 2026, "valor": 113.14},
   "primaVacacional": {"fecha": 0, "valor":0.25},
+  "toparSueldo": {"fecha": 2026, "valor": 25.0},
+  "enfYmatFactorDeterminante": {"fecha": 2026, "valor": 3.00},
   "salarioMinimo": {"fecha": 2026, "valor": 315.04}
 }

@@ -55,17 +55,96 @@ func calcularFactorIntegracion(diasVacaciones float64) float64 {
 }
 
 func calcularSBC(payment, factorIntegracion float64) float64 {
-	return payment * factorIntegracion
+	// Tope de sueldo
+	sueldoTopado := editables["actualUMA"].Valor * editables["toparSueldo"].Valor
+	// Cálculo del SBC
+	sbc := payment * factorIntegracion
+	if payment > sueldoTopado {
+		sbc = sueldoTopado
+	}
+	return sbc
 }
 
-func motorCuotasIMSS(sbc, riesgo float64, bimestre bool) (*types.Obrero, *types.Patron, error) {
+func calcularDiasPorCotizar(mes string, faltas int) int {
+	diasMes := Meses[mes].Dias
+	diasPorCotizar := diasMes - faltas
+	return diasPorCotizar
+}
+
+func calculoCesantiaYVejezPatron(year string, sbc float64, diasPorCotizar int) float64 {
+	// Calcula CesantiaVejez depende de buscar en una tabla de rangos de veces UMA del SBC.
+	vecesUMA := (sbc / editables["actualUMA"].Valor)
+	rangos := cesantiaVejez[year]
+	// Para este proposito use BinarySearch (Ya que el orden es natural)
+	// Indice 0 y el ultimo del arreglo.
+	LimAlto := len(rangos) - 1
+	limBajo := 0
+	// Siempre que el indice menor siga por debajo del mayor (se itera)
+	for limBajo <= LimAlto {
+		// Se calcula la mitad del arreglo en cada iteración.
+		mid := ((limBajo + LimAlto) / 2)
+		record := rangos[mid]
+		// Si las veces uma esta dentro del rango se regresa el cálculo
+		if record.MinLim <= vecesUMA && vecesUMA <= record.MaxLim {
+			return (record.Factor * sbc * float64(diasPorCotizar))
+			// Si las veces UMA es mayor al limite superior, se busca en la mitad alta del arreglo.
+		} else if vecesUMA > record.MaxLim {
+			limBajo = mid + 1
+			// Si las veces UMA es menor al limite inferior, se busca en la mitad baja del arreglo.
+		} else {
+			LimAlto = mid - 1
+		}
+	}
+	return 0
+}
+
+func motorCuotasIMSS(
+	year string, sbc, riesgo float64, bimestre bool, diasPorCotizar, diasPorCotizarMesAnterior int,
+) (*types.Obrero, *types.Patron, error) {
+
+	// Enf. Mat. en Dinero (Calculo especial sobre el excedente en 2026 (3 veces UMA))
+	determinante := editables["enfYmatFactorDeterminante"].Valor * editables["actualUMA"].Valor
+	diferencia := sbc - determinante
+	enfMatObrero := 0.0
+	enfMatPatron := 0.0
+	if diferencia > 0 {
+		enfMatObrero = (diferencia * factores["enfermedadMaternidadAdicionalObrero"] * float64(diasPorCotizar))
+		enfMatPatron = (diferencia * factores["enfermedadMaternidadAdicionalPatron"] * float64(diasPorCotizar))
+	}
+
+	// Cálculos Bimestrales
+	retiro := 0.0
+	aportacionInfonavit := 0.0
+	if bimestre {
+		retiro = (factores["retiro"] * sbc * float64(diasPorCotizar+diasPorCotizarMesAnterior))
+		aportacionInfonavit = (factores["aportacionInfonavit"] * sbc * float64(diasPorCotizar+diasPorCotizarMesAnterior))
+	}
+
+	// Calcular Cesantia Y Vejez (Patron)
+	cesantiaYVejezPatron := calculoCesantiaYVejezPatron(year, sbc, diasPorCotizar)
+
 	// Calculos Obrero
-	obrero := types.Obrero{}
+	obrero := types.Obrero{
+		EnfermedadMaternidadAdicionalObrero: enfMatObrero,
+		PrestacionesDineroObrero:            (factores["prestacionesDineroObrero"] * sbc * float64(diasPorCotizar)),
+		GastosMedicosPensionadosObrero:      (factores["gastosMedicosPensionadosObrero"] * sbc * float64(diasPorCotizar)),
+		InvalidezYVidaObrero:                (factores["invalidezYVidaObrero"] * sbc * float64(diasPorCotizar)),
+		CesantiaYVejezObrero:                (factores["cesantiaYVejezObrero"] * sbc * float64(diasPorCotizar)),
+	}
 
 	// Calculos Patron
-	patron := types.Patron{}
-
-	// Calculos Bimestre
+	patron := types.Patron{
+		RiesgoTrabajoPrima:             (riesgo * sbc * float64(diasPorCotizar)),
+		EnfermedadMaternidadCuotaFija:  (editables["actualUMA"].Valor * float64(diasPorCotizar) * factores["enfermedadMaternidadCuotaFija"]),
+		EnfermedadMaternidadAdicional:  enfMatPatron,
+		PrestacionesDineroPatron:       (factores["prestacionesDineroPatron"] * sbc * float64(diasPorCotizar)),
+		GastosMedicosPensionadosPatron: (factores["gastosMedicosPensionadosPatron"] * sbc * float64(diasPorCotizar)),
+		InvalidezYVida:                 (factores["invalidezYVidaPatron"] * sbc * float64(diasPorCotizar)),
+		Guarderias:                     (factores["guarderias"] * sbc * float64(diasPorCotizar)),
+		Retiro:                         retiro,
+		AportacionInfonavit:            aportacionInfonavit,
+		CesantiaYVejezPatron:           cesantiaYVejezPatron,
+	}
 
 	return &obrero, &patron, nil
 }
@@ -80,14 +159,21 @@ func (s service) CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalcu
 	factorIntegracion := calcularFactorIntegracion(float64(diasVacaciones))
 	sbc := calcularSBC(employee.DailyPayment, factorIntegracion)
 	bimestre := esBimestre(peticion.Month)
-	obrero, patron, err := motorCuotasIMSS(sbc, peticion.Riesgo, bimestre)
+	diasPorCotizaMesAnterior := 0
+	if bimestre {
+		diasPorCotizaMesAnterior = calcularDiasPorCotizar(peticion.Month, 0)
+	}
+	diasPorCotizar := calcularDiasPorCotizar(peticion.Month, peticion.Faltas)
+	obrero, patron, err := motorCuotasIMSS(peticion.Year, sbc, peticion.Riesgo, bimestre, diasPorCotizar, diasPorCotizaMesAnterior)
 	if err != nil {
 		return nil, err
 	}
 	cuotas := types.RespuestaCalculoCuotas{
-		Employee: employee,
-		Obrero:   obrero,
-		Patron:   patron,
+		Employee:        employee,
+		Obrero:          obrero,
+		Patron:          patron,
+		PrevIncapacidad: map[string]int{"ramo1": peticion.PrevIncapacidad},
+		Incapacidad:     map[string]int{"ramo2": peticion.Incapacidad},
 	}
 	return &cuotas, nil
 }
