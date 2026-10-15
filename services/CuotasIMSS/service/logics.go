@@ -169,11 +169,14 @@ func (s service) CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalcu
 		return nil, err
 	}
 	cuotas := types.RespuestaCalculoCuotas{
-		Employee:        employee,
-		Obrero:          obrero,
-		Patron:          patron,
-		PrevIncapacidad: map[string]int{"ramo1": peticion.PrevIncapacidad},
-		Incapacidad:     map[string]int{"ramo2": peticion.Incapacidad},
+		Employee:          employee,
+		Obrero:            obrero,
+		Patron:            patron,
+		Antiguedad:        antiguedad.Antiguedad,
+		FactorIntegracion: factorIntegracion,
+		SBC:               sbc,
+		PrevIncapacidad:   map[string]int{"ramo1": peticion.PrevIncapacidad},
+		Incapacidad:       map[string]int{"ramo2": peticion.Incapacidad},
 	}
 	return &cuotas, nil
 }

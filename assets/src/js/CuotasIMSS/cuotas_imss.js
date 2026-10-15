@@ -98,10 +98,17 @@ document.addEventListener('alpine:init', () => {
     esBimestre: false,
     uma: 0,
     minPayment: 0,
-    riesgo: null,
+    riesgo: 0,
     umaFecha: "Fecha de UMA",
     minPaymentFecha: "Fecha de Salario Minimo",
     empId: null,
+
+    antiguedad: 0,
+    factorIntegracion: 0,
+    sbc: 0,
+    dataEmployee: [],
+    dataObrero: [],
+    dataPatron: [],
 
     async init() { await this.loadMany2One() },
 
@@ -142,6 +149,10 @@ document.addEventListener('alpine:init', () => {
       if (float.isNaN) { return 0 } else return float
     },
 
+    currency(item) {
+      return FormatterMXN.format(item);
+    },
+
     validarDiasConMesAnterior(str) {
       if (this.selectedMonth !== "") {
         const int = ValidateIntegerStringToInteger(str); if (isNaN(int)) { return 0; }
@@ -171,8 +182,8 @@ document.addEventListener('alpine:init', () => {
       } else { return null; }
     },
 
-    requiredCreate() { return (this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0); },
-    requiredCalculate() { return (this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0); },
+    requiredCreate() { return (this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0 || this.riesgo == 0); },
+    requiredCalculate() { return (this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0 || this.riesgo == 0); },
 
     getEmployeeId() {
       if (this.employee) {
@@ -198,9 +209,13 @@ document.addEventListener('alpine:init', () => {
           faltas: this.faltas,
           riesgo: this.riesgo
         })
-        console.log(vals)
         const data = await FetchDataFromResponse("/cuotas/new", { method: "PUT", body: vals })
-        console.log(data)
+        data.employee.dailyPayment = this.currency(data.employee.dailyPayment)
+        data.sbc = this.currency(data.sbc)
+        data.obrero.enfermedadMaternidadAdicionalObrero = this.currency(data.obrero.enfermedadMaternidadAdicionalObrero)
+        data.patron.riesgoTrabajoPrima = this.currency(data.patron.riesgoTrabajoPrima)
+        this.dataEmployee = [data.employee]; this.dataObrero = [data.obrero]; this.dataPatron = [data.patron];
+        this.factorIntegracion = data.factorIntegracion; this.sbc = data.sbc; this.antiguedad = data.antiguedad
       } catch (error) { throw error } finally { this.loading = false; this.empId = null }
     },
 

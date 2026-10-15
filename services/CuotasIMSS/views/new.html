@@ -209,20 +209,48 @@
         </div>
         <div class="columns is-multiline">
             <div class="column is-12">
-
+                <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Sueldo Diario</th>
+                        <th>Antiguedad Años</th>
+                        <th>Factor Integracion</th>
+                        <th>SBC</th>
+                    </thead>
+                    <tbody>
+                        <template x-for="r in dataEmployee" :key="r.id">
+                            <tr>
+                                <td x-text="r.id"></td>
+                                <td x-text="r.name"></td>
+                                <td x-text="r.dailyPayment"></td>
+                                <td x-text="antiguedad"></td>
+                                <td x-text="factorIntegracion"></td>
+                                <td x-text="sbc"></td>
+                            </tr>
+                        </template>
+                        <tr x-show="(dataEmployee && dataEmployee.length === 0)">
+                            <td colspan="6">...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="column is-6">
                 <table class="table is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
                         <th>Obrero</th>
-                        <th>Cantidad</th>
+                        <th>Cuotas</th>
                     </thead>
                     <tbody>
-                        <template>
+                        <template x-for="r in dataObrero">
                             <tr>
-                                <td>...</td>
+                                <td>Enfermedad Maternidad Adicional Obrero</td>
+                                <td x-text="r.enfermedadMaternidadAdicionalObrero"></td>
                             </tr>
                         </template>
+                        <tr x-show="(dataObrero && dataObrero.length === 0)">
+                            <td colspan="2">...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -230,14 +258,15 @@
                 <table class="table is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
                         <th>Patronal</th>
-                        <th>Cantidad</th>
+                        <th>Cuotas</th>
                     </thead>
                     <tbody>
-                        <template>
-                            <tr>
-                                <td>...</td>
-                            </tr>
+                        <template x-for="r in dataPatron">
+                            <tr><td>Riesgo Trabajo Prima</td><td x-text="r.riesgoTrabajoPrima"></td></tr>
                         </template>
+                        <tr x-show="(dataPatron && dataPatron.length === 0)">
+                            <td colspan="2">...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
