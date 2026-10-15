@@ -106,9 +106,12 @@ document.addEventListener('alpine:init', () => {
     antiguedad: 0,
     factorIntegracion: 0,
     sbc: 0,
-    dataEmployee: [],
-    dataObrero: [],
-    dataPatron: [],
+    dataEmployee: {},
+    dataPatron: {},
+    dataObrero: {},
+    subtotalPatron: 0,
+    subtotalObrero: 0,
+    total: 0,
 
     async init() { await this.loadMany2One() },
 
@@ -197,6 +200,14 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    sum(obj) {
+      var total = 0
+      Object.getOwnPropertyNames(obj).forEach(function (val, idx, array) {
+        total += obj[val]
+      });
+      return total
+    },
+
     async calcularCuota() {
       try {
         this.getEmployeeId(); if (this.empId === null) { window.alert("No se cargo el empleado correctamente"); return; }
@@ -210,11 +221,40 @@ document.addEventListener('alpine:init', () => {
           riesgo: this.riesgo
         })
         const data = await FetchDataFromResponse("/cuotas/new", { method: "PUT", body: vals })
-        data.employee.dailyPayment = this.currency(data.employee.dailyPayment)
-        data.sbc = this.currency(data.sbc)
-        data.obrero.enfermedadMaternidadAdicionalObrero = this.currency(data.obrero.enfermedadMaternidadAdicionalObrero)
-        data.patron.riesgoTrabajoPrima = this.currency(data.patron.riesgoTrabajoPrima)
-        this.dataEmployee = [data.employee]; this.dataObrero = [data.obrero]; this.dataPatron = [data.patron];
+        // 0. Calcular totales y subtotales
+        this.subtotalPatron = this.sum(data.patron)
+        this.subtotalObrero = this.sum(data.obrero)
+        this.total = this.subtotalPatron + this.subtotalObrero
+
+        this.subtotalPatron = this.currency(this.subtotalPatron)
+        this.subtotalObrero = this.currency(this.subtotalObrero)
+        this.total = this.currency(this.total)
+
+        // 1. Datos principales y de empleados
+        data.employee.dailyPayment = this.currency(data.employee.dailyPayment);
+        data.sbc = this.currency(data.sbc);
+
+        // 2. Campos del Obrero
+        data.obrero.enfermedadMaternidadAdicionalObrero = this.currency(data.obrero.enfermedadMaternidadAdicionalObrero);
+        data.obrero.prestacionesDineroObrero = this.currency(data.obrero.prestacionesDineroObrero);
+        data.obrero.gastosMedicosPensionadosObrero = this.currency(data.obrero.gastosMedicosPensionadosObrero);
+        data.obrero.invalidezYVidaObrero = this.currency(data.obrero.invalidezYVidaObrero);
+        data.obrero.cesantiaYVejezObrero = this.currency(data.obrero.cesantiaYVejezObrero);
+
+        // 3. Campos del Patrón
+        data.patron.riesgoTrabajoPrima = this.currency(data.patron.riesgoTrabajoPrima);
+        data.patron.enfermedadMaternidadCuotaFija = this.currency(data.patron.enfermedadMaternidadCuotaFija);
+        data.patron.enfermedadMaternidadAdicional = this.currency(data.patron.enfermedadMaternidadAdicional);
+        data.patron.prestacionesDineroPatron = this.currency(data.patron.prestacionesDineroPatron);
+        data.patron.gastosMedicosPensionadosPatron = this.currency(data.patron.gastosMedicosPensionadosPatron);
+        data.patron.invalidezYVida = this.currency(data.patron.invalidezYVida);
+        data.patron.retiro = this.currency(data.patron.retiro);
+        data.patron.cesantiaYVejezPatron = this.currency(data.patron.cesantiaYVejezPatron);
+        data.patron.guarderias = this.currency(data.patron.guarderias);
+        data.patron.aportacionInfonavit = this.currency(data.patron.aportacionInfonavit);
+
+        // Asignar data
+        this.dataEmployee = data.employee; this.dataObrero = data.obrero; this.dataPatron = data.patron;
         this.factorIntegracion = data.factorIntegracion; this.sbc = data.sbc; this.antiguedad = data.antiguedad
       } catch (error) { throw error } finally { this.loading = false; this.empId = null }
     },

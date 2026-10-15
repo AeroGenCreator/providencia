@@ -170,7 +170,7 @@
                 <label class="label is-small">Incapacidades del Mes Anterior</label>
                 <div class="control has-icons-left">
                     <input
-                        class="input is-small is-warning"
+                        class="input is-small is-info"
                         type="text"
                         placeholder="Ingresar incapacidades..."
                         x-model="prevIncapacidad"
@@ -184,7 +184,7 @@
                 <label class="label is-small">Incapacidades Mes Actual</label>
                 <div class="control has-icons-left">
                     <input
-                        class="input is-small is-danger"
+                        class="input is-small is-info"
                         type="text"
                         placeholder="Ingresar incapacidades..."
                         x-model="incapacidad"
@@ -197,7 +197,7 @@
                 <label class="label is-small">Faltas Mes Actual</label>
                 <div class="control has-icons-left">
                     <input
-                        class="input is-small is-danger"
+                        class="input is-small is-info"
                         type="text"
                         placeholder="Ingresar faltas..."
                         x-model="faltas"
@@ -217,58 +217,140 @@
                         <th>Antiguedad Años</th>
                         <th>Factor Integracion</th>
                         <th>SBC</th>
+                        <th>Incapacidad</th>
+                        <th>Faltas</th>
                     </thead>
                     <tbody>
-                        <template x-for="r in dataEmployee" :key="r.id">
+                        <div>
                             <tr>
-                                <td x-text="r.id"></td>
-                                <td x-text="r.name"></td>
-                                <td x-text="r.dailyPayment"></td>
+                                <td x-text="dataEmployee.id"></td>
+                                <td x-text="dataEmployee.name"></td>
+                                <td x-text="dataEmployee.dailyPayment"></td>
                                 <td x-text="antiguedad"></td>
                                 <td x-text="factorIntegracion"></td>
                                 <td x-text="sbc"></td>
+                                <td x-text="incapacidad"></td>
+                                <td x-text="faltas"></td>
                             </tr>
-                        </template>
-                        <tr x-show="(dataEmployee && dataEmployee.length === 0)">
-                            <td colspan="6">...</td>
+                        </div>
+                        <tr x-show="(!dataEmployee || Object.keys(dataEmployee).length === 0)">
+                            <td colspan="8" class="has-text-centered">No se ha evaluado un empleado</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
+            <!-- Tabla Patronal -->
             <div class="column is-6">
                 <table class="table is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
-                        <th>Obrero</th>
-                        <th>Cuotas</th>
+                        <tr>
+                            <th>Patronal</th>
+                            <th>Cuotas</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <template x-for="r in dataObrero">
+                        <div>
                             <tr>
-                                <td>Enfermedad Maternidad Adicional Obrero</td>
-                                <td x-text="r.enfermedadMaternidadAdicionalObrero"></td>
+                                <td>Riesgo de Trabajo (Prima)</td>
+                                <td x-text="dataPatron.riesgoTrabajoPrima"></td>
                             </tr>
-                        </template>
-                        <tr x-show="(dataObrero && dataObrero.length === 0)">
-                            <td colspan="2">...</td>
+                            <tr>
+                                <td>Enfermedad y Maternidad (Cuota Fija)</td>
+                                <td x-text="dataPatron.enfermedadMaternidadCuotaFija"></td>
+                            </tr>
+                            <tr>
+                                <td>Enfermedad y Maternidad (Adicional Patronal)</td>
+                                <td x-text="dataPatron.enfermedadMaternidadAdicional"></td>
+                            </tr>
+                            <tr>
+                                <td>Prestaciones en Dinero (Patrón)</td>
+                                <td x-text="dataPatron.prestacionesDineroPatron"></td>
+                            </tr>
+                            <tr>
+                                <td>Gastos Médicos Pensionados (Patrón)</td>
+                                <td x-text="dataPatron.gastosMedicosPensionadosPatron"></td>
+                            </tr>
+                            <tr>
+                                <td>Invalidez y Vida (Patrón)</td>
+                                <td x-text="dataPatron.invalidezYVida"></td>
+                            </tr>
+                            <tr>
+                                <td>Retiro</td>
+                                <td x-text="dataPatron.retiro"></td>
+                            </tr>
+                            <tr>
+                                <td>Cesantía y Vejez (Patrón)</td>
+                                <td x-text="dataPatron.cesantiaYVejezPatron"></td>
+                            </tr>
+                            <tr>
+                                <td>Guarderías y Prestaciones Sociales</td>
+                                <td x-text="dataPatron.guarderias"></td>
+                            </tr>
+                            <tr>
+                                <td>Aportación Infonavit</td>
+                                <td x-text="dataPatron.aportacionInfonavit"></td>
+                            </tr>
+                        </div>
+                        <tr x-show="(Object.keys(dataPatron).length > 0)">
+                            <td><strong>Subtotal de Cuota Patronal</strong></td>
+                            <td x-text="subtotalPatron"></td>
+                        </tr>
+                        <tr x-show="(!dataPatron || Object.keys(dataPatron).length === 0)">
+                            <td colspan="2" class="has-text-centered">Sin datos de cuotas patronales</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="column is-6 ">
+
+            <!-- Tabla Obrero -->
+            <div class="column is-6">
                 <table class="table is-striped is-narrow is-hoverable is-fullwidth">
                     <thead>
-                        <th>Patronal</th>
-                        <th>Cuotas</th>
+                        <tr>
+                            <th>Obrero</th>
+                            <th>Cuotas</th>
+                        </tr>
                     </thead>
                     <tbody>
-                        <template x-for="r in dataPatron">
-                            <tr><td>Riesgo Trabajo Prima</td><td x-text="r.riesgoTrabajoPrima"></td></tr>
-                        </template>
-                        <tr x-show="(dataPatron && dataPatron.length === 0)">
-                            <td colspan="2">...</td>
+                        <div>
+                            <tr>
+                                <td>Enfermedad y Maternidad (Adicional Obrero)</td>
+                                <td x-text="dataObrero.enfermedadMaternidadAdicionalObrero"></td>
+                            </tr>
+                            <tr>
+                                <td>Prestaciones en Dinero (Obrero)</td>
+                                <td x-text="dataObrero.prestacionesDineroObrero"></td>
+                            </tr>
+                            <tr>
+                                <td>Gastos Médicos Pensionados (Obrero)</td>
+                                <td x-text="dataObrero.gastosMedicosPensionadosObrero"></td>
+                            </tr>
+                            <tr>
+                                <td>Invalidez y Vida (Obrero)</td>
+                                <td x-text="dataObrero.invalidezYVidaObrero"></td>
+                            </tr>
+                            <tr>
+                                <td>Cesantía y Vejez (Obrero)</td>
+                                <td x-text="dataObrero.cesantiaYVejezObrero"></td>
+                            </tr>
+                        </div>
+                        <tr x-show="(Object.keys(dataObrero).length > 0)">
+                            <td><strong>Subtotal de Cuota Obrero</strong></td>
+                            <td x-text="subtotalObrero"></td>
+                        </tr>
+                        <tr x-show="(!dataObrero || Object.keys(dataObrero).length === 0)">
+                            <td colspan="2" class="has-text-centered">Sin datos de cuotas obreras</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div
+                class="column is-12"
+                x-show="(Object.keys(dataPatron).length > 0 && Object.keys(dataObrero).length > 0)">
+                <div class="notification is-info is-light has-text-centered">
+                    <p><strong>Total Cuotas Obrero Patronal: <span x-text="total"></span></strong></p>
+                </div>
             </div>
         </div>
     </div>

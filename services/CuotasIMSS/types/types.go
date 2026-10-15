@@ -96,10 +96,10 @@ type Patron struct {
 
 type Obrero struct {
 	EnfermedadMaternidadAdicionalObrero float64 `json:"enfermedadMaternidadAdicionalObrero"` // 0.40% sobre el excedente de 3 UMAs del SBC
-	PrestacionesDineroObrero            float64 `json:"PrestacionesDineroObrero"`            // 0.25% del SBC
-	GastosMedicosPensionadosObrero      float64 `json:"GastosMedicosPensionadosObrero"`      // 0.375% del SBC
-	InvalidezYVidaObrero                float64 `json:"InvalidezYVidaObrero"`                // 0.625% del SBC
-	CesantiaYVejezObrero                float64 `json:"CesantiaYVejezObrero"`                // 1.125% del SBC
+	PrestacionesDineroObrero            float64 `json:"prestacionesDineroObrero"`            // 0.25% del SBC
+	GastosMedicosPensionadosObrero      float64 `json:"gastosMedicosPensionadosObrero"`      // 0.375% del SBC
+	InvalidezYVidaObrero                float64 `json:"invalidezYVidaObrero"`                // 0.625% del SBC
+	CesantiaYVejezObrero                float64 `json:"cesantiaYVejezObrero"`                // 1.125% del SBC
 }
 
 type RespuestaCalculoCuotas struct {
