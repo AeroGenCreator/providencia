@@ -2,6 +2,7 @@ package service
 
 import (
 	"saavedra/services/CuotasIMSS/types"
+	"strconv"
 	"time"
 )
 
@@ -65,7 +66,21 @@ func calcularSBC(payment, factorIntegracion float64) float64 {
 	return sbc
 }
 
-func calcularDiasPorCotizar(mes string, faltas int) int {
+func esBisiesto(year string) (bool, error) {
+	intYear, err := strconv.Atoi(year)
+	if err != nil {
+		return false, err
+	}
+	if intYear%4 == 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
+func calcularDiasPorCotizar(mes string, faltas int, bisiesto bool) int {
+	if bisiesto && mes == "Febrero" {
+		return 29
+	}
 	diasMes := Meses[mes].Dias
 	diasPorCotizar := diasMes - faltas
 	return diasPorCotizar
@@ -159,11 +174,16 @@ func (s service) CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalcu
 	factorIntegracion := calcularFactorIntegracion(float64(diasVacaciones))
 	sbc := calcularSBC(employee.DailyPayment, factorIntegracion)
 	bimestre := esBimestre(peticion.Month)
+	bisiesto, err := esBisiesto(peticion.Year)
+	if err != nil {
+		return nil, err
+	}
 	diasPorCotizaMesAnterior := 0
 	if bimestre {
-		diasPorCotizaMesAnterior = calcularDiasPorCotizar(peticion.Month, 0)
+		// Incluso en año bisiesto, paso false a la función porque el unico mes cambiante es "par" o sea "Febrero"
+		diasPorCotizaMesAnterior = calcularDiasPorCotizar(peticion.Month, 0, false)
 	}
-	diasPorCotizar := calcularDiasPorCotizar(peticion.Month, peticion.Faltas)
+	diasPorCotizar := calcularDiasPorCotizar(peticion.Month, peticion.Faltas, bisiesto)
 	obrero, patron, err := motorCuotasIMSS(peticion.Year, sbc, peticion.Riesgo, bimestre, diasPorCotizar, diasPorCotizaMesAnterior)
 	if err != nil {
 		return nil, err

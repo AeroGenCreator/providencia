@@ -113,7 +113,11 @@ document.addEventListener('alpine:init', () => {
     subtotalObrero: 0,
     total: 0,
 
-    async init() { await this.loadMany2One() },
+    async init() {
+      await this.loadMany2One();
+      const hoy = new Date();
+      this.selectedYear = hoy.getFullYear()
+    },
 
     async goHome() { await GoHome() },
     async goBack() { await GoBack("/cuotas") },
@@ -214,7 +218,7 @@ document.addEventListener('alpine:init', () => {
         this.loading = true; const vals = JSON.stringify({
           empId: this.empId,
           month: this.selectedMonth,
-          year: this.selectedYear,
+          year: String(this.selectedYear),
           prevIncapacidad: this.prevIncapacidad,
           incapacidad: this.incapacidad,
           faltas: this.faltas,
