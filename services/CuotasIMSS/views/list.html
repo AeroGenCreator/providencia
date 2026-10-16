@@ -124,11 +124,11 @@
                     <tr @click="openRecord(id)" class="focus">
                         <td x-text="r.id"></td>
                         <td x-text="r.name"></td>
-                        <td x-text="currency(r.daily_payment)"></td>
+                        <td x-text="r.daily_payment"></td>
                         <td x-text="r.year"></td>
                         <td x-text="r.month"></td>
                         <td x-text="r.factor_integracion"></td>
-                        <td x-text="currency(r.sbc)"></td>
+                        <td x-text="r.sbc"></td>
                     </tr>
                 </template>
                 <tr x-show="(records && records.length === 0)">

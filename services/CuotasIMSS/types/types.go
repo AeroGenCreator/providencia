@@ -115,13 +115,15 @@ type Obrero struct {
 }
 
 type RespuestaCalculoCuotas struct {
-	Employee          *Employee         `json:"employee"`
-	Obrero            *Obrero           `json:"obrero"`
-	Patron            *Patron           `json:"patron"`
-	Antiguedad        int               `json:"antiguedad"`
-	FactorIntegracion float64           `json:"factorIntegracion"`
-	SBC               float64           `json:"sbc"`
-	Incapacidad       IncapacidadObject `json:"incapacidad"`
+	Employee                 *Employee         `json:"employee"`
+	Obrero                   *Obrero           `json:"obrero"`
+	Patron                   *Patron           `json:"patron"`
+	Antiguedad               int               `json:"antiguedad"`
+	FactorIntegracion        float64           `json:"factorIntegracion"`
+	SBC                      float64           `json:"sbc"`
+	Incapacidad              IncapacidadObject `json:"incapacidad"`
+	DiasPorCotizar           int               `json:"diasPorCotizar"`
+	DiasPorCotizaMesAnterior int               `json:"diasPorCotizarMesAnterior"`
 }
 
 // Registro CuotasIMSS
@@ -137,6 +139,7 @@ type CuotasIMSS struct {
 	DiasDelMes                          int     `json:"diasDelMes"`
 	DiasPorCotizar                      int     `json:"diasPorCotizar"`
 	Incapacidad                         int     `json:"incapacidad"`
+	Razon                               string  `json:"razon"`
 	Faltas                              int     `json:"faltas"`
 	RiesgoTrabajoPrima                  float64 `json:"riesgo_trabajo_prima"`
 	EnfermedadMaternidadCuotaFija       float64 `json:"enfermedad_maternidad_cuota_fija"`

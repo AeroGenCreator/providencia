@@ -60,13 +60,14 @@ func (s store) CreateCuotasIMSS(c *types.CuotasIMSS) error {
 	checkQuery := `SELECT id FROM cuotas_imss WHERE name = ? AND year = ? AND month = ?;`
 	insertQuery := `
 	INSERT INTO cuotas_imss (
-		name, daily_payment, year, month, factor_integracion, sbc, es_bimestre, incapacidad, faltas,
+		name, daily_payment, year, month, factor_integracion, sbc, es_bimestre,
+		dias_del_mes, dias_por_cotizar, incapacidad, razon, faltas,
 		riesgo_trabajo_prima, enfermedad_maternidad_cuota_fija, enfermedad_maternidad_adicional,
 		prestaciones_dinero_patron, gastos_medicos_pensionados_patron, invalidez_y_vida,
 		retiro, cesantia_y_vejez_patron, guarderias, aportacion_infonavit,
 		enfermedad_maternidad_adicional_obrero, prestaciones_dinero_obrero,
 		gastos_medicos_pensionados_obrero, invalidez_y_vida_obrero, cesantia_y_vejez_obrero
-	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
 	var id int
 	err := s.db.QueryRow(checkQuery, c.Name, c.Year, c.Month).Scan(&id)
 	if err == nil {
@@ -77,7 +78,8 @@ func (s store) CreateCuotasIMSS(c *types.CuotasIMSS) error {
 	}
 	_, err = s.db.Exec(
 		insertQuery,
-		c.Name, c.DailyPayment, c.Year, c.Month, c.FactorIntegracion, c.Sbc, c.EsBimestre, c.Incapacidad, c.Faltas,
+		c.Name, c.DailyPayment, c.Year, c.Month, c.FactorIntegracion, c.Sbc, c.EsBimestre,
+		c.DiasDelMes, c.DiasPorCotizar, c.Incapacidad, c.Razon, c.Faltas,
 		c.RiesgoTrabajoPrima, c.EnfermedadMaternidadCuotaFija, c.EnfermedadMaternidadAdicional,
 		c.PrestacionesDineroPatron, c.GastosMedicosPensionadosPatron, c.InvalidezYVida,
 		c.Retiro, c.CesantiaYVejezPatron, c.Guarderias, c.AportacionInfonavit,
@@ -85,14 +87,15 @@ func (s store) CreateCuotasIMSS(c *types.CuotasIMSS) error {
 		c.GastosMedicosPensionadosObrero, c.InvalidezYVidaObrero, c.CesantiaYVejezObrero,
 	)
 	if err != nil {
-		return utils.DuplicatedDataError
+		return err
 	}
 	return nil
 }
 
 func (s store) ReadCuotasIMSS(id int) (*types.CuotasIMSS, error) {
 	q := `SELECT
-		id, name, daily_payment, year, month, factor_integracion, sbc, es_bimestre, incapacidad, faltas,
+		id, name, daily_payment, year, month, factor_integracion, sbc, es_bimestre,
+		dias_del_mes, dias_por_cotizar, incapacidad, razon, faltas,
 		riesgo_trabajo_prima, enfermedad_maternidad_cuota_fija, enfermedad_maternidad_adicional,
 		prestaciones_dinero_patron, gastos_medicos_pensionados_patron, invalidez_y_vida,
 		retiro, cesantia_y_vejez_patron, guarderias, aportacion_infonavit,
@@ -101,7 +104,8 @@ func (s store) ReadCuotasIMSS(id int) (*types.CuotasIMSS, error) {
 		FROM cuotas_imss WHERE id = ?;`
 	var c types.CuotasIMSS
 	err := s.db.QueryRow(q, id).Scan(
-		&c.Id, &c.Name, &c.DailyPayment, &c.Year, &c.Month, &c.FactorIntegracion, &c.Sbc, &c.EsBimestre, &c.Incapacidad, &c.Faltas,
+		&c.Id, &c.Name, &c.DailyPayment, &c.Year, &c.Month, &c.FactorIntegracion, &c.Sbc, &c.EsBimestre,
+		&c.DiasDelMes, &c.DiasPorCotizar, &c.Incapacidad, &c.Razon, &c.Faltas,
 		&c.RiesgoTrabajoPrima, &c.EnfermedadMaternidadCuotaFija, &c.EnfermedadMaternidadAdicional,
 		&c.PrestacionesDineroPatron, &c.GastosMedicosPensionadosPatron, &c.InvalidezYVida,
 		&c.Retiro, &c.CesantiaYVejezPatron, &c.Guarderias, &c.AportacionInfonavit,
@@ -119,7 +123,8 @@ func (s store) ReadCuotasIMSS(id int) (*types.CuotasIMSS, error) {
 func (s store) UpdateCuotasIMSS(c *types.CuotasIMSS) error {
 	q := `
 	UPDATE cuotas_imss
-	SET name = ?, daily_payment = ?, year = ?, month = ?, factor_integracion = ?, sbc = ?, es_bimestre = ?, incapacidad = ?, faltas = ?,
+	SET name = ?, daily_payment = ?, year = ?, month = ?, factor_integracion = ?, sbc = ?, es_bimestre = ?,
+	    dias_del_mes = ?, dias_por_cotizar = ?, incapacidad = ?, razon = ?, faltas = ?,
 	    riesgo_trabajo_prima = ?, enfermedad_maternidad_cuota_fija = ?, enfermedad_maternidad_adicional = ?,
 	    prestaciones_dinero_patron = ?, gastos_medicos_pensionados_patron = ?, invalidez_y_vida = ?,
 	    retiro = ?, cesantia_y_vejez_patron = ?, guarderias = ?, aportacion_infonavit = ?,
@@ -128,7 +133,8 @@ func (s store) UpdateCuotasIMSS(c *types.CuotasIMSS) error {
 	WHERE id = ?;`
 	_, err := s.db.Exec(
 		q,
-		c.Name, c.DailyPayment, c.Year, c.Month, c.FactorIntegracion, c.Sbc, c.EsBimestre, c.Incapacidad, c.Faltas,
+		c.Name, c.DailyPayment, c.Year, c.Month, c.FactorIntegracion, c.Sbc, c.EsBimestre,
+		c.DiasDelMes, c.DiasPorCotizar, c.Incapacidad, c.Razon, c.Faltas,
 		c.RiesgoTrabajoPrima, c.EnfermedadMaternidadCuotaFija, c.EnfermedadMaternidadAdicional,
 		c.PrestacionesDineroPatron, c.GastosMedicosPensionadosPatron, c.InvalidezYVida,
 		c.Retiro, c.CesantiaYVejezPatron, c.Guarderias, c.AportacionInfonavit,

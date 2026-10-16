@@ -146,6 +146,30 @@ func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Reques
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(cuotas)
+	case http.MethodPost:
+		party := r.Context().Value(utils.UserParty).(string)
+		valid, err := utils.AddPermissions(2, party)
+		if err != nil {
+			log.Printf("Message (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if !valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		var peticion types.Peticion
+		if err := json.NewDecoder(r.Body).Decode(&peticion); err != nil {
+			log.Printf("Error /cuotas/new - DecodingBody - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if err = e.service.CreateCuotasIMSS(&peticion); err != nil {
+			log.Printf("Error /cuotas/new - CreatingCuotasIMSS - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusCreated)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}

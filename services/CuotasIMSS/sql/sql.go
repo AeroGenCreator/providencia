@@ -7,16 +7,13 @@ import (
 )
 
 func CreateCuotasImssSchema(db *sql.DB) error {
-
 	// Comienzo de transacción SQL
 	tx, err := db.Begin()
 	if err != nil {
 		return err
 	}
-
 	// Rollback de respaldo
 	defer tx.Rollback()
-
 	// Validar si la tabla ya existe
 	var exists bool
 	queryCheckTable := `SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='cuotas_imss');`
@@ -24,7 +21,6 @@ func CreateCuotasImssSchema(db *sql.DB) error {
 		log.Printf("Query error: (%v) for table (%v)", err.Error(), "cuotas_imss")
 		return err
 	}
-
 	// Migrar datos si la tabla ya existe. De lo contrario, crearla.
 	if exists {
 		tableMigrate := `
@@ -37,7 +33,10 @@ func CreateCuotasImssSchema(db *sql.DB) error {
 			factor_integracion REAL NOT NULL,
 			sbc REAL NOT NULL,
 			es_bimestre BOOLEAN NOT NULL,
+			dias_del_mes INTEGER NOT NULL,
+			dias_por_cotizar INTEGER NOT NULL,
 			incapacidad INTEGER NOT NULL,
+			razon TEXT NOT NULL,
 			faltas INTEGER NOT NULL,
 			riesgo_trabajo_prima REAL NOT NULL,
 			enfermedad_maternidad_cuota_fija REAL NOT NULL,
@@ -57,7 +56,8 @@ func CreateCuotasImssSchema(db *sql.DB) error {
 			UNIQUE(name, year, month)
 		);
 		INSERT INTO cuotas_imss_new (
-			id, name, daily_payment, year, month, factor_integracion, sbc, es_bimestre, incapacidad, faltas,
+			id, name, daily_payment, year, month, factor_integracion, sbc, es_bimestre,
+			dias_del_mes, dias_por_cotizar, incapacidad, razon, faltas,
 			riesgo_trabajo_prima, enfermedad_maternidad_cuota_fija, enfermedad_maternidad_adicional,
 			prestaciones_dinero_patron, gastos_medicos_pensionados_patron, invalidez_y_vida,
 			retiro, cesantia_y_vejez_patron, guarderias, aportacion_infonavit,
@@ -65,7 +65,8 @@ func CreateCuotasImssSchema(db *sql.DB) error {
 			gastos_medicos_pensionados_obrero, invalidez_y_vida_obrero, cesantia_y_vejez_obrero
 		)
 		SELECT
-			id, name, daily_payment, year, month, factor_integracion, sbc, es_bimestre, incapacidad, faltas,
+			id, name, daily_payment, year, month, factor_integracion, sbc, es_bimestre,
+			dias_del_mes, dias_por_cotizar, incapacidad, razon, faltas,
 			riesgo_trabajo_prima, enfermedad_maternidad_cuota_fija, enfermedad_maternidad_adicional,
 			prestaciones_dinero_patron, gastos_medicos_pensionados_patron, invalidez_y_vida,
 			retiro, cesantia_y_vejez_patron, guarderias, aportacion_infonavit,
@@ -88,7 +89,10 @@ func CreateCuotasImssSchema(db *sql.DB) error {
 			factor_integracion REAL NOT NULL,
 			sbc REAL NOT NULL,
 			es_bimestre BOOLEAN NOT NULL,
+			dias_del_mes INTEGER NOT NULL,
+			dias_por_cotizar INTEGER NOT NULL,
 			incapacidad INTEGER NOT NULL,
+			razon TEXT NOT NULL,
 			faltas INTEGER NOT NULL,
 			riesgo_trabajo_prima REAL NOT NULL,
 			enfermedad_maternidad_cuota_fija REAL NOT NULL,
@@ -111,6 +115,5 @@ func CreateCuotasImssSchema(db *sql.DB) error {
 			return fmt.Errorf("Creation error: %w", err)
 		}
 	}
-
 	return tx.Commit()
 }

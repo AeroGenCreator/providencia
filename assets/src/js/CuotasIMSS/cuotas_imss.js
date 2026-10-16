@@ -38,13 +38,16 @@ document.addEventListener('alpine:init', () => {
     },
 
     currency() {
-      if (!this.records) { return }
-      for (const item of this.records) {
-        const moneyDailyPayment = FormatterMXN.format(item.daily_payment)
-        const moneySBC = FormatterMXN.format(item.sbc)
-        item.daily_payment = moneyDailyPayment
-        item.sbc = moneySBC
-      }
+        if (!this.records) { return; }
+        for (var item of this.records) {
+            // 1. Validamos los valores originales ANTES de formatear
+            let daily = Number(item.daily_payment);
+            let sbc = Number(item.sbc);
+
+            // 2. Si no son números válidos (NaN, undefined, null, etc.), les ponemos 0
+            item.daily_payment = isNaN(daily) ? FormatterMXN.format(0) : FormatterMXN.format(daily);
+            item.sbc = isNaN(sbc) ? FormatterMXN.format(0) : FormatterMXN.format(sbc);
+        }
     },
 
     months() {
@@ -56,6 +59,7 @@ document.addEventListener('alpine:init', () => {
       try {
         this.loading = true
         const data = await FetchDataFromResponse(`/cuotas/slice?page=${this.page}`, { method: "GET" })
+        console.log(data)
         this.records = data.records; this.hasNextPage = data.hasNextPage; this.currency(); this.months();
       } catch (error) {
         throw error
@@ -125,6 +129,7 @@ document.addEventListener('alpine:init', () => {
 
     async loadMany2One() {
       try {
+        this.loading = true;
         const data = await FetchDataFromResponse("/cuotas/many2one");
         this.employee = data.employee; this.months = data.months; this.uma = data.uma; this.minPayment = data.minPayment;
         this.umaFecha = this.umaFecha + ` ${data.umaFecha}`
@@ -193,6 +198,7 @@ document.addEventListener('alpine:init', () => {
 
     requiredCreate() {
       return (
+        this.loading ||
         this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0 || this.riesgo == 0 ||
         Object.keys(this.dataEmployee).length === 0 ||
         Object.keys(this.dataPatron).length === 0 ||
@@ -202,6 +208,7 @@ document.addEventListener('alpine:init', () => {
     },
     requiredCalculate() {
       return (
+        this.loading ||
         this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0 || this.riesgo == 0 ||
         this.match() === false
       );
@@ -219,34 +226,34 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
-    sum(obj) {
-      var total = 0
-      Object.getOwnPropertyNames(obj).forEach(function (val, idx, array) {
-        total += obj[val]
-      });
+    sum(obj) { var total = 0; Object.getOwnPropertyNames(obj).forEach(function (val, idx, array) { total += obj[val] });
       return total
+    },
+
+    construirPeticion() {
+      const vals = JSON.stringify({
+        empId: this.empId,
+        month: this.selectedMonth,
+        year: String(this.selectedYear),
+        incapacidad: this.incapacidad,
+        razon: this.selectedReason,
+        faltas: this.faltas,
+        riesgo: this.riesgo
+      })
+      return vals
     },
 
     async calcularCuota() {
       try {
-        this.getEmployeeId(); if (this.empId === null) { window.alert("No se cargo el empleado correctamente"); return; }
-        this.loading = true; const vals = JSON.stringify({
-          empId: this.empId,
-          month: this.selectedMonth,
-          year: String(this.selectedYear),
-          incapacidad: this.incapacidad,
-          razon: this.selectedReason,
-          faltas: this.faltas,
-          riesgo: this.riesgo
-        })
+        this.loading = true
+        this.getEmployeeId(); if (this.empId === null) { window.alert("No se cargo el empleado correctamente"); return }
+        const vals = this.construirPeticion()
         const data = await FetchDataFromResponse("/cuotas/new", { method: "PUT", body: vals })
         // 0. Calcular totales y subtotales
-        this.subtotalPatron = this.sum(data.patron)
-        this.subtotalObrero = this.sum(data.obrero)
-        this.total = this.subtotalPatron + this.subtotalObrero
+        this.subtotalPatron = this.sum(data.patron); this.subtotalObrero = this.sum(data.obrero);
+        this.total = this.subtotalPatron + this.subtotalObrero;
 
-        this.subtotalPatron = this.currency(this.subtotalPatron)
-        this.subtotalObrero = this.currency(this.subtotalObrero)
+        this.subtotalPatron = this.currency(this.subtotalPatron); this.subtotalObrero = this.currency(this.subtotalObrero);
         this.total = this.currency(this.total)
 
         // 1. Datos principales y de empleados
@@ -274,8 +281,18 @@ document.addEventListener('alpine:init', () => {
 
         // Asignar data
         this.dataEmployee = data.employee; this.dataObrero = data.obrero; this.dataPatron = data.patron;
-        this.factorIntegracion = data.factorIntegracion; this.sbc = data.sbc; this.antiguedad = data.antiguedad
+        this.factorIntegracion = data.factorIntegracion; this.sbc = data.sbc; this.antiguedad = data.antiguedad;
       } catch (error) { throw error } finally { this.loading = false; this.empId = null }
+    },
+
+    async createRecord() {
+      try {
+        this.loading = true;
+        this.getEmployeeId(); if (this.empId === null) { window.alert("No se cargo el empleado correctamente"); return; }
+        const vals = this.construirPeticion()
+        const res = await CreateRecord("/cuotas/new", "/cuotas", { method: "POST", body: vals })
+        this.authError = res.authError
+      } catch (error) { throw error } finally { this.loading = false; }
     },
 
   }))

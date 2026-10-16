@@ -190,13 +190,15 @@ func (s service) CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalcu
 	}
 	incapacidadObject := types.IncapacidadObject{Razon: peticion.Razon, Dias: peticion.Incapacidad}
 	cuotas := types.RespuestaCalculoCuotas{
-		Employee:          employee,
-		Obrero:            obrero,
-		Patron:            patron,
-		Antiguedad:        antiguedad.Antiguedad,
-		FactorIntegracion: factorIntegracion,
-		SBC:               sbc,
-		Incapacidad:       incapacidadObject,
+		Employee:                 employee,
+		Obrero:                   obrero,
+		Patron:                   patron,
+		Antiguedad:               antiguedad.Antiguedad,
+		FactorIntegracion:        factorIntegracion,
+		SBC:                      sbc,
+		Incapacidad:              incapacidadObject,
+		DiasPorCotizar:           diasPorCotizar,
+		DiasPorCotizaMesAnterior: diasPorCotizaMesAnterior,
 	}
 	return &cuotas, nil
 }
