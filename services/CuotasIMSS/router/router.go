@@ -12,6 +12,10 @@ import (
 
 func Assambler(mux *http.ServeMux, db *sql.DB) {
 
+	if err := service.CargarCuotasBloques(); err != nil {
+		fmt.Printf("Advertencia de carga...")
+		fmt.Println(err.Error())
+	}
 	if err := service.CargarEditables(); err != nil {
 		fmt.Printf("Advertencia de carga...")
 		fmt.Println(err.Error())

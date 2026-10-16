@@ -89,20 +89,19 @@ document.addEventListener('alpine:init', () => {
     employee: [],
     months: [],
     riesgos: [],
+    razones: [],
     selectedEmployee: "",
     selectedMonth: "",
     selectedYear: 0,
-    prevIncapacidad: 0,
+    selectedReason: "",
     incapacidad: 0,
     faltas: 0,
-    esBimestre: false,
     uma: 0,
     minPayment: 0,
     riesgo: 0,
     umaFecha: "Fecha de UMA",
     minPaymentFecha: "Fecha de Salario Minimo",
     empId: null,
-
     antiguedad: 0,
     factorIntegracion: 0,
     sbc: 0,
@@ -131,19 +130,16 @@ document.addEventListener('alpine:init', () => {
         this.umaFecha = this.umaFecha + ` ${data.umaFecha}`
         this.minPaymentFecha = this.minPaymentFecha + ` ${data.minPaymentFecha}`
         this.riesgos = data.riesgos
+        this.razones = data.razones
       } catch (error) { throw error } finally { this.loading = false }
     },
 
-    validarBimestre() {
-      for (const [key, val] of Object.entries(MonthsObject)) {
-        if (val === this.selectedMonth) {
-          const integer = ValidateIntegerStringToInteger(key);
-          if (integer % 2 === 0) {
-            this.esBimestre = true; return
-          } else { this.esBimestre = false; this.prevIncapacidad = 0; this.incapacidad = 0; return }
-        }
-      }
+    clean() {
+      this.dataEmployee = {}; this.dataPatron = {}; this.dataObrero = {}; this.selectedReason = "";
+      this.sbc = 0; this.factorIntegracion = 0; this.antiguedad = 0; this.incapacidad = 0; this.faltas = 0;
     },
+
+    soloSiIncapacidades(str) { if (this.incapacidad <= 0) { return ""; } else { return str; } },
 
     integer(str) {
       const integers = ValidateIntegerStringToInteger(str)
@@ -165,12 +161,12 @@ document.addEventListener('alpine:init', () => {
         const int = ValidateIntegerStringToInteger(str); if (isNaN(int)) { return 0; }
         let index = null;
         MonthsOrder.forEach((item, inx) => { if (item === this.selectedMonth) { index = inx } });
-        if (index === null) { return null; }
+        if (index === null) { return 0; }
         var prevMonth = "";
         if (index === 0) { prevMonth = 11; } else { prevMonth = MonthsOrder[index - 1]; }
         const mesDias = MonthsDays[prevMonth]
         if (int > mesDias) { return mesDias; } else { return int; }
-      } else { return null; }
+      } else { return 0; }
     },
 
     validarDiasConMes(str) {
@@ -189,8 +185,27 @@ document.addEventListener('alpine:init', () => {
       } else { return null; }
     },
 
-    requiredCreate() { return (this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0 || this.riesgo == 0); },
-    requiredCalculate() { return (this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0 || this.riesgo == 0); },
+    match() {
+      if (this.incapacidad > 0 && this.selectedReason !== "" || this.incapacidad <= 0 && this.selectedReason === "") {
+        return true;
+      } else { return false }
+    },
+
+    requiredCreate() {
+      return (
+        this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0 || this.riesgo == 0 ||
+        Object.keys(this.dataEmployee).length === 0 ||
+        Object.keys(this.dataPatron).length === 0 ||
+        Object.keys(this.dataObrero).length === 0 ||
+        this.match() === false
+      );
+    },
+    requiredCalculate() {
+      return (
+        this.selectedEmployee === "" || this.selectedMonth === "" || this.selectedYear == 0 || this.riesgo == 0 ||
+        this.match() === false
+      );
+    },
 
     getEmployeeId() {
       if (this.employee) {
@@ -219,8 +234,8 @@ document.addEventListener('alpine:init', () => {
           empId: this.empId,
           month: this.selectedMonth,
           year: String(this.selectedYear),
-          prevIncapacidad: this.prevIncapacidad,
           incapacidad: this.incapacidad,
+          razon: this.selectedReason,
           faltas: this.faltas,
           riesgo: this.riesgo
         })

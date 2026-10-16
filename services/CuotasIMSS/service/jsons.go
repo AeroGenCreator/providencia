@@ -11,6 +11,18 @@ var diasVacaciones []*types.DiasVacaciones
 var editables map[string]*types.Editables
 var factores map[string]float64
 var primaRiesgo []*types.Riesgo
+var Razones []*types.CuotasBloques
+
+func CargarCuotasBloques() error {
+	datosBytes, err := os.ReadFile("services/CuotasIMSS/config/cuotas_bloques.json")
+	if err != nil {
+		return err
+	}
+	if err = json.Unmarshal(datosBytes, &Razones); err != nil {
+		return err
+	}
+	return nil
+}
 
 func CargarCesantiaVejez() error {
 	datosBytes, err := os.ReadFile("services/CuotasIMSS/config/cesantia_vejez.json")

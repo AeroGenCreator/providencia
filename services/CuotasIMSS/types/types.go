@@ -1,5 +1,10 @@
 package types
 
+type CuotasBloques struct {
+	Id    string `json:"id"`
+	Razon string `json:"razon"`
+}
+
 // Tipo Dias De Vacaciones
 type DiasVacaciones struct {
 	MinLim int `json:"minLim"`
@@ -44,24 +49,31 @@ type M2OEmployee struct {
 
 // Slcie Many2One Empaquetado
 type Many2One struct {
-	Employee        []*M2OEmployee `json:"employee"`
-	Months          []string       `json:"months"`
-	UMA             float64        `json:"uma"`
-	UMAFecha        int            `json:"umaFecha"`
-	MinPayment      float64        `json:"minPayment"`
-	MinPaymentFecha int            `json:"minPaymentFecha"`
-	Riesgos         []*Riesgo      `json:"riesgos"`
+	Employee        []*M2OEmployee   `json:"employee"`
+	Months          []string         `json:"months"`
+	UMA             float64          `json:"uma"`
+	UMAFecha        int              `json:"umaFecha"`
+	MinPayment      float64          `json:"minPayment"`
+	MinPaymentFecha int              `json:"minPaymentFecha"`
+	Riesgos         []*Riesgo        `json:"riesgos"`
+	Razones         []*CuotasBloques `json:"razones"`
+}
+
+// Incapacidad Objeto
+type IncapacidadObject struct {
+	Razon string `json:"razon"`
+	Dias  int    `json:"dias"`
 }
 
 // Petición De Cálculo Metadata
 type Peticion struct {
-	EmpId           int     `json:"empId"`
-	Month           string  `json:"month"`
-	Year            string  `json:"year"`
-	PrevIncapacidad int     `json:"prevIncapacidad"`
-	Incapacidad     int     `json:"incapacidad"`
-	Faltas          int     `json:"faltas"`
-	Riesgo          float64 `json:"riesgo"`
+	EmpId       int     `json:"empId"`
+	Month       string  `json:"month"`
+	Year        string  `json:"year"`
+	Razon       string  `json:"razon"`
+	Incapacidad int     `json:"incapacidad"`
+	Faltas      int     `json:"faltas"`
+	Riesgo      float64 `json:"riesgo"`
 }
 
 type ParsedDate struct {
@@ -103,14 +115,13 @@ type Obrero struct {
 }
 
 type RespuestaCalculoCuotas struct {
-	Employee          *Employee      `json:"employee"`
-	Obrero            *Obrero        `json:"obrero"`
-	Patron            *Patron        `json:"patron"`
-	Antiguedad        int            `json:"antiguedad"`
-	FactorIntegracion float64        `json:"factorIntegracion"`
-	SBC               float64        `json:"sbc"`
-	PrevIncapacidad   map[string]int `json:"prevIncapacidad"`
-	Incapacidad       map[string]int `json:"incapacidad"`
+	Employee          *Employee         `json:"employee"`
+	Obrero            *Obrero           `json:"obrero"`
+	Patron            *Patron           `json:"patron"`
+	Antiguedad        int               `json:"antiguedad"`
+	FactorIntegracion float64           `json:"factorIntegracion"`
+	SBC               float64           `json:"sbc"`
+	Incapacidad       IncapacidadObject `json:"incapacidad"`
 }
 
 // Registro CuotasIMSS
@@ -123,6 +134,8 @@ type CuotasIMSS struct {
 	FactorIntegracion                   float64 `json:"factor_integracion"`
 	Sbc                                 float64 `json:"sbc"`
 	EsBimestre                          bool    `json:"es_bimestre"`
+	DiasDelMes                          int     `json:"diasDelMes"`
+	DiasPorCotizar                      int     `json:"diasPorCotizar"`
 	Incapacidad                         int     `json:"incapacidad"`
 	Faltas                              int     `json:"faltas"`
 	RiesgoTrabajoPrima                  float64 `json:"riesgo_trabajo_prima"`

@@ -1,0 +1,10 @@
+[
+  {"id": "enfermedad_general", "razon": "Enfermedad General"},
+  {"id": "accidente_trabajo", "razon": "Accidente de Trabajo"},
+  {"id": "accidente_trayecto", "razon": "Accidente de Trayecto"},
+  {"id": "enfermedad_trabajo", "razon": "Enfermedad de Trabajo"},
+  {"id": "maternidad_prenatal", "razon": "Maternidad (Prenatal)"},
+  {"id": "maternidad_postnatal", "razon": "Maternidad (Postnatal)"},
+  {"id": "maternidad_enlace", "razon": "Maternidad (Enlace)"},
+  {"id": "recaida_riesgo_trabajo", "razon": "Recaída por Riesgo de Trabajo"}
+]

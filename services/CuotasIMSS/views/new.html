@@ -60,6 +60,10 @@
                         <span class="icon"><i class="fa-solid fa-calculator"></i></span>
                         <span>Calcular Cuota</span>
                     </button>
+                    <button class="button is-danger is-small" @click="clean">
+                        <span class="icon"><i class="fa-solid fa-pump-soap"></i></span>
+                        <span>Limpiar Resultados</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -99,7 +103,6 @@
                         id="input-month"
                         placeholder="Seleccionar mes..."
                         x-model="selectedMonth"
-                        @change="validarBimestre"
                     >
                     <span class="icon is-small is-left"><i class="fa-regular fa-calendar-days"></i></span>
                     <datalist id="list-month">
@@ -166,21 +169,7 @@
                 </div>
             </div>
             <!-- SEGUNDA LINEA DE INPUTS -->
-            <div class="column is-12" x-show="esBimestre">
-                <label class="label is-small">Incapacidades del Mes Anterior</label>
-                <div class="control has-icons-left">
-                    <input
-                        class="input is-small is-info"
-                        type="text"
-                        placeholder="Ingresar incapacidades..."
-                        x-model="prevIncapacidad"
-                        @blur="prevIncapacidad = validarDiasConMesAnterior($event.target.value)"
-                    >
-                    <span class="icon is-small is-left"><i class="fa-solid fa-bed"></i></span>
-                </div>
-            </div>
-            <!-- TERCERA LINEA DE INPUTS -->
-            <div class="column is-6">
+            <div class="column is-4">
                 <label class="label is-small">Incapacidades Mes Actual</label>
                 <div class="control has-icons-left">
                     <input
@@ -193,7 +182,26 @@
                     <span class="icon is-small is-left"><i class="fa-solid fa-bed"></i></span>
                 </div>
             </div>
-            <div class="column is-6">
+            <div class="column is-4">
+                <label class="label is-small">Razón de Incapacidad</label>
+                <div class="control has-icons-left">
+                    <input
+                        class="input is-small is-info"
+                        list="list-razon"
+                        id="input-razon"
+                        placeholder="Seleccionar razón de incapacidad ..."
+                        x-model="selectedReason"
+                        @blur="selectedReason = soloSiIncapacidades($event.target.value)"
+                    >
+                    <span class="icon is-small is-left"><i class="fa-solid fa-boxes-packing"></i></span>
+                    <datalist id="list-razon">
+                        <template x-for="r in razones">
+                            <option :value="r.razon" x-text="r.razon"></option>
+                        </template>
+                    </datalist>
+                </div>
+            </div>
+            <div class="column is-4">
                 <label class="label is-small">Faltas Mes Actual</label>
                 <div class="control has-icons-left">
                     <input
@@ -349,7 +357,8 @@
                 class="column is-12"
                 x-show="(Object.keys(dataPatron).length > 0 && Object.keys(dataObrero).length > 0)">
                 <div class="notification is-info is-light has-text-centered">
-                    <p><strong>Total Cuotas Obrero Patronal: <span x-text="total"></span></strong></p>
+                    <p><strong>Total Cuotas Obrero Patronal:</strong></p>
+                    <p><span x-text="total"></span></p>
                 </div>
             </div>
         </div>
