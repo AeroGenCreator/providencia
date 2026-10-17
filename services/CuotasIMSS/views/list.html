@@ -46,15 +46,23 @@
 <main class="hero">
     <section class="container">
         <div class="columns">
-            <div class="column is-1">
+            <div class="column is-3">
                 <div class="buttons is-left">
-                    <button class="button is-primary is-small is-fullwidth is-rounded" @click="newRecord">
+                    <button class="button is-primary is-small is-rounded" @click="newRecord">
                         <span class="icon"><i class="fa-solid fa-circle-plus"></i></span>
                         <span>Nuevo</span>
                     </button>
+                    <button class="button is-warning is-small is-rounded" @click="goConfig">
+                        <span class="icon"><i class="fa-solid fa-gear"></i></span>
+                        <span>Config</span>
+                    </button>
+                    <button class="button is-dark is-small is-rounded" @click="goReport">
+                        <span class="icon"><i class="fa-solid fa-chart-column"></i></span>
+                        <span>Reporte</span>
+                    </button>
                 </div>
             </div>
-            <div class="column is-3">
+            <div class="column is-2">
                 <div class="field">
                     <div class="control is-small has-icons-left">
                         <input class="input is-small is-rounded" type="text" placeholder="Buscador por nombre" x-model="pattern">
@@ -62,7 +70,15 @@
                     </div>
                 </div>
             </div>
-            <div class="column is-4">
+            <div class="column is-2">
+                <div class="field">
+                    <div class="control is-small has-icons-left">
+                        <input class="input is-small is-rounded" type="text" placeholder="Ingrese un año" x-model="year">
+                        <span class="icon is-small is-left"><i class="fa-solid fa-chart-bar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="column is-2">
                 <div class="buttons is-left">
                     <button
                         class="button is-info is-small is-rounded"
@@ -78,7 +94,7 @@
                     </button>
                 </div>
             </div>
-            <div class="column is-4">
+            <div class="column is-3">
                 <div class="buttons is-right">
                     <button
                         class="button is-small is-warning"
@@ -121,7 +137,7 @@
             </thead>
             <tbody>
                 <template x-for="r in records" :key="r.id">
-                    <tr @click="openRecord(id)" class="focus">
+                    <tr @click="openRecord(r.id)" class="focus">
                         <td x-text="r.id"></td>
                         <td x-text="r.name"></td>
                         <td x-text="r.daily_payment"></td>

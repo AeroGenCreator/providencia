@@ -8,6 +8,7 @@ import (
 	"saavedra/services/CuotasIMSS/service"
 	"saavedra/services/CuotasIMSS/types"
 	"saavedra/utils"
+	"strconv"
 )
 
 type EndpointHandler struct {
@@ -60,6 +61,24 @@ func (e EndpointHandler) CallCuotasSearch(w http.ResponseWriter, r *http.Request
 	}
 }
 
+// ROUTE: "/cuotas/many2one"
+func (e EndpointHandler) CallCuotasIMSSMany2One(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		data, err := e.service.Many2OneCuotasIMSS()
+		if err != nil {
+			log.Printf("Error /cuotas/many2one - ServingMany2One - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(data)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+	}
+}
+
 // ROUTE: "/cuotas"
 func (e EndpointHandler) CallListCuotasIMSS(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
@@ -91,7 +110,7 @@ func (e EndpointHandler) CallListCuotasIMSS(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-// "/cuotas/new"
+// ROUTE "/cuotas/new"
 func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
@@ -138,7 +157,10 @@ func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Reques
 			return
 		}
 		cuotas, err := e.service.CalcularCuotas(&peticion)
-		if err != nil {
+		if err == types.SalaryError {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		} else if err != nil {
 			log.Printf("Error /cuotas/new - Calculating - (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -164,7 +186,10 @@ func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Reques
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		if err = e.service.CreateCuotasIMSS(&peticion); err != nil {
+		if err = e.service.CreateCuotasIMSS(&peticion); err == types.SalaryError {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		} else if err != nil {
 			log.Printf("Error /cuotas/new - CreatingCuotasIMSS - (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -175,19 +200,39 @@ func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-// "/cuotas/many2one"
-func (e EndpointHandler) CallCuotasIMSSMany2One(w http.ResponseWriter, r *http.Request) {
+// ROUTE "cuotas/record"
+func (e EndpointHandler) CallCuotasIMSSRecord(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		data, err := e.service.Many2OneCuotasIMSS()
+		party := r.Context().Value(utils.UserParty).(string)
+		valid, err := utils.AddPermissions(1, party)
 		if err != nil {
-			log.Printf("Error /cuotas/many2one - ServingMany2One - (%v)", err.Error())
+			log.Printf("Error '/cuotas/record' (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(data)
+		if !valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		id := r.URL.Query().Get("id")
+		intId, err := strconv.Atoi(id)
+		if err != nil {
+			log.Printf("Error '/cuotas/record' (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		tpl, err := template.ParseFiles("services/CuotasIMSS/views/record.html")
+		if err != nil {
+			log.Printf("Error '/cuotas/record' (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		breadcrumb := map[string]any{"Id": intId, "Service": "Cuotas", "View1": "Leer Registro"}
+		if err = tpl.Execute(w, breadcrumb); err != nil {
+			log.Printf("Error '/cuotas/record' (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}

@@ -70,11 +70,22 @@
         <div class="columns">
             <div class="column is-12" x-show="authError">
                 <div class="notification is-danger is-light">
-                    <button class="delete" @click="close"></button>
+                    <button class="delete" @click="closeAuthError"></button>
                     <p class="has-text-left is-size-7">
                         <span class="icon-text">
                             <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
-                            <span>...</span>
+                            <span>Este usuario no puede realizar esta acción</span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="column is-12" x-show="badRequestError">
+                <div class="notification is-danger is-light">
+                    <button class="delete" @click="closebadRequestError"></button>
+                    <p class="has-text-left is-size-7">
+                        <span class="icon-text">
+                            <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                            <span>Imposible cálcluar cuotas para un empleado con sueldo menor al mínimo</span>
                         </span>
                     </p>
                 </div>

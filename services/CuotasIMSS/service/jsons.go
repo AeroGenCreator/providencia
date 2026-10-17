@@ -8,7 +8,7 @@ import (
 
 var cesantiaVejez map[string][]*types.CesantiaVejez
 var diasVacaciones []*types.DiasVacaciones
-var editables map[string]*types.Editables
+var editables *types.Editables
 var factores map[string]float64
 var primaRiesgo []*types.Riesgo
 var Razones []*types.CuotasBloques

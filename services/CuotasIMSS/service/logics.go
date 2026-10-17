@@ -49,15 +49,15 @@ func calcularDiasVacaciones(antiguedad int) int {
 func calcularFactorIntegracion(diasVacaciones float64) float64 {
 	var diasAnho float64 = 365
 	var salarioNeutro float64 = 1
-	diasAguinaldo := editables["diasAguinaldo"].Valor
-	primaVacacional := editables["primaVacacional"].Valor
+	diasAguinaldo := editables.DiasAguinaldo.Valor
+	primaVacacional := editables.PrimaVacacional.Valor
 	factorIntegracion := salarioNeutro + ((diasAguinaldo + (diasVacaciones * primaVacacional)) / diasAnho)
 	return factorIntegracion
 }
 
 func calcularSBC(payment, factorIntegracion float64) float64 {
 	// Tope de sueldo
-	sueldoTopado := editables["actualUMA"].Valor * editables["toparSueldo"].Valor
+	sueldoTopado := editables.ActualUma.Valor * editables.ToparSueldo.Valor
 	// Cálculo del SBC
 	sbc := payment * factorIntegracion
 	if payment > sueldoTopado {
@@ -88,7 +88,7 @@ func calcularDiasPorCotizar(mes string, faltas int, bisiesto bool) int {
 
 func calculoCesantiaYVejezPatron(year string, sbc float64, diasPorCotizar int) float64 {
 	// Calcula CesantiaVejez depende de buscar en una tabla de rangos de veces UMA del SBC.
-	vecesUMA := (sbc / editables["actualUMA"].Valor)
+	vecesUMA := (sbc / editables.ActualUma.Valor)
 	rangos := cesantiaVejez[year]
 	// Para este proposito use BinarySearch (Ya que el orden es natural)
 	// Indice 0 y el ultimo del arreglo.
@@ -118,7 +118,7 @@ func motorCuotasIMSS(
 ) (*types.Obrero, *types.Patron, error) {
 
 	// Enf. Mat. en Dinero (Calculo especial sobre el excedente en 2026 (3 veces UMA))
-	determinante := editables["enfYmatFactorDeterminante"].Valor * editables["actualUMA"].Valor
+	determinante := editables.EnfYMatFactorDeterminante.Valor * editables.ActualUma.Valor
 	diferencia := sbc - determinante
 	enfMatObrero := 0.0
 	enfMatPatron := 0.0
@@ -150,7 +150,7 @@ func motorCuotasIMSS(
 	// Calculos Patron
 	patron := types.Patron{
 		RiesgoTrabajoPrima:             (riesgo * sbc * float64(diasPorCotizar)),
-		EnfermedadMaternidadCuotaFija:  (editables["actualUMA"].Valor * float64(diasPorCotizar) * factores["enfermedadMaternidadCuotaFija"]),
+		EnfermedadMaternidadCuotaFija:  (editables.ActualUma.Valor * float64(diasPorCotizar) * factores["enfermedadMaternidadCuotaFija"]),
 		EnfermedadMaternidadAdicional:  enfMatPatron,
 		PrestacionesDineroPatron:       (factores["prestacionesDineroPatron"] * sbc * float64(diasPorCotizar)),
 		GastosMedicosPensionadosPatron: (factores["gastosMedicosPensionadosPatron"] * sbc * float64(diasPorCotizar)),
@@ -165,9 +165,13 @@ func motorCuotasIMSS(
 }
 
 func (s service) CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalculoCuotas, error) {
+	minSalary := editables.SalarioMinimo.Valor
 	employee, err := s.store.ReadEmployee(peticion.EmpId)
 	if err != nil {
 		return nil, err
+	}
+	if employee.DailyPayment < minSalary {
+		return nil, types.SalaryError
 	}
 	antiguedad, err := obtenerAntiguedad(employee.HireDate)
 	diasVacaciones := calcularDiasVacaciones(antiguedad.Antiguedad)

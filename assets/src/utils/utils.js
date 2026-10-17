@@ -195,10 +195,13 @@ async function ReadRecord(id, redirect) {
 
 async function CreateRecord(path, redirect, options = {}) {
   try {
-    var object = { authError: false };
+    var object = { authError: false, badRequestError: false};
     const res = await SecureFetching(path, options)
     if (!res.ok) {
-      if (res.status === 401) {
+      if (res.status === 400) {
+        object.badRequestError = true;
+        return object
+      } else if (res.status === 401) {
         object.authError = true;
         return object
       } else if (res.status === 409) {
@@ -255,10 +258,19 @@ async function DeleteRecord(path, redirect, options = {}) {
 }
 
 async function FetchDataFromResponse(path, options = {}) {
+  // Cuando ( error: <!Doctype html> ) { Es posible que no este registrada la ruta que se envio a la función }
+  let object = {authError: false, badRequestError: false}
   try {
-    // Cuando ( error: <!Doctype html> ) { Es posible que no este registrada la ruta que se envio a la función }
     const res = await SecureFetching(path, options)
-    if (!res.ok) throw new Error(`Error ${res.status}`)
+    if (!res.ok) {
+      if (res.status === 400) {
+        object.badRequestError = true;
+        return object
+      } else if (res.status === 401) {
+        object.authError = true;
+        return object
+      } else { throw new Error(`Error ${res.status}`); }
+    }
     const data = await res.json()
     return data
   } catch (error) { throw error }

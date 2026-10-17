@@ -1,5 +1,7 @@
 package types
 
+import "errors"
+
 type CuotasBloques struct {
 	Id    string `json:"id"`
 	Razon string `json:"razon"`
@@ -25,9 +27,18 @@ type CesantiaVejez struct {
 }
 
 // Tipo Editables (UMA y Salario Mínimo)
-type Editables struct {
+type EditContent struct {
 	Fecha int     `json:"fecha"`
 	Valor float64 `json:"valor"`
+}
+
+type Editables struct {
+	DiasAguinaldo             EditContent `json:"diasAguinaldo"`
+	ActualUma                 EditContent `json:"actualUMA"`
+	PrimaVacacional           EditContent `json:"primaVacacional"`
+	ToparSueldo               EditContent `json:"toparSueldo"`
+	EnfYMatFactorDeterminante EditContent `json:"enfYMatFactorDeterminante"`
+	SalarioMinimo             EditContent `josn:"salarioMinimo"`
 }
 
 type Riesgo struct {
@@ -162,3 +173,5 @@ type SliceCuotasIMSS struct {
 	Records     []*CuotasIMSS `json:"records"`
 	HasNextPage bool          `json:"hasNextPage"`
 }
+
+var SalaryError = errors.New("Imposible cálculo de cuotas cuando el salario del empleado es menor que el salario mínimo")

@@ -8,7 +8,9 @@ document.addEventListener('alpine:init', () => {
     loading: false,
     hasNextPage: false,
     pattern: '',
+    year: '',
     patternLast: '',
+    yearLast: '',
     isSearch: false,
     authError: false,
 
@@ -17,7 +19,10 @@ document.addEventListener('alpine:init', () => {
     async goBack() { await GoBack("/home") },
     async logOut() { await LogOut() },
     async goCuotasIMSS() { const res = await OnlyRedirect("/cuotas"); this.authError = res.authError },
+    async goConfig() { const res = await OnlyRedirect("/cuotas/config"); this.authError = res.authError },
+    async goReport() { const res = await OnlyRedirect("/cuotas/report"); this.authError = res.authError },
     async newRecord() { const res = await OnlyRedirect("/cuotas/new"); this.authError = res.authError },
+    async openRecord(id) { await ReadRecord(id, "/cuotas/record") },
     close() { this.authError = false; },
     async clean() {
       this.isSearch = false; this.pageSearch = 1; this.pattern = ''; this.page = 1; return await this.loadRecords()
@@ -59,7 +64,6 @@ document.addEventListener('alpine:init', () => {
       try {
         this.loading = true
         const data = await FetchDataFromResponse(`/cuotas/slice?page=${this.page}`, { method: "GET" })
-        console.log(data)
         this.records = data.records; this.hasNextPage = data.hasNextPage; this.currency(); this.months();
       } catch (error) {
         throw error
@@ -88,6 +92,7 @@ document.addEventListener('alpine:init', () => {
 document.addEventListener('alpine:init', () => {
   Alpine.data("CuotasIMSSNewComponent", () => ({
 
+    badRequestError: false,
     authError: false,
     loading: false,
     employee: [],
@@ -116,17 +121,24 @@ document.addEventListener('alpine:init', () => {
     subtotalObrero: 0,
     total: 0,
 
+    // Carga data de "seleccion" y el año actual.
     async init() {
       await this.loadMany2One();
       const hoy = new Date();
       this.selectedYear = hoy.getFullYear()
     },
 
+    // Botones de Navegación.
     async goHome() { await GoHome() },
     async goBack() { await GoBack("/cuotas") },
     async logOut() { await LogOut() },
     async goCuotasIMSSNuevo() { const res = await OnlyRedirect("/cuotas/new"); this.authError = res.authError; },
 
+    // Cerrar notificaciones de error.
+    closebadRequestError() { this.badRequestError = false },
+    closeAuthError() { this.authError = false; },
+
+    // Petición: data de "selección".
     async loadMany2One() {
       try {
         this.loading = true;
@@ -139,41 +151,31 @@ document.addEventListener('alpine:init', () => {
       } catch (error) { throw error } finally { this.loading = false }
     },
 
+    // Limpia formulario y cuota calculada: Mantiene "Empleado" y "Mes" seleccionados
     clean() {
-      this.dataEmployee = {}; this.dataPatron = {}; this.dataObrero = {}; this.selectedReason = "";
-      this.sbc = 0; this.factorIntegracion = 0; this.antiguedad = 0; this.incapacidad = 0; this.faltas = 0;
+      this.dataEmployee = {}; this.dataPatron = {}; this.dataObrero = {}; this.antiguedad = 0; this.factorIntegracion = 0;
+      this.sbc = 0; this.incapacidad = 0; this.selectedReason = ""; this.faltas = 0;
     },
 
+    // Limpia razon de incapacidad si no se ha seleccionado una cantidad de dias de incapacidad.
     soloSiIncapacidades(str) { if (this.incapacidad <= 0) { return ""; } else { return str; } },
 
+    // Valida el string "Año" recorta a un largo de 4 caracteres.
     integer(str) {
-      const integers = ValidateIntegerStringToInteger(str)
-      if (isNaN(integers)) { return 0 }
+      const integers = ValidateIntegerStringToInteger(str); if (isNaN(integers)) { return 0; }
       return String(integers).substring(0, 4);
     },
 
+    // Conversor de string a float.
     float(str) {
-      const float = ValidateFloatStringToFloat(str)
-      if (float.isNaN) { return 0 } else return float
+      const float = ValidateFloatStringToFloat(str);
+      if (float.isNaN) { return 0; } else return float;
     },
 
-    currency(item) {
-      return FormatterMXN.format(item);
-    },
+    // Formato de Moneda de 2 decimales MXN
+    currency(item) { return FormatterMXN.format(item); },
 
-    validarDiasConMesAnterior(str) {
-      if (this.selectedMonth !== "") {
-        const int = ValidateIntegerStringToInteger(str); if (isNaN(int)) { return 0; }
-        let index = null;
-        MonthsOrder.forEach((item, inx) => { if (item === this.selectedMonth) { index = inx } });
-        if (index === null) { return 0; }
-        var prevMonth = "";
-        if (index === 0) { prevMonth = 11; } else { prevMonth = MonthsOrder[index - 1]; }
-        const mesDias = MonthsDays[prevMonth]
-        if (int > mesDias) { return mesDias; } else { return int; }
-      } else { return 0; }
-    },
-
+    // Limita días de Incapacidad según los días del mes seleccionado.
     validarDiasConMes(str) {
       if (this.selectedMonth !== "") {
         const int = ValidateIntegerStringToInteger(str); if (isNaN(int)) { return 0; }
@@ -182,6 +184,7 @@ document.addEventListener('alpine:init', () => {
       } else { return null; }
     },
 
+    // Limita las faltas por cuota a 8 (Maximo Legal)
     limitarFaltas(str) {
       if (this.selectedMonth !== "") {
         const int = ValidateIntegerStringToInteger(str); if (isNaN(int)) { return 0; }
@@ -190,12 +193,14 @@ document.addEventListener('alpine:init', () => {
       } else { return null; }
     },
 
+    // Complementa el "bloqueo" de botones para los campos (Incapacidad Y Razon de Incapacidad)
     match() {
       if (this.incapacidad > 0 && this.selectedReason !== "" || this.incapacidad <= 0 && this.selectedReason === "") {
         return true;
       } else { return false }
     },
 
+    // Bloqueo del boton "Create"
     requiredCreate() {
       return (
         this.loading ||
@@ -206,6 +211,8 @@ document.addEventListener('alpine:init', () => {
         this.match() === false
       );
     },
+
+    // Bloqueo del boton "Calcular"
     requiredCalculate() {
       return (
         this.loading ||
@@ -214,6 +221,7 @@ document.addEventListener('alpine:init', () => {
       );
     },
 
+    // Guarda el ID de Empleado el objeto solo contiene (Id y Nombre)
     getEmployeeId() {
       if (this.employee) {
         this.employee.forEach(r => {
@@ -226,10 +234,12 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    // Suma los valores de cada par {clave: valor}
     sum(obj) { var total = 0; Object.getOwnPropertyNames(obj).forEach(function (val, idx, array) { total += obj[val] });
       return total
     },
 
+    // Construye el JSON de petición para el backend.
     construirPeticion() {
       const vals = JSON.stringify({
         empId: this.empId,
@@ -243,16 +253,21 @@ document.addEventListener('alpine:init', () => {
       return vals
     },
 
+    // Realiza peticion a Backend con calculos de cuotas & extrae la data.
     async calcularCuota() {
       try {
         this.loading = true
         this.getEmployeeId(); if (this.empId === null) { window.alert("No se cargo el empleado correctamente"); return }
         const vals = this.construirPeticion()
         const data = await FetchDataFromResponse("/cuotas/new", { method: "PUT", body: vals })
-        // 0. Calcular totales y subtotales
+
+        // Manejo de errores y Mensajes
+        this.authError = data.authError; this.badRequestError = data.badRequestError;
+        if (this.authError || this.badRequestError) { return }
+
+        // Calcular "Totales" y "Subtotales" (Formato de moneda)
         this.subtotalPatron = this.sum(data.patron); this.subtotalObrero = this.sum(data.obrero);
         this.total = this.subtotalPatron + this.subtotalObrero;
-
         this.subtotalPatron = this.currency(this.subtotalPatron); this.subtotalObrero = this.currency(this.subtotalObrero);
         this.total = this.currency(this.total)
 
@@ -285,6 +300,7 @@ document.addEventListener('alpine:init', () => {
       } catch (error) { throw error } finally { this.loading = false; this.empId = null }
     },
 
+    // Crea el registro de Cuotas en la DB
     async createRecord() {
       try {
         this.loading = true;
@@ -292,8 +308,17 @@ document.addEventListener('alpine:init', () => {
         const vals = this.construirPeticion()
         const res = await CreateRecord("/cuotas/new", "/cuotas", { method: "POST", body: vals })
         this.authError = res.authError
+        this.badRequestError = res.badRequestError
       } catch (error) { throw error } finally { this.loading = false; }
     },
 
+  }))
+})
+
+document.addEventListener('alpine:init', () => {
+  Alpine.data("CuotasIMSSRecordComponent", (id) => ({
+    async goHome() { await GoHome() },
+    async goBack() { await GoBack("/cuotas") },
+    async logOut() { await LogOut() },
   }))
 })
