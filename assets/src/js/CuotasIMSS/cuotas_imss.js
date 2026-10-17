@@ -317,8 +317,137 @@ document.addEventListener('alpine:init', () => {
 
 document.addEventListener('alpine:init', () => {
   Alpine.data("CuotasIMSSRecordComponent", (id) => ({
+
+    authError: false,
+    badRequestError: false,
+    name: "",
+    dailyPayment: 0,
+    year: 0,
+    month: 0,
+    factorIntegracion: 0,
+    sbc: 0,
+    esBimestre: false,
+    diasDelMes: 0,
+    diasPorCotizar: 0,
+    incapacidad: 0,
+    razon: "",
+    faltas: 0,
+    riesgoTrabajoPrima: 0,
+    enfermedadMaternidadCuotaFija: 0,
+    enfermedadMaternidadAdicional: 0,
+    prestacionesDineroPatron: 0,
+    gastosMedicosPensionadosPatron: 0,
+    invalidezYVida: 0,
+    retiro: 0,
+    cesantiaYVejezPatron: 0,
+    guarderias: 0,
+    aportacionInfonavit: 0,
+    enfermedadMaternidadAdicionalObrero: 0,
+    prestacionesDineroObrero: 0,
+    gastosMedicosPensionadosObrero: 0,
+    invalidezYVidaObrero: 0,
+    cesantiaYVejezObrero: 0,
+    subtotalObrero: 0,
+    subtotalPatron: 0,
+    total: 0,
+
+    async init() { await this.LoadRecord() },
+
     async goHome() { await GoHome() },
     async goBack() { await GoBack("/cuotas") },
     async logOut() { await LogOut() },
+    async goCuotas() { await OnlyRedirect("/cuotas") },
+    async goRecord() { await OnlyRedirect("/cuotas/record") },
+
+    // Formato de Moneda de 2 decimales MXN
+    currency(item) { return FormatterMXN.format(item); },
+
+    calcularTotales(data) {
+        // Acumulador para cuotas patronales (usando snake_case de data)
+        let contadorPatron = 0;
+        const cuotasPatron = [
+            data.riesgo_trabajo_prima,
+            data.enfermedad_maternidad_cuota_fija,
+            data.enfermedad_maternidad_adicional,
+            data.prestaciones_dinero_patron,
+            data.gastos_medicos_pensionados_patron,
+            data.invalidez_y_vida,
+            data.retiro,
+            data.cesantia_y_vejez_patron,
+            data.guarderias,
+            data.aportacion_infonavit
+        ];
+
+        for (let i = 0; i < cuotasPatron.length; i++) {
+            contadorPatron += Number(cuotasPatron[i]) || 0;
+        }
+
+        // Acumulador para cuotas obreras (usando snake_case de data)
+        let contadorObrero = 0;
+        const cuotasObrero = [
+            data.enfermedad_maternidad_adicional_obrero,
+            data.prestaciones_dinero_obrero,
+            data.gastos_medicos_pensionados_obrero,
+            data.invalidez_y_vida_obrero,
+            data.cesantia_y_vejez_obrero
+        ];
+
+        for (let i = 0; i < cuotasObrero.length; i++) {
+            contadorObrero += Number(cuotasObrero[i]) || 0;
+        }
+
+        // Asignaciones con formato de moneda
+        this.subtotalPatron = this.currency(contadorPatron);
+        this.subtotalObrero = this.currency(contadorObrero);
+        this.total = this.currency(contadorPatron + contadorObrero);
+    },
+
+    async LoadRecord() {
+      try {
+        const vals = JSON.stringify({ id: id });
+        const data = await FetchDataFromResponse("/cuotas/record", { method: "PUT", body: vals });
+
+        // Primero calculamos pasando el objeto crudo del fetch (Presición Decimal)
+        this.calcularTotales(data);
+
+        // Luego asignamos cada propiedad formateada al estado
+        this.name = data.name;
+        this.dailyPayment = this.currency(data.daily_payment);
+        this.year = data.year;
+        this.month = data.month;
+        this.factorIntegracion = data.factor_integracion;
+        this.sbc = this.currency(data.sbc);
+        this.esBimestre = data.es_bimestre;
+        this.diasDelMes = data.diasDelMes;
+        this.diasPorCotizar = data.diasPorCotizar;
+        this.incapacidad = data.incapacidad;
+        this.razon = data.razon;
+        this.faltas = data.faltas;
+        this.riesgoTrabajoPrima = this.currency(data.riesgo_trabajo_prima);
+        this.enfermedadMaternidadCuotaFija = this.currency(data.enfermedad_maternidad_cuota_fija);
+        this.enfermedadMaternidadAdicional = this.currency(data.enfermedad_maternidad_adicional);
+        this.prestacionesDineroPatron = this.currency(data.prestaciones_dinero_patron);
+        this.gastosMedicosPensionadosPatron = this.currency(data.gastos_medicos_pensionados_patron);
+        this.invalidezYVida = this.currency(data.invalidez_y_vida);
+        this.retiro = this.currency(data.retiro);
+        this.cesantiaYVejezPatron = this.currency(data.cesantia_y_vejez_patron);
+        this.guarderias = this.currency(data.guarderias);
+        this.aportacionInfonavit = this.currency(data.aportacion_infonavit);
+        this.enfermedadMaternidadAdicionalObrero = this.currency(data.enfermedad_maternidad_adicional_obrero);
+        this.prestacionesDineroObrero = this.currency(data.prestaciones_dinero_obrero);
+        this.gastosMedicosPensionadosObrero = this.currency(data.gastos_medicos_pensionados_obrero);
+        this.invalidezYVidaObrero = this.currency(data.invalidez_y_vida_obrero);
+        this.cesantiaYVejezObrero = this.currency(data.cesantia_y_vejez_obrero);
+      } catch (error) { throw error }
+    },
+
+    async deleteRecord() {
+      try {
+        const vals = JSON.stringify({id: id})
+        const data = await DeleteRecord("/cuotas/record", "/cuotas", { method: "DELETE", body: vals })
+        this.authError = data.authError
+      } catch (error) { throw error}
+    },
+
   }))
 })

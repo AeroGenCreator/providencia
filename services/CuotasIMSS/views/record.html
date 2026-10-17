@@ -7,13 +7,11 @@
     <link rel="stylesheet" href="/assets/css/saavedra/saavedra.css">
     <script src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"></script>
     <script defer src="/assets/src/utils/utils.js"></script>
-    <!-- Fichero JS para manejar estados de Alpine. Recomiendo un fichero por servicio. -->
     <script defer src="/assets/src/js/CuotasIMSS/cuotas_imss.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"></script>
     <title></title>
 </head>
 <body x-data="CuotasIMSSRecordComponent({{ .Id }})">
-<!-- Manejar estados goHome, goBack, go..., logOut - Usando Alpine -->
 <section class="block hero has-background-dark">
     <nav class="navbar">
         <div class="navbar-start">
@@ -27,10 +25,14 @@
                     <span class="icon"><i class="fa-solid fa-rotate-left"></i></span><span>Volver</span>
                 </span>
             </div>
-            <!-- Redireccionar a algun otro lado -->
             <div class="navbar-item">
-                <span class="icon-text has-text-white is-size-7 clickable" @click="go...">
-                    <span class="icon"><i class="fa-solid fa-briefcase"></i></span><span>Servicio </span>
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goCuotas">
+                    <span class="icon"><i class="fa-solid fa-stethoscope"></i></span><span>Servicio {{ .Service }}</span>
+                </span>
+            </div>
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goCuotas">
+                    <span class="icon"><i class="fa-solid fa-record-vinyl"></i></span><span>{{ .View1 }}</span>
                 </span>
             </div>
         </div>
@@ -44,5 +46,166 @@
         </div>
     </nav>
 </section>
+<main class="hero">
+<section class="container">
+    <div class="box">
+        <div class="columns is-multiline">
+            <div class="column is-12">
+                <div class="buttons is-right">
+                    <button class="button is-danger is-small" @click="deleteRecord">
+                        <span class="icon"><i class="fa-solid fa-trash"></i></span>
+                        <span>Eliminar</span>
+                    </button>
+                </div>
+            </div>
+            <div class="column is-12" x-show="authError">
+                <div class="notification is-danger is-light">
+                    <button class="delete" @click="closeAuthError"></button>
+                    <p class="has-text-left is-size-7">
+                        <span class="icon-text">
+                            <span class="icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                            <span>Este usuario no puede realizar esta acción</span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="column is-12">
+                <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Sueldo Diario</th>
+                            <th>Antiguedad Años</th>
+                            <th>Factor Integracion</th>
+                            <th>SBC</th>
+                            <th>Incapacidad</th>
+                            <th>Razón</th>
+                            <th>Faltas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <div>
+                            <tr>
+                                <td x-text="name"></td>
+                                <td x-text="dailyPayment"></td>
+                                <td x-text="year"></td>
+                                <td x-text="factorIntegracion"></td>
+                                <td x-text="sbc"></td>
+                                <td x-text="incapacidad"></td>
+                                <td x-text="razon"></td>
+                                <td x-text="faltas"></td>
+                            </tr>
+                        </div>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabla Patronal -->
+            <div class="column is-6">
+                <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Patronal</th>
+                            <th>Cuotas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Riesgo de Trabajo (Prima)</td>
+                            <td x-text="riesgoTrabajoPrima"></td>
+                        </tr>
+                        <tr>
+                            <td>Enfermedad y Maternidad (Cuota Fija)</td>
+                            <td x-text="enfermedadMaternidadCuotaFija"></td>
+                        </tr>
+                        <tr>
+                            <td>Enfermedad y Maternidad (Adicional Patronal)</td>
+                            <td x-text="enfermedadMaternidadAdicional"></td>
+                        </tr>
+                        <tr>
+                            <td>Prestaciones en Dinero (Patrón)</td>
+                            <td x-text="prestacionesDineroPatron"></td>
+                        </tr>
+                        <tr>
+                            <td>Gastos Médicos Pensionados (Patrón)</td>
+                            <td x-text="gastosMedicosPensionadosPatron"></td>
+                        </tr>
+                        <tr>
+                            <td>Invalidez y Vida (Patrón)</td>
+                            <td x-text="invalidezYVida"></td>
+                        </tr>
+                        <tr>
+                            <td>Retiro</td>
+                            <td x-text="retiro"></td>
+                        </tr>
+                        <tr>
+                            <td>Cesantía y Vejez (Patrón)</td>
+                            <td x-text="cesantiaYVejezPatron"></td>
+                        </tr>
+                        <tr>
+                            <td>Guarderías y Prestaciones Sociales</td>
+                            <td x-text="guarderias"></td>
+                        </tr>
+                        <tr>
+                            <td>Aportación Infonavit</td>
+                            <td x-text="aportacionInfonavit"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Subtotal de Cuota Patronal</strong></td>
+                            <td x-text="subtotalPatron"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabla Obrero -->
+            <div class="column is-6">
+                <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Obrero</th>
+                            <th>Cuotas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <div>
+                            <tr>
+                                <td>Enfermedad y Maternidad (Adicional Obrero)</td>
+                                <td x-text="enfermedadMaternidadAdicionalObrero"></td>
+                            </tr>
+                            <tr>
+                                <td>Prestaciones en Dinero (Obrero)</td>
+                                <td x-text="prestacionesDineroObrero"></td>
+                            </tr>
+                            <tr>
+                                <td>Gastos Médicos Pensionados (Obrero)</td>
+                                <td x-text="gastosMedicosPensionadosObrero"></td>
+                            </tr>
+                            <tr>
+                                <td>Invalidez y Vida (Obrero)</td>
+                                <td x-text="invalidezYVidaObrero"></td>
+                            </tr>
+                            <tr>
+                                <td>Cesantía y Vejez (Obrero)</td>
+                                <td x-text="cesantiaYVejezObrero"></td>
+                            </tr>
+                        </div>
+                        <tr>
+                            <td><strong>Subtotal de Cuota Obrero</strong></td>
+                            <td x-text="subtotalObrero"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="column is-12">
+                <div class="notification is-info is-light has-text-centered">
+                    <p><strong>Total Cuotas Obrero Patronal:</strong></p>
+                    <p><span x-text="total"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
 </body>
 </html>

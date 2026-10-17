@@ -15,6 +15,8 @@ type Service interface {
 	SearchCuotasIMSS(pattern, page string) (*types.SliceCuotasIMSS, error)
 	Many2OneCuotasIMSS() (*types.Many2One, error)
 	CreateCuotasIMSS(peticion *types.Peticion) error
+	ReadCuotasIMSS(id int) (*types.CuotasIMSS, error)
+	DeleteCuotasIMSS(id int) error
 }
 
 type service struct {
@@ -129,6 +131,21 @@ func (s service) CreateCuotasIMSS(peticion *types.Peticion) error {
 		CesantiaYVejezObrero:                cuotas.Obrero.CesantiaYVejezObrero,
 	}
 	if err = s.store.CreateCuotasIMSS(&cuotaRegistroNuevo); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s service) ReadCuotasIMSS(id int) (*types.CuotasIMSS, error) {
+	record, err := s.store.ReadCuotasIMSS(id)
+	if err != nil {
+		return nil, err
+	}
+	return record, nil
+}
+
+func (s service) DeleteCuotasIMSS(id int) error {
+	if err := s.store.DeleteCuotasIMSS(id); err != nil {
 		return err
 	}
 	return nil

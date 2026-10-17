@@ -100,7 +100,7 @@ func (e EndpointHandler) CallListCuotasIMSS(w http.ResponseWriter, r *http.Reque
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		if err := tpl.Execute(w, map[string]string{"Service": "Cuotas Obrero Patronal"}); err != nil {
+		if err := tpl.Execute(w, map[string]string{"Service": "Cuotas"}); err != nil {
 			log.Printf("Error /cuotas - RenderingFile - (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -132,7 +132,7 @@ func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Reques
 			return
 		}
 		if err = tpl.Execute(w, map[string]string{
-			"Service": "Cuotas Obrero Patronal", "Nuevo": "Nuevo Registro",
+			"Service": "Cuotas", "Nuevo": "Nuevo Registro",
 		}); err != nil {
 			log.Printf("Error /cuotas/new - RenderingFile - (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -233,6 +233,57 @@ func (e EndpointHandler) CallCuotasIMSSRecord(w http.ResponseWriter, r *http.Req
 			log.Printf("Error '/cuotas/record' (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
+	case http.MethodPut:
+		party := r.Context().Value(utils.UserParty).(string)
+		valid, err := utils.AddPermissions(1, party)
+		if err != nil {
+			log.Printf("Error '/cuotas/record' (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if !valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		var id types.Record
+		if err = json.NewDecoder(r.Body).Decode(&id); err != nil {
+			log.Printf("Error '/cuotas/record' - JSONDecoding - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		record, err := e.service.ReadCuotasIMSS(id.Id)
+		if err != nil {
+			log.Printf("Error '/cuotas/record' - ReadingRecord - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(record)
+	case http.MethodDelete:
+		party := r.Context().Value(utils.UserParty).(string)
+		valid, err := utils.AddPermissions(4, party)
+		if err != nil {
+			log.Printf("Error '/cuotas/record' - Permissions - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if !valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		var id types.Record
+		if err = json.NewDecoder(r.Body).Decode(&id); err != nil {
+			log.Printf("Error '/cuotas/record' - JSONDecoding - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if err = e.service.DeleteCuotasIMSS(id.Id); err != nil {
+			log.Printf("Error '/cuotas/record' - DeleteRecord - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}

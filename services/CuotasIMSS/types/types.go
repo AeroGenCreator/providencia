@@ -174,4 +174,8 @@ type SliceCuotasIMSS struct {
 	HasNextPage bool          `json:"hasNextPage"`
 }
 
+type Record struct {
+	Id int `json:"id"`
+}
+
 var SalaryError = errors.New("Imposible cálculo de cuotas cuando el salario del empleado es menor que el salario mínimo")
