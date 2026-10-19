@@ -259,20 +259,9 @@ func (e EndpointHandler) CallCuotasIMSSRecord(w http.ResponseWriter, r *http.Req
 			log.Printf("Error '/cuotas/record' (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-	case http.MethodPut:
-		party := r.Context().Value(utils.UserParty).(string)
-		valid, err := utils.AddPermissions(1, party)
-		if err != nil {
-			log.Printf("Error '/cuotas/record' (%v)", err.Error())
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		if !valid {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
+	case http.MethodPut: // En este caso "PUT" devuelve una cuota patronal segun la petición.
 		var id types.Record
-		if err = json.NewDecoder(r.Body).Decode(&id); err != nil {
+		if err := json.NewDecoder(r.Body).Decode(&id); err != nil {
 			log.Printf("Error '/cuotas/record' - JSONDecoding - (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -318,6 +307,7 @@ func (e EndpointHandler) CallCuotasIMSSRecord(w http.ResponseWriter, r *http.Req
 // ROUTE: "/cuotas/config"
 func (e EndpointHandler) CallCuotasIMSSConfig(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
+	// Renderiza la plantilla de configuración.
 	case http.MethodGet:
 		party := r.Context().Value(utils.UserParty).(string)
 		valid, err := utils.AddPermissions(3, party)
@@ -341,6 +331,18 @@ func (e EndpointHandler) CallCuotasIMSSConfig(w http.ResponseWriter, r *http.Req
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+	// Actualiza el JSON de datos editables.
+	case http.MethodPut:
+		return
+	// Devuelve la configuración actual del JSON de datos editables.
+	case http.MethodPost:
+		data, err := e.service.FetchEditables()
+		if err != nil {
+			log.Printf("Error '/cuotas/config' - FetchingJSON - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		json.NewEncoder(w).Encode(data)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}

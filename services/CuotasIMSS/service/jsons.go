@@ -89,3 +89,7 @@ func (s service) escribirJSONeditables(nuevoJSON *types.Editables) error {
 	}
 	return nil
 }
+
+func (s service) FetchEditables() (*types.Editables, error) {
+	return editables, nil
+}

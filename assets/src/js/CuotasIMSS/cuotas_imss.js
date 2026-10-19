@@ -453,9 +453,29 @@ document.addEventListener('alpine:init', () => {
 document.addEventListener('alpine:init', () => {
   Alpine.data("CuotasConfigComponent", () => ({
 
+    loading: false,
+    uma: "",
+    umaYear: "",
+    salary: "",
+    salaryYear: "",
+
+    async init() { await this.loadData(); },
     async goHome() { await GoHome() },
     async goBack() { await GoBack("/cuotas") },
     async logOut() { await LogOut() },
+
+    currency(str) { },
+
+    async loadData() {
+      try {
+        this.loading = true;
+        const data = await FetchDataFromResponse("/cuotas/config", { method: "POST" });
+        this.uma = FormatterMXN.format(data.actualUMA.valor);
+        this.umaYear = data.actualUMA.fecha;
+        this.salary = FormatterMXN.format(data.salarioMinimo.valor);
+        this.salaryYear = data.salarioMinimo.fecha;
+      } catch (error) { throw error; } finally { this.loading = false; }
+    }
 
   }))
 })

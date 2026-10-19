@@ -2,6 +2,7 @@ package types
 
 import "errors"
 
+// Permite la selección de (Razon Incapacidad)
 type CuotasBloques struct {
 	Id    string `json:"id"`
 	Razon string `json:"razon"`
@@ -26,19 +27,20 @@ type CesantiaVejez struct {
 	Factor float64 `json:"factor"`
 }
 
-// Tipo Editables (UMA y Salario Mínimo)
+// Los Editables Comparten la misma estructura (Fecha & Valor)
 type EditContent struct {
 	Fecha int     `json:"fecha"`
 	Valor float64 `json:"valor"`
 }
 
+// El JSON editable parsea las llaves principales.
 type Editables struct {
 	DiasAguinaldo             EditContent `json:"diasAguinaldo"`
 	ActualUma                 EditContent `json:"actualUMA"`
 	PrimaVacacional           EditContent `json:"primaVacacional"`
 	ToparSueldo               EditContent `json:"toparSueldo"`
 	EnfYMatFactorDeterminante EditContent `json:"enfYMatFactorDeterminante"`
-	SalarioMinimo             EditContent `josn:"salarioMinimo"`
+	SalarioMinimo             EditContent `json:"salarioMinimo"`
 }
 
 type Riesgo struct {
