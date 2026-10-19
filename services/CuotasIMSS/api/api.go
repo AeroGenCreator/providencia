@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"saavedra/services/CuotasIMSS/service"
 	"saavedra/services/CuotasIMSS/types"
-	"saavedra/utils"
+	utils "saavedra/utils"
 	"strconv"
 )
 
@@ -204,13 +204,21 @@ func (e EndpointHandler) CallCuotasIMSSNew(w http.ResponseWriter, r *http.Reques
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		if err = e.service.CreateCuotasIMSS(&peticion); err == types.SalaryError {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		} else if err != nil {
-			log.Printf("Error /cuotas/new - CreatingCuotasIMSS - (%v)", err.Error())
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
+		err = e.service.CreateCuotasIMSS(&peticion)
+		if err != nil {
+			switch err {
+			case types.SalaryError:
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			case utils.DuplicatedDataError:
+				log.Printf("Error /cuotas/new - DuplicatedDataError - (%v)", err.Error())
+				http.Error(w, err.Error(), http.StatusConflict)
+				return
+			default:
+				log.Printf("Error /cuotas/new - CreatingCuotasIMSS - (%v)", err.Error())
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
 		}
 		w.WriteHeader(http.StatusCreated)
 	default:
