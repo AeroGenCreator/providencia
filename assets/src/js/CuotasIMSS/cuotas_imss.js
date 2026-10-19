@@ -2,7 +2,14 @@
 document.addEventListener('alpine:init', () => {
   Alpine.data("CuotasIMSSListaComponent", () => ({
 
-    page: 1, records: [], loading: false, hasNextPage: false, name: '', year: '', authError: false, employees: [],
+    hasNextPage: false,
+    authError: false,
+    loading: false,
+    records: [],
+    employees: [],
+    page: 1,
+    name: '',
+    year: '',
 
     async init() { await this.loadRecords(); await this.loadEmployees(); },
     async goHome() { await GoHome() },
@@ -453,6 +460,7 @@ document.addEventListener('alpine:init', () => {
 document.addEventListener('alpine:init', () => {
   Alpine.data("CuotasConfigComponent", () => ({
 
+    authError: false,
     loading: false,
     uma: "",
     umaYear: "",
@@ -464,7 +472,26 @@ document.addEventListener('alpine:init', () => {
     async goBack() { await GoBack("/cuotas") },
     async logOut() { await LogOut() },
 
-    currency(str) { },
+    close() { this.authError = false; },
+    lock() {
+      return (this.uma === "$0.00" || this.umaYear === "0" || this.salary === "$0.00" || this.salaryYear === "0");
+    },
+
+    currency(str) {
+      let num = ValidateFloatStringToFloat(str);
+      if (isNaN(num)) {
+        return FormatterMXN.format(0)
+      }
+      return FormatterMXN.format(num)
+    },
+
+    yearFormat(str) {
+      let num = ValidateIntegerStringToInteger(str)
+      if (isNaN(num)) {
+        return ""
+      }
+      return String(num).substring(0,4)
+    },
 
     async loadData() {
       try {
@@ -475,7 +502,19 @@ document.addEventListener('alpine:init', () => {
         this.salary = FormatterMXN.format(data.salarioMinimo.valor);
         this.salaryYear = data.salarioMinimo.fecha;
       } catch (error) { throw error; } finally { this.loading = false; }
-    }
+    },
+
+    async saveChanges() {
+      try {
+        this.loading = true;
+        const vals = JSON.stringify({
+          actualUMA: { valor: ValidateFloatStringToFloat(this.uma), fecha: Number(this.umaYear) },
+          salarioMinimo: { valor: ValidateFloatStringToFloat(this.salary), fecha: Number(this.salaryYear) }
+        })
+        const res = await UpdateRecord("/cuotas/config", "/cuotas", { method: "PUT", body: vals });
+        this.authError = res.authError
+      } catch (error) { throw error; } finally { this.loading = false; }
+    },
 
   }))
 })

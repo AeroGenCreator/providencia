@@ -79,12 +79,19 @@ func CargarPrimaRiesgo() error {
 	return nil
 }
 
-func (s service) escribirJSONeditables(nuevoJSON *types.Editables) error {
-	bytes, err := json.MarshalIndent(nuevoJSON, "", " ")
+func (s service) EscribirJSONeditables(nuevoJSON *types.Editables) error {
+	editables.ActualUma.Valor = nuevoJSON.ActualUma.Valor
+	editables.ActualUma.Fecha = nuevoJSON.ActualUma.Fecha
+	editables.SalarioMinimo.Valor = nuevoJSON.SalarioMinimo.Valor
+	editables.SalarioMinimo.Fecha = nuevoJSON.SalarioMinimo.Fecha
+	bytes, err := json.MarshalIndent(editables, "", " ")
 	if err != nil {
 		return err
 	}
 	if err = os.WriteFile("services/CuotasIMSS/config/editables.json", bytes, 0644); err != nil {
+		return err
+	}
+	if err = CargarEditables(); err != nil {
 		return err
 	}
 	return nil

@@ -307,7 +307,7 @@ func (e EndpointHandler) CallCuotasIMSSRecord(w http.ResponseWriter, r *http.Req
 // ROUTE: "/cuotas/config"
 func (e EndpointHandler) CallCuotasIMSSConfig(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	// Renderiza la plantilla de configuración.
+	// Renderiza la plantilla de Configuración.
 	case http.MethodGet:
 		party := r.Context().Value(utils.UserParty).(string)
 		valid, err := utils.AddPermissions(3, party)
@@ -320,7 +320,7 @@ func (e EndpointHandler) CallCuotasIMSSConfig(w http.ResponseWriter, r *http.Req
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
-		tpl, err := template.ParseFiles("services/cuotasIMSS/views/config.html")
+		tpl, err := template.ParseFiles("services/CuotasIMSS/views/config.html")
 		if err != nil {
 			log.Printf("Error '/cuotas/config' - ParseTemplate - (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -333,7 +333,18 @@ func (e EndpointHandler) CallCuotasIMSSConfig(w http.ResponseWriter, r *http.Req
 		}
 	// Actualiza el JSON de datos editables.
 	case http.MethodPut:
-		return
+		var nuevoJSON types.Editables
+		if err := json.NewDecoder(r.Body).Decode(&nuevoJSON); err != nil {
+			log.Printf("Error '/cuotas/config' - DecodingJSON - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if err := e.service.EscribirJSONeditables(&nuevoJSON); err != nil {
+			log.Printf("Error '/cuotas/config' - WritingJSON - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
 	// Devuelve la configuración actual del JSON de datos editables.
 	case http.MethodPost:
 		data, err := e.service.FetchEditables()
@@ -342,6 +353,8 @@ func (e EndpointHandler) CallCuotasIMSSConfig(w http.ResponseWriter, r *http.Req
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(data)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)

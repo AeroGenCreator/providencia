@@ -10,7 +10,7 @@ import (
 type Service interface {
 	// Funciones fichero logics.go
 	CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalculoCuotas, error)
-	escribirJSONeditables(nuevoJSON *types.Editables) error
+	EscribirJSONeditables(nuevoJSON *types.Editables) error
 	FetchEditables() (*types.Editables, error)
 	// Funciones en este fichero
 	SliceCuotasIMSS(page string) (*types.SliceCuotasIMSS, error)
