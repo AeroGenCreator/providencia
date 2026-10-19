@@ -10,10 +10,11 @@ import (
 type Service interface {
 	// Funciones fichero logics.go
 	CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalculoCuotas, error)
-	EscribirJSONEditables(nuevoJSON *types.Editables) error
+	escribirJSONeditables(nuevoJSON *types.Editables) error
 	// Funciones en este fichero
 	SliceCuotasIMSS(page string) (*types.SliceCuotasIMSS, error)
-	SearchCuotasIMSS(pattern, page string) (*types.SliceCuotasIMSS, error)
+	EmployeesNames() ([]*string, error)
+	SearchCuotasIMSS(name, year string) (*types.SliceCuotasIMSS, error)
 	Many2OneCuotasIMSS() (*types.Many2One, error)
 	CreateCuotasIMSS(peticion *types.Peticion) error
 	ReadCuotasIMSS(id int) (*types.CuotasIMSS, error)
@@ -48,22 +49,27 @@ func (s service) SliceCuotasIMSS(page string) (*types.SliceCuotasIMSS, error) {
 	return &slice, nil
 }
 
-func (s service) SearchCuotasIMSS(pattern, page string) (*types.SliceCuotasIMSS, error) {
-	intPage, err := strconv.Atoi(page)
-	if err != nil {
-		intPage = 1
-	}
-	var offset int
-	offset = (intPage - 1) * utils.RecordsPerSlice
-	records, count, err := s.store.SearchCuotasIMSS(pattern, utils.RecordsPerSlice, offset)
+// Permite seleccionar unicamente nombres reales para la busqueda de cuotas IMSS
+func (s service) EmployeesNames() ([]*string, error) {
+	records, err := s.store.EmployeesName()
 	if err != nil {
 		return nil, err
 	}
-	totalPages := utils.CalculateTotalPages(count, utils.RecordsPerSlice)
-	hasNextPage := totalPages > intPage
+	return records, nil
+}
+
+func (s service) SearchCuotasIMSS(name, year string) (*types.SliceCuotasIMSS, error) {
+	intYear, err := strconv.Atoi(year)
+	if err != nil {
+		return nil, err
+	}
+	records, err := s.store.SearchCuotasIMSS(name, intYear)
+	if err != nil {
+		return nil, err
+	}
 	data := types.SliceCuotasIMSS{
 		Records:     records,
-		HasNextPage: hasNextPage,
+		HasNextPage: false,
 	}
 	return &data, nil
 }

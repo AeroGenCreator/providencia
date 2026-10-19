@@ -12,7 +12,6 @@
     <title>{{ .Service }}</title>
 </head>
 <body x-data="CuotasIMSSListaComponent">
-<!-- Manejar estados goHome, goBack, go..., logOut - Usando Alpine -->
 <section class="block hero has-background-dark">
     <nav class="navbar">
         <div class="navbar-start">
@@ -26,7 +25,6 @@
                     <span class="icon"><i class="fa-solid fa-rotate-left"></i></span><span>Volver</span>
                 </span>
             </div>
-            <!-- Redireccionar a algun otro lado -->
             <div class="navbar-item">
                 <span class="icon-text has-text-white is-size-7 clickable" @click="goCuotasIMSS">
                     <span class="icon"><i class="fa-solid fa-stethoscope"></i></span><span>Servicio {{ .Service }}</span>
@@ -65,15 +63,31 @@
             <div class="column is-2">
                 <div class="field">
                     <div class="control is-small has-icons-left">
-                        <input class="input is-small is-rounded" type="text" placeholder="Buscador por nombre" x-model="pattern">
-                        <span class="icon is-small is-left"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input
+                            class="input is-small is-rounded"
+                            list="list-names"
+                            id="input-names"
+                            placeholder="Seleccionar Empleado"
+                            x-model="name">
+                        <span class="icon is-small is-left"><i class="fa-solid fa-briefcase"></i></span>
+                        <datalist id="list-names">
+                            <template x-for="e in employees">
+                                <option :value="e" x-text="e"></option>
+                            </template>
+                        </datalist>
                     </div>
                 </div>
             </div>
             <div class="column is-2">
                 <div class="field">
                     <div class="control is-small has-icons-left">
-                        <input class="input is-small is-rounded" type="text" placeholder="Ingrese un año" x-model="year">
+                        <input
+                            class="input is-small is-rounded"
+                            type="text"
+                            placeholder="Ingrese un año"
+                            x-model="year"
+                            @blur="year = formatYear($event.target.value)"
+                        >
                         <span class="icon is-small is-left"><i class="fa-solid fa-chart-bar"></i></span>
                     </div>
                 </div>
@@ -83,12 +97,16 @@
                     <button
                         class="button is-info is-small is-rounded"
                         @click="search"
-                        :disabled="(pattern === '')"
+                        :disabled="blockSearch"
                     >
                         <span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span>
                         <span>Buscar</span>
                     </button>
-                    <button class="button is-danger is-small is-rounded" @click="clean" x-show="(pattern !== '')">
+                    <button
+                        class="button is-danger is-small is-rounded"
+                        @click="clean"
+                        x-show="(name !== '' || year !== '')"
+                    >
                         <span class="icon"><i class="fa-solid fa-spray-can-sparkles"></i></span>
                         <span>Limpiar</span>
                     </button>

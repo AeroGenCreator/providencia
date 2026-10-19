@@ -45,3 +45,24 @@ func (s store) ReadEmployee(id int) (*types.Employee, error) {
 	}
 	return &employee, nil
 }
+
+func (s store) EmployeesName() ([]*string, error) {
+	q := `SELECT name FROM employee;`
+	rows, err := s.db.Query(q)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var records []*string
+	for rows.Next() {
+		var record string
+		if err = rows.Scan(&record); err != nil {
+			return nil, err
+		}
+		records = append(records, &record)
+	}
+	if rows.Err() != nil {
+		return nil, err
+	}
+	return records, nil
+}

@@ -43,9 +43,9 @@ func (e EndpointHandler) CallSliceCuotasIMSS(w http.ResponseWriter, r *http.Requ
 func (e EndpointHandler) CallCuotasSearch(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		pattern := r.URL.Query().Get("pattern")
-		page := r.URL.Query().Get("page")
-		data, err := e.service.SearchCuotasIMSS(pattern, page)
+		name := r.URL.Query().Get("name")
+		year := r.URL.Query().Get("year")
+		data, err := e.service.SearchCuotasIMSS(name, year)
 		if err != nil {
 			log.Printf("Error /cuotas/search (%v)", err.Error())
 			http.Error(w, "Error /cuotas/search ", http.StatusInternalServerError)
@@ -68,6 +68,24 @@ func (e EndpointHandler) CallCuotasIMSSMany2One(w http.ResponseWriter, r *http.R
 		data, err := e.service.Many2OneCuotasIMSS()
 		if err != nil {
 			log.Printf("Error /cuotas/many2one - ServingMany2One - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(data)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+	}
+}
+
+// ROUTE: "/cuotas/employees"
+func (e EndpointHandler) CallEmployeesNames(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		data, err := e.service.EmployeesNames()
+		if err != nil {
+			log.Printf("Error /cuotas/employees - ServingEmployeesNames - (%v)", err.Error())
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -284,6 +302,37 @@ func (e EndpointHandler) CallCuotasIMSSRecord(w http.ResponseWriter, r *http.Req
 			return
 		}
 		w.WriteHeader(http.StatusOK)
+	default:
+		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
+	}
+}
+
+// ROUTE: "/cuotas/config"
+func (e EndpointHandler) CallCuotasIMSSConfig(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		party := r.Context().Value(utils.UserParty).(string)
+		valid, err := utils.AddPermissions(3, party)
+		if err != nil {
+			log.Printf("Error '/cuotas/record' - Permissions - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if !valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		tpl, err := template.ParseFiles("services/cuotasIMSS/views/config.html")
+		if err != nil {
+			log.Printf("Error '/cuotas/config' - ParseTemplate - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if err = tpl.Execute(w, map[string]string{"Service": "Cuotas", "View1": "Configuración"}); err != nil {
+			log.Printf("Error '/cuotas/config' - RenderTemplate - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}

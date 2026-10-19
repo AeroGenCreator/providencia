@@ -2,54 +2,31 @@
 document.addEventListener('alpine:init', () => {
   Alpine.data("CuotasIMSSListaComponent", () => ({
 
-    page: 1,
-    pageSearch: 1,
-    records: [],
-    loading: false,
-    hasNextPage: false,
-    pattern: '',
-    year: '',
-    patternLast: '',
-    yearLast: '',
-    isSearch: false,
-    authError: false,
+    page: 1, records: [], loading: false, hasNextPage: false, name: '', year: '', authError: false, employees: [],
 
-    async init() { await this.loadRecords() },
+    async init() { await this.loadRecords(); await this.loadEmployees(); },
     async goHome() { await GoHome() },
     async goBack() { await GoBack("/home") },
     async logOut() { await LogOut() },
+
+    close() { this.authError = false; },
+    block() { return (this.page === 1 || this.loading); },
+    blockSearch() { return (this.name === '' || this.year === '') },
+
+    async openRecord(id) { await ReadRecord(id, "/cuotas/record") },
     async goCuotasIMSS() { const res = await OnlyRedirect("/cuotas"); this.authError = res.authError },
     async goConfig() { const res = await OnlyRedirect("/cuotas/config"); this.authError = res.authError },
     async goReport() { const res = await OnlyRedirect("/cuotas/report"); this.authError = res.authError },
     async newRecord() { const res = await OnlyRedirect("/cuotas/new"); this.authError = res.authError },
-    async openRecord(id) { await ReadRecord(id, "/cuotas/record") },
-    close() { this.authError = false; },
-    async clean() {
-      this.isSearch = false; this.pageSearch = 1; this.pattern = ''; this.page = 1; return await this.loadRecords()
-    },
-    block() {
-      if (this.isSearch) { return (this.pageSearch === 1 || this.loading); } else { return (this.page === 1 || this.loading); }
-    },
-
-    async previousPage() {
-      if (this.isSearch) {
-        if (this.pageSearch > 1) { this.pageSearch -= 1; return await this.search(); }
-      } else { if (this.page > 1) { this.page -= 1; return await this.loadRecords() } }
-    },
-
-    async nextPage() {
-      if (!this.isSearch) { if (this.hasNextPage) { this.page += 1; return await this.loadRecords() } }
-      if (this.isSearch) { if (this.hasNextPage) { this.pageSearch += 1; return await this.search() } }
-    },
+    async clean() { this.year = ''; this.name = ''; this.page = 1; return await this.loadRecords() },
+    async previousPage() { if (this.page > 1) { this.page -= 1; return await this.loadRecords() } },
+    async nextPage() { if (this.hasNextPage) { this.page += 1; return await this.loadRecords() } },
 
     currency() {
         if (!this.records) { return; }
         for (var item of this.records) {
-            // 1. Validamos los valores originales ANTES de formatear
             let daily = Number(item.daily_payment);
             let sbc = Number(item.sbc);
-
-            // 2. Si no son números válidos (NaN, undefined, null, etc.), les ponemos 0
             item.daily_payment = isNaN(daily) ? FormatterMXN.format(0) : FormatterMXN.format(daily);
             item.sbc = isNaN(sbc) ? FormatterMXN.format(0) : FormatterMXN.format(sbc);
         }
@@ -57,13 +34,21 @@ document.addEventListener('alpine:init', () => {
 
     months() {
       if (!this.records) { return }
-      this.records.forEach(item => { const monthName = MonthsFromIntegerToString(item.month); item.month = monthName; })
+      this.records.forEach(item => {
+        const monthName = MonthsFromIntegerToString(item.month); item.month = monthName;
+      })
+    },
+
+    formatYear(str) {
+      let num = ValidateIntegerStringToInteger(str);
+      if (isNaN(num)) return '';
+      return String(num).substring(0, 4);
     },
 
     async loadRecords() {
       try {
-        this.loading = true
-        const data = await FetchDataFromResponse(`/cuotas/slice?page=${this.page}`, { method: "GET" })
+        this.loading = true;
+        const data = await FetchDataFromResponse(`/cuotas/slice?page=${this.page}`, { method: "GET" });
         this.records = data.records; this.hasNextPage = data.hasNextPage; this.currency(); this.months();
       } catch (error) {
         throw error
@@ -72,12 +57,21 @@ document.addEventListener('alpine:init', () => {
       }
     },
 
+    async loadEmployees() {
+      try {
+        this.loading = true;
+        const array = await FetchDataFromResponse(`/cuotas/employees`, { method: "GET" });
+        this.employees = array;
+      } catch (error) {
+        throw error;
+      } finally { this.loading = false; }
+    },
+
     async search() {
       try {
-        this.loading = true; this.isSearch = true;
-        if (this.patternLast !== '' && this.patternLast !== this.pattern) { this.pageSearch = 1};
-        const data = await FetchDataFromResponse(`/cuotas/search?pattern=${this.pattern}&page=${this.pageSearch}`);
-        this.patternLast = this.pattern; this.records = data.records; this.hasNextPage = data.hasNextPage; this.currency(); this.months();
+        this.loading = true;
+        const data = await FetchDataFromResponse(`/cuotas/search?name=${this.name}&year=${this.year}`);
+        this.records = data.records; this.hasNextPage = data.hasNextPage; this.currency(); this.months();
       } catch (error) {
         throw error
       } finally {
@@ -357,10 +351,13 @@ document.addEventListener('alpine:init', () => {
     async goBack() { await GoBack("/cuotas") },
     async logOut() { await LogOut() },
     async goCuotas() { await OnlyRedirect("/cuotas") },
-    async goRecord() { await OnlyRedirect("/cuotas/record") },
+    async goRecord() { await OnlyRedirect(`/cuotas/record?id=${id}`) },
 
     // Formato de Moneda de 2 decimales MXN
     currency(item) { return FormatterMXN.format(item); },
+
+    // Cerrar mensajes de error
+    closeAuthError() { this.authError = false },
 
     calcularTotales(data) {
         // Acumulador para cuotas patronales (usando snake_case de data)
@@ -448,6 +445,17 @@ document.addEventListener('alpine:init', () => {
         this.authError = data.authError
       } catch (error) { throw error}
     },
+
+  }))
+})
+
+// Componente de Configuración
+document.addEventListener('alpine:init', () => {
+  Alpine.data("CuotasConfigComponent", () => ({
+
+    async goHome() { await GoHome() },
+    async goBack() { await GoBack("/cuotas") },
+    async logOut() { await LogOut() },
 
   }))
 })

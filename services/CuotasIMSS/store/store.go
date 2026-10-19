@@ -10,13 +10,14 @@ type Store interface {
 	// Funciones fichero extra.go
 	M2OEmployees() ([]*types.M2OEmployee, error)
 	ReadEmployee(id int) (*types.Employee, error)
+	EmployeesName() ([]*string, error)
 	// Funciones en este fichero
 	SliceCuotasIMSS(limit, offset int) ([]*types.CuotasIMSS, int, error)
 	CreateCuotasIMSS(cuota *types.CuotasIMSS) error
 	ReadCuotasIMSS(id int) (*types.CuotasIMSS, error)
 	UpdateCuotasIMSS(cuota *types.CuotasIMSS) error
 	DeleteCuotasIMSS(id int) error
-	SearchCuotasIMSS(pattern string, limit, offset int) ([]*types.CuotasIMSS, int, error)
+	SearchCuotasIMSS(name string, year int) ([]*types.CuotasIMSS, error)
 }
 
 type store struct {
@@ -156,14 +157,15 @@ func (s store) DeleteCuotasIMSS(id int) error {
 	return nil
 }
 
-// Para la vista lista (Se envian pocos campos)
-func (s store) SearchCuotasIMSS(pattern string, limit, offset int) ([]*types.CuotasIMSS, int, error) {
-	formatedPattern := "%" + pattern + "%"
-	q1 := `SELECT id, name, daily_payment, year, month, factor_integracion, sbc FROM cuotas_imss WHERE name LIKE ? LIMIT ? OFFSET ?;`
-	q2 := `SELECT COUNT(id) AS count_id FROM cuotas_imss WHERE name LIKE ?;`
-	rows, err := s.db.Query(q1, formatedPattern, limit, offset)
+// Dado que la busqueda depende de (Nombre)(Año) El maximo de records devueltos seran 12 (Meses).
+func (s store) SearchCuotasIMSS(name string, year int) ([]*types.CuotasIMSS, error) {
+	q := `
+	SELECT id, name, daily_payment, year, month, factor_integracion, sbc
+	FROM cuotas_imss
+	WHERE name = ? AND year = ?;`
+	rows, err := s.db.Query(q, name, year)
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
 	defer rows.Close()
 	var records []*types.CuotasIMSS
@@ -172,16 +174,12 @@ func (s store) SearchCuotasIMSS(pattern string, limit, offset int) ([]*types.Cuo
 		if err := rows.Scan(
 			&r.Id, &r.Name, &r.DailyPayment, &r.Year, &r.Month, &r.FactorIntegracion, &r.Sbc,
 		); err != nil {
-			return nil, 0, err
+			return nil, err
 		}
 		records = append(records, &r)
 	}
 	if rows.Err() != nil {
-		return nil, 0, rows.Err()
+		return nil, rows.Err()
 	}
-	var count int
-	if err := s.db.QueryRow(q2, formatedPattern).Scan(&count); err != nil {
-		return nil, 0, err
-	}
-	return records, count, nil
+	return records, nil
 }
