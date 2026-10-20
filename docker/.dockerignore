@@ -1,0 +1,3 @@
+# Se ignara la DB y directorio de datos Sensibles
+db/
+private/
