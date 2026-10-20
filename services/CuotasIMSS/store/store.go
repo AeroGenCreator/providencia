@@ -7,6 +7,8 @@ import (
 )
 
 type Store interface {
+	// Funciones fichero report.go
+	ReportQuery(year int) ([]*types.ReportRow, error)
 	// Funciones fichero extra.go
 	M2OEmployees() ([]*types.M2OEmployee, error)
 	ReadEmployee(id int) (*types.Employee, error)

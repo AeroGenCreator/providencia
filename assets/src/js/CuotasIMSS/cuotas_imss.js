@@ -523,10 +523,64 @@ document.addEventListener('alpine:init', () => {
 document.addEventListener('alpine:init', () => {
   Alpine.data("CuotasIMSSReportComponent", () => ({
 
+    loading: false,
+    records: [],
+    year: "",
+    obreroTotal: 0,
+    patronTotal: 0,
+    totalAcumulado: 0,
+
     async goHome() { await GoHome() },
     async goBack() { await GoBack("/cuotas") },
     async logOut() { await LogOut() },
     async goCuotas() { await OnlyRedirect("/cuotas") },
+
+    lock() { return (this.loading === true || this.year === ""); },
+
+    cleanReport() { this.records = []; },
+
+    yearFormat(str) {
+      let num = ValidateIntegerStringToInteger(str);
+      if (isNaN(num)) {
+        return ""
+      }
+      return String(num).substring(0,4)
+    },
+
+    formater() {
+      if (this.records.length > 0) {
+        // Limpia variables antes de iterar
+        this.obreroTotal = 0; this.patronTotal = 0; this.totalAcumulado = 0;
+        this.records.forEach(i => {
+          // Formatea el MES a String
+          i.month = MonthsFromIntegerToString(i.month)
+          // Acumula en las variables "this" antes de formatear (Precision decimal)
+          this.obreroTotal += i.subtotalObrero;
+          this.patronTotal += i.subtotalPatron;
+          // Da formato
+          i.subtotalObrero = FormatterMXN.format(i.subtotalObrero)
+          i.subtotalPatron = FormatterMXN.format(i.subtotalPatron)
+          i.total = FormatterMXN.format(i.total)
+        })
+        // Suma con presicion decimal despues da formato al acumulado
+        this.totalAcumulado = FormatterMXN.format(this.obreroTotal + this.patronTotal)
+        // Por ultimo da formato a los subtotales acumulados, los cuales determianron toda la presicion hasta el ultimo momento.
+        this.obreroTotal = FormatterMXN.format(this.obreroTotal)
+        this.patronTotal = FormatterMXN.format(this.patronTotal)
+      }
+    },
+
+    async callReport() {
+    try {
+      this.loading = true;
+      const vals = JSON.stringify({ year: this.year });
+      const data = await FetchDataFromResponse("/cuotas/report", { method: "POST", body: vals });
+      this.records = data.records;
+      this.formater();
+    } catch (error) {
+      throw error;
+    } finally { this.loading = false; }
+    },
 
   }))
 })

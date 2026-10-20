@@ -365,6 +365,7 @@ func (e EndpointHandler) CallCuotasIMSSConfig(w http.ResponseWriter, r *http.Req
 // ROUTE: "/cuotas/report"
 func (e EndpointHandler) CallCuotasIMSSReport(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
+	// GET renderiza el template de "reportes" -  permisos (visitante)
 	case http.MethodGet:
 		party := r.Context().Value(utils.UserParty).(string)
 		valid, err := utils.AddPermissions(1, party)
@@ -388,6 +389,23 @@ func (e EndpointHandler) CallCuotasIMSSReport(w http.ResponseWriter, r *http.Req
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+	// POST query al reporte -  permisos (visitante)
+	case http.MethodPost:
+		var request types.ReportRequest
+		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+			log.Printf("Error '/cuotas/report' - DecodingJSON - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		slice, err := e.service.ReportQuery(request.Year)
+		if err != nil {
+			log.Printf("Error '/cuotas/report' - SQLreportQuery - (%v)", err.Error())
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(slice)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}

@@ -180,4 +180,24 @@ type Record struct {
 	Id int `json:"id"`
 }
 
+// Fila de Tabla Report (SQL)
+type ReportRow struct {
+	Year           int     `json:"year"`
+	Month          int     `json:"month"`
+	Name           string  `json:"name"`
+	SubtotalObrero float64 `json:"subtotalObrero"`
+	SubtotalPatron float64 `json:"subtotalPatron"`
+	Total          float64 `json:"total"`
+}
+
+// Slice de Tabla Report (SQL)
+type ReportSlice struct {
+	Records []*ReportRow `json:"records"`
+}
+
+// Solicitud del Reporte
+type ReportRequest struct {
+	Year string `json:"year"`
+}
+
 var SalaryError = errors.New("Imposible cálculo de cuotas cuando el salario del empleado es menor que el salario mínimo")

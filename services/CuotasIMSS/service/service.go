@@ -20,6 +20,7 @@ type Service interface {
 	CreateCuotasIMSS(peticion *types.Peticion) error
 	ReadCuotasIMSS(id int) (*types.CuotasIMSS, error)
 	DeleteCuotasIMSS(id int) error
+	ReportQuery(year string) (*types.ReportSlice, error)
 }
 
 type service struct {
@@ -157,4 +158,17 @@ func (s service) DeleteCuotasIMSS(id int) error {
 		return err
 	}
 	return nil
+}
+
+func (s service) ReportQuery(year string) (*types.ReportSlice, error) {
+	intYear, err := strconv.Atoi(year)
+	if err != nil {
+		return nil, err
+	}
+	records, err := s.store.ReportQuery(intYear)
+	if err != nil {
+		return nil, err
+	}
+	data := types.ReportSlice{Records: records}
+	return &data, nil
 }
