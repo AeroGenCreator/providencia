@@ -47,6 +47,7 @@ func Assambler(mux *http.ServeMux, db *sql.DB) {
 	mux.Handle("/cuotas/new", utils.AuthMiddleware(http.HandlerFunc(handler.CallCuotasIMSSNew)))
 	mux.Handle("/cuotas/config", utils.AuthMiddleware(http.HandlerFunc(handler.CallCuotasIMSSConfig)))
 	mux.Handle("/cuotas/record", utils.AuthMiddleware(http.HandlerFunc(handler.CallCuotasIMSSRecord)))
+	mux.Handle("/cuotas/report", utils.AuthMiddleware(http.HandlerFunc(handler.CallCuotasIMSSReport)))
 	mux.Handle("/cuotas/many2one", utils.AuthMiddleware(http.HandlerFunc(handler.CallCuotasIMSSMany2One)))
 	mux.Handle("/cuotas/employees", utils.AuthMiddleware(http.HandlerFunc(handler.CallEmployeesNames)))
 }

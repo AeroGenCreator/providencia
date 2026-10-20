@@ -324,7 +324,7 @@ document.addEventListener('alpine:init', () => {
     name: "",
     dailyPayment: 0,
     year: 0,
-    month: 0,
+    month: "",
     factorIntegracion: 0,
     sbc: 0,
     esBimestre: false,
@@ -418,7 +418,7 @@ document.addEventListener('alpine:init', () => {
         this.name = data.name;
         this.dailyPayment = this.currency(data.daily_payment);
         this.year = data.year;
-        this.month = data.month;
+        this.month = MonthsFromIntegerToString(data.month);
         this.factorIntegracion = data.factor_integracion;
         this.sbc = this.currency(data.sbc);
         this.esBimestre = data.es_bimestre;
@@ -515,6 +515,18 @@ document.addEventListener('alpine:init', () => {
         this.authError = res.authError
       } catch (error) { throw error; } finally { this.loading = false; }
     },
+
+  }))
+})
+
+// Componente del Reporte Anual
+document.addEventListener('alpine:init', () => {
+  Alpine.data("CuotasIMSSReportComponent", () => ({
+
+    async goHome() { await GoHome() },
+    async goBack() { await GoBack("/cuotas") },
+    async logOut() { await LogOut() },
+    async goCuotas() { await OnlyRedirect("/cuotas") },
 
   }))
 })

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/bulma/css/bulma.min.css">
+    <link rel="stylesheet" href="/assets/css/saavedra/saavedra.css">
+    <script src="https://kit.fontawesome.com/75d1a8fea1.js" crossorigin="anonymous"></script>
+    <script defer src="/assets/src/utils/utils.js"></script>
+    <script defer src="/assets/src/js/CuotasIMSS/cuotas_imss.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.17.3/dist/cdn.min.js"></script>
+    <title></title>
+</head>
+<body x-data="CuotasIMSSReportComponent">
+<section class="block hero has-background-dark">
+    <nav class="navbar">
+        <div class="navbar-start">
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goHome" style="cursor: pointer;">
+                    <span class="icon"><i class="fa-solid fa-house"></i></span><span>Home</span>
+                </span>
+            </div>
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goBack" style="cursor: pointer;">
+                    <span class="icon"><i class="fa-solid fa-rotate-left"></i></span><span>Volver</span>
+                </span>
+            </div>
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7 clickable" @click="goCuotas" style="cursor: pointer;">
+                    <span class="icon"><i class="fa-solid fa-stethoscope"></i></span><span>Servicio {{ .Service }}</span>
+                </span>
+            </div>
+            <div class="navbar-item">
+                <span class="icon-text has-text-white is-size-7">
+                    <span class="icon"><i class="fa-solid fa-chart-line"></i></span><span>{{ .View1 }}</span>
+                </span>
+            </div>
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <button class="button is-danger is-small" @click="logOut">
+                    <span class="icon"><i class="fa-solid fa-arrow-right-from-bracket"></i></span>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+</section>
+<main>
+<section class="section">
+    <div class="container">
+        <div class="box">
+            <div class="columns is-multiline">
+                <!-- INPUTS -->
+                <div class="column is-2">
+                    <div class="control has-icons-left">
+                        <input class="input is-small is-rounded" type="text" placeholder="Ingresar Año del Reporte" x-model="year">
+                        <span class="icon is-small is-left"><i class="fa-solid fa-chart-bar"></i></span>
+                    </div>
+                </div>
+                <div class="column is-2">
+                    <button class="button is-primary is-small is-rounded" @click="callReport">
+                        <span class="icon"><i class="fa-solid fa-play"></i></span>
+                        <span>Cargar Reporte</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</main>
+</body>
+</html>
