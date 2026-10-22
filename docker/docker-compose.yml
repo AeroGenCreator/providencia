@@ -6,19 +6,9 @@ services:
       dockerfile: Dockerfile
     image: providencia:v1.0
     container_name: providencia_container
-    develop:
-      env_file: ../.env
+    env_file:
+      - ../.env
     restart: always
-    environment:
-      - SESSION_TOKEN=${SESSION_TOKEN}
-      - DATABASE_NAME=${DATABASE_NAME}
-      - ADMIN_NAME=${ADMIN_NAME}
-      - ADMIN_EMAIL=${ADMIN_EMAIL}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      - HOST=${HOST}
-      - PORT=${PORT}
-      - IS_PRODUCTION=${IS_PRODUCTION}
-      - RECORDS_PER_SLICE=${RECORDS_PER_SLICE}
     volumes:
       - ../db:/usr/share/providencia/db
       - ../private:/usr/share/providencia/private
