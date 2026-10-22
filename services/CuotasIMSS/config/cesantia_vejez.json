@@ -1,52 +1,52 @@
 {
   "2026": [
     { "minLim": 1.00, "maxLim": 1.00, "factor": 0.03150 },
-    { "minLim": 1.01, "maxLim": 1.50, "factor": 0.04026 },
-    { "minLim": 1.51, "maxLim": 2.00, "factor": 0.05088 },
-    { "minLim": 2.01, "maxLim": 2.50, "factor": 0.05725 },
-    { "minLim": 2.51, "maxLim": 3.00, "factor": 0.06149 },
+    { "minLim": 1.01, "maxLim": 1.50, "factor": 0.03676 },
+    { "minLim": 1.51, "maxLim": 2.00, "factor": 0.04851 },
+    { "minLim": 2.01, "maxLim": 2.50, "factor": 0.05556 },
+    { "minLim": 2.51, "maxLim": 3.00, "factor": 0.06026 },
     { "minLim": 3.01, "maxLim": 3.50, "factor": 0.06361 },
-    { "minLim": 3.51, "maxLim": 4.00, "factor": 0.06680 },
+    { "minLim": 3.51, "maxLim": 4.00, "factor": 0.06613 },
     { "minLim": 4.01, "maxLim": 25.00, "factor": 0.07513 }
   ],
   "2027": [
     { "minLim": 1.00, "maxLim": 1.00, "factor": 0.03150 },
-    { "minLim": 1.01, "maxLim": 1.50, "factor": 0.04103 },
-    { "minLim": 1.51, "maxLim": 2.00, "factor": 0.05313 },
-    { "minLim": 2.01, "maxLim": 2.50, "factor": 0.06038 },
-    { "minLim": 2.51, "maxLim": 3.00, "factor": 0.06521 },
-    { "minLim": 3.01, "maxLim": 3.50, "factor": 0.06866 },
-    { "minLim": 3.51, "maxLim": 4.00, "factor": 0.07125 },
-    { "minLim": 4.01, "maxLim": 25.00, "factor": 0.08888 }
+    { "minLim": 1.01, "maxLim": 1.50, "factor": 0.03807 },
+    { "minLim": 1.51, "maxLim": 2.00, "factor": 0.05276 },
+    { "minLim": 2.01, "maxLim": 2.50, "factor": 0.06157 },
+    { "minLim": 2.51, "maxLim": 3.00, "factor": 0.06745 },
+    { "minLim": 3.01, "maxLim": 3.50, "factor": 0.07164 },
+    { "minLim": 3.51, "maxLim": 4.00, "factor": 0.07479 },
+    { "minLim": 4.01, "maxLim": 25.00, "factor": 0.08603 }
   ],
   "2028": [
     { "minLim": 1.00, "maxLim": 1.00, "factor": 0.03150 },
-    { "minLim": 1.01, "maxLim": 1.50, "factor": 0.04180 },
-    { "minLim": 1.51, "maxLim": 2.00, "factor": 0.05538 },
-    { "minLim": 2.01, "maxLim": 2.50, "factor": 0.06350 },
-    { "minLim": 2.51, "maxLim": 3.00, "factor": 0.06893 },
-    { "minLim": 3.01, "maxLim": 3.50, "factor": 0.07280 },
-    { "minLim": 3.51, "maxLim": 4.00, "factor": 0.07570 },
-    { "minLim": 4.01, "maxLim": 25.00, "factor": 0.10263 }
+    { "minLim": 1.01, "maxLim": 1.50, "factor": 0.03939 },
+    { "minLim": 1.51, "maxLim": 2.00, "factor": 0.05701 },
+    { "minLim": 2.01, "maxLim": 2.50, "factor": 0.06759 },
+    { "minLim": 2.51, "maxLim": 3.00, "factor": 0.07476 },
+    { "minLim": 3.01, "maxLim": 3.50, "factor": 0.07967 },
+    { "minLim": 3.51, "maxLim": 4.00, "factor": 0.08345 },
+    { "minLim": 4.01, "maxLim": 25.00, "factor": 0.09694 }
   ],
   "2029": [
     { "minLim": 1.00, "maxLim": 1.00, "factor": 0.03150 },
-    { "minLim": 1.01, "maxLim": 1.50, "factor": 0.04257 },
-    { "minLim": 1.51, "maxLim": 2.00, "factor": 0.05763 },
-    { "minLim": 2.01, "maxLim": 2.50, "factor": 0.06663 },
-    { "minLim": 2.51, "maxLim": 3.00, "factor": 0.07265 },
-    { "minLim": 3.01, "maxLim": 3.50, "factor": 0.07693 },
-    { "minLim": 3.51, "maxLim": 4.00, "factor": 0.08015 },
-    { "minLim": 4.01, "maxLim": 25.00, "factor": 0.11638 }
+    { "minLim": 1.01, "maxLim": 1.50, "factor": 0.04070 },
+    { "minLim": 1.51, "maxLim": 2.00, "factor": 0.06126 },
+    { "minLim": 2.01, "maxLim": 2.50, "factor": 0.07360 },
+    { "minLim": 2.51, "maxLim": 3.00, "factor": 0.08183 },
+    { "minLim": 3.01, "maxLim": 3.50, "factor": 0.08770 },
+    { "minLim": 3.51, "maxLim": 4.00, "factor": 0.09211 },
+    { "minLim": 4.01, "maxLim": 25.00, "factor": 0.10784 }
   ],
   "2030": [
     { "minLim": 1.00, "maxLim": 1.00, "factor": 0.03150 },
-    { "minLim": 1.01, "maxLim": 1.50, "factor": 0.04241 },
-    { "minLim": 1.51, "maxLim": 2.00, "factor": 0.05313 },
-    { "minLim": 2.01, "maxLim": 2.50, "factor": 0.07003 },
-    { "minLim": 2.51, "maxLim": 3.00, "factor": 0.08130 },
-    { "minLim": 3.01, "maxLim": 3.50, "factor": 0.08934 },
-    { "minLim": 3.51, "maxLim": 4.00, "factor": 0.09537 },
+    { "minLim": 1.01, "maxLim": 1.50, "factor": 0.04202 },
+    { "minLim": 1.51, "maxLim": 2.00, "factor": 0.06552 },
+    { "minLim": 2.01, "maxLim": 2.50, "factor": 0.07962 },
+    { "minLim": 2.51, "maxLim": 3.00, "factor": 0.08902 },
+    { "minLim": 3.01, "maxLim": 3.50, "factor": 0.09573 },
+    { "minLim": 3.51, "maxLim": 4.00, "factor": 0.10077 },
     { "minLim": 4.01, "maxLim": 25.00, "factor": 0.11875 }
   ]
 }
