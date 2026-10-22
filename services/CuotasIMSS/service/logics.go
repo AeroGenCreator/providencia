@@ -130,13 +130,15 @@ func motorCuotasIMSS(
 	// Cálculos Bimestrales
 	retiro := 0.0
 	aportacionInfonavit := 0.0
+	cesantiaYVejezPatron := 0.0
+	cesantiaYVejezObrero := 0.0
 	if bimestre {
 		retiro = (factores["retiro"] * sbc * float64(diasPorCotizar+diasPorCotizarMesAnterior))
 		aportacionInfonavit = (factores["aportacionInfonavit"] * sbc * float64(diasPorCotizar+diasPorCotizarMesAnterior))
+		// Calcular Cesantia Y Vejez (Patron & Obrero) (Biemestral sino 0)
+		cesantiaYVejezPatron = calculoCesantiaYVejezPatron(year, sbc, (diasPorCotizar + diasPorCotizarMesAnterior))
+		cesantiaYVejezObrero = (factores["cesantiaYVejezObrero"] * sbc * float64(diasPorCotizar+diasPorCotizarMesAnterior))
 	}
-
-	// Calcular Cesantia Y Vejez (Patron)
-	cesantiaYVejezPatron := calculoCesantiaYVejezPatron(year, sbc, diasPorCotizar)
 
 	// Calculos Obrero
 	obrero := types.Obrero{
@@ -144,7 +146,7 @@ func motorCuotasIMSS(
 		PrestacionesDineroObrero:            (factores["prestacionesDineroObrero"] * sbc * float64(diasPorCotizar)),
 		GastosMedicosPensionadosObrero:      (factores["gastosMedicosPensionadosObrero"] * sbc * float64(diasPorCotizar)),
 		InvalidezYVidaObrero:                (factores["invalidezYVidaObrero"] * sbc * float64(diasPorCotizar)),
-		CesantiaYVejezObrero:                (factores["cesantiaYVejezObrero"] * sbc * float64(diasPorCotizar)),
+		CesantiaYVejezObrero:                cesantiaYVejezObrero,
 	}
 
 	// Calculos Patron

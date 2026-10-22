@@ -1,7 +1,7 @@
 [
-  {"clase": "1", "value": 0.0054355},
-  {"clase": "2", "value": 0.0113065},
-  {"clase": "3", "value": 0.0259840},
-  {"clase": "4", "value": 0.0465325},
-  {"clase": "5", "value": 0.0758875}
+  {"clase": "1", "value": 0.005},
+  {"clase": "2", "value": 0.011},
+  {"clase": "3", "value": 0.025},
+  {"clase": "4", "value": 0.046},
+  {"clase": "5", "value": 0.075}
 ]

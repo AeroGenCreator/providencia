@@ -5,7 +5,7 @@
     { "minLim": 1.51, "maxLim": 2.00, "factor": 0.05088 },
     { "minLim": 2.01, "maxLim": 2.50, "factor": 0.05725 },
     { "minLim": 2.51, "maxLim": 3.00, "factor": 0.06149 },
-    { "minLim": 3.01, "maxLim": 3.50, "factor": 0.06453 },
+    { "minLim": 3.01, "maxLim": 3.50, "factor": 0.06361 },
     { "minLim": 3.51, "maxLim": 4.00, "factor": 0.06680 },
     { "minLim": 4.01, "maxLim": 25.00, "factor": 0.07513 }
   ],
