@@ -1,3 +1,5 @@
+env_file:
+  - ../.env
 services:
   providencia:
     build:
@@ -6,8 +8,6 @@ services:
     image: providencia:v1.0
     container_name: providencia_container
     restart: always
-    env_file:
-      - ../.env
     environment:
       - SESSION_TOKEN=${SESSION_TOKEN}
       - DATABASE_NAME=${DATABASE_NAME}
