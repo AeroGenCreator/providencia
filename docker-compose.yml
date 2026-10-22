@@ -7,7 +7,7 @@ services:
     image: providencia:v1.0
     container_name: providencia_container
     env_file:
-      - ../.env
+      - .env
     restart: always
     volumes:
       - ../db:/usr/share/providencia/db

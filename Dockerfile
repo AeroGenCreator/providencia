@@ -5,17 +5,17 @@ FROM golang:1.27
 WORKDIR /usr/share/providencia
 
 # Copia de Dependencias "Go Lang"
-COPY ../go.mod ../go.sum ./
+COPY ./go.mod ./go.sum ./
 
 # Comando "Descargar dependecias"
 RUN go mod download
 
 # Copia Directorios y Ficheros de la aplicacion
-COPY ../services ./services
-COPY ../config ./config
-COPY ../assets ./assets
-COPY ../utils ./utils
-COPY ../main.go ./
+COPY ./services ./services
+COPY ./config ./config
+COPY ./assets ./assets
+COPY ./utils ./utils
+COPY ./main.go ./
 
 # Crear directorio DB y PRIVATE
 RUN mkdir -p db private
