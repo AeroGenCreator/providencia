@@ -12,4 +12,4 @@ services:
       - ../db:/usr/share/providencia/db
       - ../private:/usr/share/providencia/private
     ports:
-      - "${PORT:PORT}:${PORT:PORT}"
+      - "${PORT}:${PORT}"
