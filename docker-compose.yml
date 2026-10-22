@@ -14,3 +14,7 @@ services:
       - ../private:/usr/share/providencia/private
     ports:
       - "${PORT}:${PORT}"
+
+networks:
+  providencia_net:
+    external: true
