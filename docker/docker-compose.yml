@@ -1,5 +1,4 @@
-env_file:
-  - ../.env
+
 services:
   providencia:
     build:
@@ -7,6 +6,8 @@ services:
       dockerfile: Dockerfile
     image: providencia:v1.0
     container_name: providencia_container
+    develop:
+      env_file: ../.env
     restart: always
     environment:
       - SESSION_TOKEN=${SESSION_TOKEN}
