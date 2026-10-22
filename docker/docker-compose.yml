@@ -7,7 +7,7 @@ services:
     container_name: providencia_container
     restart: always
     env_file:
-      - .env
+      - ../.env
     volumes:
       - ../db:/usr/share/providencia/db
       - ../private:/usr/share/providencia/private
