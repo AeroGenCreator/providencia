@@ -6,6 +6,16 @@ import (
 	"time"
 )
 
+func obtenerMesAnterior(mes string) string {
+	for index, value := range MesesM2O {
+		if value == mes {
+			return MesesM2O[index]
+		}
+	}
+	// Enero por defecto (31) para un mes anterior.
+	return "Enero"
+}
+
 // Parse (String Fecha) (Objeto Fecha) retorna: Diferencia entre fecha de contratación y actualidad.
 func obtenerAntiguedad(fechaContratacion string) (*types.ParsedDate, error) {
 	fechaObj, _ := time.Parse("2006-01-02", fechaContratacion)
@@ -186,8 +196,9 @@ func (s service) CalcularCuotas(peticion *types.Peticion) (*types.RespuestaCalcu
 	}
 	diasPorCotizaMesAnterior := 0
 	if bimestre {
-		// Incluso en año bisiesto, paso false a la función porque el unico mes cambiante es "par" o sea "Febrero"
-		diasPorCotizaMesAnterior = calcularDiasPorCotizar(peticion.Month, 0, false)
+		// Si es bimestre debemos obtener el mes anterior antes de llamar a la funcion de calculo de dias.
+		mesAnterior := obtenerMesAnterior(peticion.Month)
+		diasPorCotizaMesAnterior = calcularDiasPorCotizar(mesAnterior, 0, bisiesto)
 	}
 	diasPorCotizar := calcularDiasPorCotizar(peticion.Month, peticion.Faltas, bisiesto)
 	obrero, patron, err := motorCuotasIMSS(peticion.Year, sbc, peticion.Riesgo, bimestre, diasPorCotizar, diasPorCotizaMesAnterior)
