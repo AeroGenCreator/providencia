@@ -11,6 +11,7 @@ COPY ./go.mod ./go.sum ./
 RUN go mod download
 
 # Copia Directorios y Ficheros de la aplicacion
+COPY .env ./
 COPY ./services ./services
 COPY ./config ./config
 COPY ./assets ./assets

@@ -28,7 +28,7 @@ func main() {
 
 	// Leer variables desde fichero .env
 	if err := godotenv.Load(); err != nil {
-		log.Printf("No such file '.env' reading from system environment variables.")
+		log.Print("No such file '.env' reading from system environment variables.")
 	}
 
 	// Carga las variables como constantes globales accesibles desde cualquier parte del proyecto.
