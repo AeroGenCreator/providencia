@@ -35,7 +35,6 @@ func (e EndpointHandler) CallSliceCuotasIMSS(w http.ResponseWriter, r *http.Requ
 		json.NewEncoder(w).Encode(data)
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
-		return
 	}
 }
 
@@ -54,10 +53,8 @@ func (e EndpointHandler) CallCuotasSearch(w http.ResponseWriter, r *http.Request
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(data)
-		return
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
-		return
 	}
 }
 

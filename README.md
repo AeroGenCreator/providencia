@@ -19,3 +19,23 @@ La aplicación de empresa construida para `Providencia` opera sobre el proyecto 
 |Usuarios|Administración de usuario y grupos de permisos|
 |Empleados|Administración de empleados `Salarios e Información`|
 |Cuotas IMSS|Administración de Cuotas Obrero Patronal `Cálculos y Reportes Anuales`|
+
+## Servidor
+
+Aplicación desplegada usando Docker `providencia_container` a su vez se comparte red con un docker de `cloudflared` nombrado `dazzling_lederberg`.
+
+- Revisar `docker-compose.yml`
+
+### Puertos
+
+|Puerto|Es Producción|Redirección|
+|------|-------------|-----------|
+|8000|[x]|Tunnel `Cloudflared`|
+
+### Actualizar Aplicación en Servidor
+
+Para actualizar un servicio basta con jalar cambios y reconstruir el `docker compose`.
+
+```bash
+git pull && docker compose up --build
+```
